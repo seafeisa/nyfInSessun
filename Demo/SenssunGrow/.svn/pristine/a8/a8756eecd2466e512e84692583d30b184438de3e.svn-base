@@ -1,0 +1,139 @@
+//
+//  SettingThreeViewController.m
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/22.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import "SettingThreeViewController.h"
+#import "Common.h"
+#import "SettingFourViewController.h"
+#import "Masonry.h"
+
+@interface SettingThreeViewController ()<UITableViewDelegate,UITableViewDataSource>
+
+@end
+
+@implementation SettingThreeViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    //设置左上角button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [button setImage:[UIImage imageNamed:@"3"] forState:UIControlStateNormal];
+    
+    button.frame = CGRectMake(0, 0, 28 , 18);
+    [button addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:button];
+    //右上角button
+    UIButton *buttonRight = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [buttonRight setImage:[UIImage imageNamed:@"5"] forState:UIControlStateNormal];
+    
+    buttonRight.frame = CGRectMake(WIDTH-18, 0, 18 , 18);
+    [buttonRight addTarget:self action:@selector(nextFour) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:buttonRight];
+    
+    //设置字体颜色
+    UILabel *navTitle = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 44)];
+    navTitle.text = @"品项设置";
+    navTitle.textAlignment = NSTextAlignmentCenter;
+    navTitle.textColor = [UIColor whiteColor];
+    self.navigationItem.titleView = navTitle;
+    
+    //设置与导航栏的距离
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.extendedLayoutIncludesOpaqueBars = NO;
+    self.modalPresentationCapturesStatusBarAppearance = NO;
+    
+    [self CreatHead];
+    [self creatTableView];
+    
+    
+}
+
+- (void)creatTableView {
+
+    UITableView *vegetableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 40, WIDTH, HEIGHT-200) style:UITableViewStylePlain];
+
+    [self.view addSubview:vegetableView];
+    vegetableView.delegate = self;
+    vegetableView.dataSource = self;
+
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 20;
+}
+
+- (void)CreatHead {
+    
+    UIView *head = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, 40)];
+    head.backgroundColor = [UIColor lightGrayColor];
+    UILabel *left = [[UILabel alloc]initWithFrame:CGRectMake(5, 0, WIDTH/4, 40)];
+    left.text =@"代码";
+    left.textAlignment = NSTextAlignmentLeft;
+    [head addSubview:left];
+    UILabel *right = [[UILabel alloc]initWithFrame:CGRectMake(WIDTH/3, 0, WIDTH/4, 40)];
+    right.text =@"名称";
+    [head addSubview:right];
+    [self.view addSubview:head];
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:nil];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = @"2";
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.textAlignment = NSTextAlignmentLeft;
+    cell.detailTextLabel.text = @"大白菜";
+    
+    
+    return cell;
+
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self nextFour];
+
+}
+
+- (void)back {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)nextFour {
+    SettingFourViewController *four = [SettingFourViewController new];
+    [self.navigationController pushViewController:four animated:YES];
+
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

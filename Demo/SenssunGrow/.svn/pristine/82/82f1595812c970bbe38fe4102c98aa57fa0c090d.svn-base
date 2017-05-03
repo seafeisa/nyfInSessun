@@ -1,0 +1,1076 @@
+//
+//  MeterViewController.m
+//  grow
+//
+//  Created by admin on 15-4-2.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import <ShareSDK/ShareSDK.h>
+#import <ShareSDKUI/ShareSDK+SSUI.h>
+#import "BthMgr.h"
+#import "UserList.h"
+#import "ProgressView.h"
+#import "LineProgressView.h"
+#import "MeterViewController.h"
+//#import "AppData.h"
+
+#define FMT_WEIGHT_LABEL @"%.3f"
+#define FMT_KG_WEIGHT_LABEL @"%.3f"
+#define FMT_LB_WEIGHT_LABEL @"%.2f"
+#define FMT_OZ_WEIGHT_LABEL @"%.1f"
+#define FMT_LBOZ_WEIGHT_LABEL @"%.0f:%.1f"
+
+@interface MeterViewController () {
+    float _weight;
+    float _weightLB;
+    float _height;
+    float _headCircle;
+}
+
+@property (strong, nonatomic) IBOutlet UILabel *m_iboTitle;
+
+@property (strong, nonatomic) IBOutlet LineProgressView *m_iboWeightProgress;
+@property (strong, nonatomic) IBOutlet UILabel          *m_iboWeightLabel;
+@property (strong, nonatomic) IBOutlet UILabel          *m_iboWeightUnit;
+@property (strong, nonatomic) IBOutlet ProgressView     *m_iboHeightProgress;
+@property (strong, nonatomic) IBOutlet ProgressView     *m_iboHeadcircleSlider;
+@property (strong, nonatomic) IBOutlet UIView           *m_iboHeightTag;
+@property (strong, nonatomic) IBOutlet UIView           *m_iboHeadcircleTag;
+@property (strong, nonatomic) IBOutlet UIImageView      *m_iboHeightIcon;
+@property (strong, nonatomic) IBOutlet UIImageView      *m_iboHeadcircleIcon;
+@property (strong, nonatomic) IBOutlet UIImageView      *m_iboHeadThumb;
+
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *m_iboSyncRing;
+@property (strong, nonatomic) IBOutlet UIImageView      *m_iboSyncFlag;
+@property (strong, nonatomic) IBOutlet UILabel          *m_iboSyncInfo;
+@property (strong, nonatomic) IBOutlet UILabel          *m_iboAge;
+
+@property (strong, nonatomic) IBOutlet UIButton         *m_iboSaveButton;
+@property (strong, nonatomic) IBOutlet UILabel          *m_iboEvaluation;
+
+@property (strong, nonatomic) IBOutlet UIView           *m_iboGuideView;
+
+@end
+
+@implementation MeterViewController
+{
+    BthMgr *m_bleMgr;
+    
+    NSUInteger m_ackCnt;
+    BOOL m_ack;
+    BOOL m_connectTimeout;
+    BOOL m_shouldSync;
+    BOOL m_syncTimeout;
+    BOOL m_syncDone;
+
+    NSMutableData  *m_tempData;
+    NSMutableArray *m_historyData;
+    
+    NSString *descBaby;
+    NSString *descLa;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+//- (void)dumpAllFonts
+//{
+//    NSArray *familyNames =[[NSArray alloc]initWithArray:[UIFont familyNames]];
+//    NSArray *fontNames;
+//    NSInteger indFamily, indFont;
+//    NSLog(@"familyNames count %zu",[familyNames count]);
+//    for(indFamily=0;indFamily<[familyNames count];++indFamily)
+//    {
+//        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+//        fontNames =[[NSArray alloc]initWithArray:[UIFont fontNamesForFamilyName:[familyNames objectAtIndex:indFamily]]];
+//        
+//        for(indFont=0; indFont<[fontNames count]; ++indFont)
+//            
+//        {
+//            NSLog(@"Font name: %@",[fontNames objectAtIndex:indFont]);
+//            
+//        }
+//    }
+//}
+
+- (void)viewDidLoad
+{
+    //获取对应的文字信息
+    _m_iboTitle.text = [AppData getString:@"Baby's name"];
+    _MeterViewWeightname.text =[AppData getString:@"weiht"];
+    _m_iboWeightUnit.text = [AppData getString:@"kg"];
+    _m_iboWeightLabel.text = [AppData getString:@"25.000"];
+    _m_iboSaveButton.titleLabel.text = [AppData getString:@"save"];
+    _m_iboSyncInfo.text = [AppData getString:@"syn"];
+    _m_iboAge.text = [AppData getString:@"current age"];
+    _MeterViewheightname.text = [AppData getString:@"heiht"];
+    _MeterViewheadsizename.text = [AppData getString:@"headsize"];
+    
+//    NSLog(@"40");
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    if ([[AppData sharedInstance] isGuidePresented])
+    {
+        [self.m_iboGuideView removeFromSuperview];
+    }
+    
+    m_ackCnt = 0;
+    m_ack = NO;
+    m_connectTimeout = NO;
+    m_shouldSync = NO;
+    m_syncTimeout = NO;
+    m_syncDone = NO;
+    
+    if (nil == m_historyData) {
+        m_historyData = [NSMutableArray array];
+    }
+    
+    if (nil == m_bleMgr)
+    {
+        m_bleMgr = [BthMgr sharedInstance];
+        m_bleMgr.delegate = self;
+    }
+
+    self.m_iboTitle.text = [UserList sharedInstance].currentKid.name;
+    
+    //dbgLog(@"pointSize:%f capHeight:%f xHeight:%f lineHeight:%f ",self.m_iboWeightLabel.font.pointSize,self.m_iboWeightLabel.font.capHeight,self.m_iboWeightLabel.font.xHeight,self.m_iboWeightLabel.font.lineHeight);
+    //[self dumpAllFonts];
+    self.m_iboWeightLabel.font = [UIFont fontWithName:@"Segoe UI" size:self.m_iboWeightLabel.font.pointSize];
+    
+    //self.m_iboHeightTag.layer.cornerRadius     = 3;
+    //self.m_iboHeadcircleTag.layer.cornerRadius = 3;
+    
+    NSString *unit = [UserList sharedInstance].currentKid.unit;
+    NSString *heightUnit = nil;
+    if (!unit || [unit isEqualToString:@""] || [unit isEqualToString:@"kg"]) {
+        self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_KG_WEIGHT_LABEL, 0.0f];
+        self.m_iboWeightUnit.text  = @"kg";
+        heightUnit = @"cm";
+    } else if ([unit isEqualToString:@"lb"]) {
+        self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LB_WEIGHT_LABEL, 0.0f];
+        self.m_iboWeightUnit.text  = unit;
+        heightUnit = @"inch";
+    } else if ([unit isEqualToString:@"oz"]) {
+        self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_OZ_WEIGHT_LABEL, 0.0f];
+        self.m_iboWeightUnit.text  = unit;
+        heightUnit = @"inch";
+    } else if ([unit isEqualToString:@"lb:oz"]) {
+        self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LBOZ_WEIGHT_LABEL, 0.0f, 0.0f];
+        
+//        NSLog(@"lb:oz的数据为：%@",self.m_iboWeightLabel.text);
+        
+        self.m_iboWeightUnit.text  = unit;
+        heightUnit = @"inch";
+    }
+     
+    self.m_iboWeightProgress.delegate = self;
+    self.m_iboWeightProgress.minValue = 0.0;//1.0;
+    self.m_iboWeightProgress.maxValue = DEV_SPEC_WEIGHT_MAX;//25;//32.0;
+    self.m_iboWeightProgress.value    = 0.0;//1.0
+    //self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_WEIGHT_LABEL, self.m_iboWeightProgress.value];
+    
+    self.m_iboHeightProgress.color    = COLOR_HEIGHT;
+    if ([heightUnit isEqualToString:@"cm"]) {
+        self.m_iboHeightProgress.minValue = DEV_SPEC_HEIGHT_MIN;
+        self.m_iboHeightProgress.maxValue = DEV_SPEC_HEIGHT_MAX;
+        self.m_iboHeightProgress.unit = @"cm";
+    } else {
+        self.m_iboHeightProgress.minValue = floor(DEV_SPEC_HEIGHT_MIN * 101.0f / 256.0f * 10.0f) / 10.0f;
+        self.m_iboHeightProgress.maxValue = floor(DEV_SPEC_HEIGHT_MAX * 101.0f / 256.0f * 10.0f) / 10.0f;
+        self.m_iboHeightProgress.unit = @"inch";
+    }
+    
+    
+//    self.m_iboHeightProgress.minValue = DEV_SPEC_HEIGHT_MIN;//46.0;//45.0;//43.0;
+//    self.m_iboHeightProgress.maxValue = DEV_SPEC_HEIGHT_MAX;//80.0;//122.0;
+    self.m_iboHeightProgress.value    = 0;//46.0;//45.0;//43.0;
+    
+    self.m_iboHeadcircleSlider.color    = COLOR_HEADCIRCLE;
+    if ([heightUnit isEqualToString:@"cm"]) {
+        self.m_iboHeadcircleSlider.minValue = DEV_SPEC_HEADCL_MIN;
+        self.m_iboHeadcircleSlider.maxValue = DEV_SPEC_HEADCL_MAX;
+        self.m_iboHeadcircleSlider.unit = @"cm";
+    } else {
+        self.m_iboHeadcircleSlider.minValue = floor(DEV_SPEC_HEADCL_MIN * 101.0f / 256.0f * 10.0f) / 10.0f;
+        self.m_iboHeadcircleSlider.maxValue = floor(DEV_SPEC_HEADCL_MAX * 101.0f / 256.0f * 10.0f) / 10.0f;
+        self.m_iboHeadcircleSlider.unit = @"inch";
+    }
+//    self.m_iboHeadcircleSlider.minValue = DEV_SPEC_HEADCL_MIN;//31.0;
+//    self.m_iboHeadcircleSlider.maxValue = DEV_SPEC_HEADCL_MAX;//54.0;
+    self.m_iboHeadcircleSlider.value    = 0;//31.0;
+
+    [self.m_iboSyncRing stopAnimating];
+    self.m_iboSyncInfo.hidden = YES;
+    self.m_iboSyncFlag.hidden = YES;
+    self.m_iboAge.hidden      = YES;
+    
+    descBaby = [AppData getString:@"babyIs"];
+    descLa = [AppData getString:@"!"];
+    
+    NSString *nameString = [NSString stringWithFormat:descBaby/*LOCALSTR_DESC_BABY*/, [UserList sharedInstance].currentKid.name];
+    self.m_iboAge.text = [NSString stringWithFormat:@"%@%@%@", nameString, [[UserList sharedInstance].currentKid ageOnDate:[NSDate date]],descLa/*LOCALSTR_DESC_LA*/];
+
+    [self startConnectTimer];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    [m_bleMgr startScan];
+    
+    //[m_bleMgr connect];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    //[self synchronizeWillBegin];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    
+    [m_bleMgr stopConnect];
+    [m_bleMgr stopScan];
+    
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [self refreshheadThumb];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+- (IBAction)backToPreView:(id)sender
+{
+    [self dismissViewControllerAnimated:NO completion:^{}];
+}
+
+- (IBAction)goToCurveView:(id)sender
+{
+    UIViewController *parentVC = self.presentingViewController;
+    // close current view
+    [self dismissViewControllerAnimated:NO completion:
+     ^{
+         // prensent new view
+         [parentVC presentViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"1stCurveViewController"]
+                                animated:NO
+                              completion:^{}];
+     }
+    ];
+}
+
+#pragma mark - timer
+- (void)startConnectTimer
+{
+    
+    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(timerConnect:) userInfo:nil repeats:NO];
+}
+
+- (void)timerConnect:(NSTimer *)timer
+{
+    if (!m_shouldSync)
+    {
+        m_connectTimeout = YES;
+
+        [self timerSyncResult:timer];
+    }
+    //dbgLog(@"connect timeout, shouldSync=%u, timeout=%u", m_shouldSync, m_connectTimeout);
+}
+
+- (void)startSyncTimer
+{
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerSync:) userInfo:nil repeats:NO];
+}
+
+- (void)timerSync:(NSTimer *)timer
+{
+    if (m_syncDone)
+    {
+        return;
+    }
+
+    m_syncTimeout = YES;
+
+    // 换标签
+    [self.m_iboSyncRing stopAnimating];
+    
+    NSString *syncFail = [AppData getString:@"synfail"];
+    
+    self.m_iboSyncInfo.text = syncFail/*LOCALSTR_SYNC_FAIL*/;
+    self.m_iboSyncInfo.hidden = NO;
+    self.m_iboSyncFlag.image  = [UIImage imageNamed:IMG_SYCHRONIZE_FAIL];
+    self.m_iboSyncFlag.hidden = NO;
+    
+    // timer
+    [self startSyncResultTimer];
+
+    [m_historyData removeAllObjects];
+}
+
+- (void)startSyncResultTimer
+{
+    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(timerSyncResult:) userInfo:nil repeats:NO];
+}
+
+- (void)timerSyncResult:(NSTimer *)timer
+{
+    //NSString *desc = [NSString stringWithFormat:@"宝宝%@啦!",[[UserList sharedInstance].currentKid ageOnDate:[NSDate date]]];
+    //self.m_iboSyncInfo.text = desc;
+    self.m_iboSyncInfo.hidden = YES;
+    self.m_iboSyncFlag.hidden = YES;
+    self.m_iboAge.hidden      = NO;
+}
+
+- (void)startMsgAckTimer:(NSData *)msg
+{
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerMsgAck:) userInfo:msg repeats:NO];
+}
+
+- (void)timerMsgAck:(NSTimer *)timer
+{
+    NSData *msg = [NSData dataWithData:timer.userInfo];
+    
+    m_ackCnt++;
+    if (!m_ack && (3 > m_ackCnt))
+    {
+        //dbgLog(@"wait ack %zu", m_ackCnt);
+        [self sendCmd:msg];
+    }
+    else
+    {
+        //dbgLog(@"wait ack %zu, invalid", m_ackCnt);
+        [self scheduleMsg:msg];
+        
+        m_ackCnt = 0;
+        m_ack    = NO;
+//        [timer invalidate];
+//        timer = nil;
+    }
+}
+
+- (void)scheduleMsg:(NSData *)data
+{
+    NSUInteger uID = [UserList sharedInstance].currentKid.devMSlot;
+
+    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+    if ([proPacket isTimeSyncSIG])
+    {
+        [self sendCmd:[COMMprotocol makeSelectUserSIG:uID]];
+    }
+    else if ([proPacket isUserSelectSIG])
+    {
+        if (m_shouldSync)
+        {
+            // 同步开始
+            [self syncWillBegin];
+            //[m_historyData removeAllObjects];
+            [self sendCmd:[COMMprotocol makeSyncAllRecordSIG:uID]];
+        }
+    }
+    else if ([proPacket isHistorySyncSIG])
+    {
+        // 同步应答
+        //[self syncWillBegin];
+    }
+}
+
+- (void)syncWillBegin
+{
+    // 显示标签
+    [self.m_iboSyncRing startAnimating];
+    
+    NSString *syncGoing = [AppData getString:@"syn"];
+    
+    self.m_iboSyncInfo.text   = syncGoing/*LOCALSTR_SYNC_GOING*/;
+    self.m_iboSyncInfo.hidden = NO;
+    self.m_iboSyncFlag.hidden = YES;
+
+    // timer
+    [self startSyncTimer];
+    
+    // 清除记录
+//    NSLog(@"同步开始清除记录数据");
+    [m_historyData removeAllObjects];
+//    NSLog(@"同步历史数据被移除方法走完");
+}
+
+- (void)syncDidFinish
+{
+    //dbgLog(@"sync finish");
+    if (m_syncTimeout)
+    {
+        return;
+    }
+    
+    m_syncDone = YES;
+    
+    // 保存记录
+//    NSLog(@"同步结束保存历史记录数据");
+//    [self saveHistoryRecord];
+//    NSLog(@"同步结束保存历史记录数据方法走完");
+    
+    // 换标签
+    [self.m_iboSyncRing stopAnimating];
+    
+    NSString *syncDone = [AppData getString:@"syndone"];
+    
+    self.m_iboSyncInfo.text   = syncDone/*LOCALSTR_SYNC_DONE*/;
+    self.m_iboSyncInfo.hidden = NO;
+    self.m_iboSyncFlag.image  = [UIImage imageNamed:IMG_SYCHRONIZE_DONE];
+    self.m_iboSyncFlag.hidden = NO;
+    
+    // timer
+    [self startSyncResultTimer];
+    
+    // 清除记录
+//    NSLog(@"同步结束清除历史数据");
+    [m_historyData removeAllObjects];
+//    NSLog(@"同步结束清除历史数据方法走完");
+}
+
+- (void)sendCmd:(NSData *)cmd
+{
+    [m_bleMgr sendMSG:cmd];
+    [self startMsgAckTimer:cmd];
+}
+
+#pragma mark - BluetoothManagerDelegate
+- (void)bluetoothDidConnectPeripheral:(CBPeripheral *)peripheral
+{
+    if (!m_connectTimeout)
+    {
+        m_shouldSync = YES;
+    }
+    //dbgLog(@"connect, shouldSync=%u, timeout=%u", m_shouldSync, m_connectTimeout);
+    
+    [self sendCmd:[COMMprotocol makeSyncTimeSIG]];
+}
+
+- (void)bluetoothDidReceiveData:(NSData *)data
+{
+    if (nil == m_tempData)
+    {
+        m_tempData = [NSMutableData data];
+    }
+
+    if ([data isEqualToData:m_tempData])
+    {
+        return;
+    }
+    [m_tempData setData:data];
+
+    [self parseDataPacket:data];
+    [self parseCmdSignaling:data];
+
+//    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+//    if ([proPacket isPacketIllegal])
+//    {
+//        return;
+//    }
+//    
+//    if ([proPacket isWeightPacket])
+//    {
+//        self.m_iboWeightProgress.value = [proPacket getWeight];
+//        self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_WEIGHT_LABEL, self.m_iboWeightProgress.value];
+//    }
+//    else if ([proPacket isHeightPacket])
+//    {
+//        self.m_iboHeightProgress.value = [proPacket getHeight];
+//    }
+}
+
+- (void)bluetoothDidReceiveIMData:(PROV2IMDATA)data    //蓝牙接受数据
+{
+//    NSLog(@"蓝牙接收数据的方法");
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        
+//        NSLog(@"线程方法调用");
+        
+        float oz;
+        float lb;
+        NSString *heightUnit = nil;
+        NSString *unit = nil;
+        _weight = data.mtrWeight;
+        _weightLB = data.brWeight;
+        _height = data.mtrHeight;
+        
+        
+        switch (data.flag)
+        {
+            case WTFLAG_KG_PLUS:
+                self.m_iboWeightProgress.value = data.mtrWeight;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_KG_WEIGHT_LABEL, data.mtrWeight];
+                self.m_iboWeightUnit.text  = @"kg";
+                heightUnit = @"cm";
+                unit = @"kg";
+                break;
+                
+            case WTFLAG_KG_MINUS:
+                self.m_iboWeightProgress.value = 0;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_KG_WEIGHT_LABEL, 0 - data.mtrWeight];
+                self.m_iboWeightUnit.text  = @"kg";
+                heightUnit = @"cm";
+                unit = @"kg";
+               break;
+                
+            case WTFLAG_LB_PLUS:
+                self.m_iboWeightProgress.value = data.mtrWeight;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LB_WEIGHT_LABEL, data.brWeight];
+                self.m_iboWeightUnit.text  = @"lb";
+                heightUnit = @"inch";
+                unit = @"lb";
+                break;
+                
+            case WTFLAG_LB_MINUS:
+                self.m_iboWeightProgress.value = 0;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LB_WEIGHT_LABEL, -data.brWeight];
+                self.m_iboWeightUnit.text  = @"lb";
+                heightUnit = @"inch";
+                unit = @"lb";
+                break;
+                
+            case WTFLAG_OZ_PLUS:
+                self.m_iboWeightProgress.value = data.mtrWeight;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_OZ_WEIGHT_LABEL, floor(data.brWeight * 4100.0f / 256.0f * 10.0f) / 10.0f];
+                self.m_iboWeightUnit.text  = @"oz";
+                heightUnit = @"inch";
+                unit = @"oz";
+                break;
+                
+            case WTFLAG_OZ_MINUS:
+                self.m_iboWeightProgress.value = 0;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_OZ_WEIGHT_LABEL, -floor(data.brWeight * 4100.0f / 256.0f * 10.0f) / 10.0f];
+                self.m_iboWeightUnit.text  = @"oz";
+                heightUnit = @"inch";
+                unit = @"oz";
+                break;
+                
+            case WTFLAG_LBOZ_PLUS:
+                oz = floor(data.brWeight * 4100.0f / 256.0f * 10.0f) / 10.0f;
+                lb = floor(oz / 16);
+                oz = oz - lb * 16;
+                self.m_iboWeightProgress.value = data.mtrWeight;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LBOZ_WEIGHT_LABEL, lb, oz];
+                self.m_iboWeightUnit.text  = @"lb:oz";
+                heightUnit = @"inch";
+                unit = @"lb:oz";
+                break;
+                
+            case WTFLAG_LBOZ_MINUS:
+                oz = floor(data.brWeight * 4100.0f / 256.0f * 10.0f) / 10.0f;
+                lb = floor(oz / 16);
+                oz = oz - lb * 16;
+                self.m_iboWeightProgress.value = 0;
+                self.m_iboWeightLabel.text = [NSString stringWithFormat:FMT_LBOZ_WEIGHT_LABEL, -lb, oz];
+                self.m_iboWeightUnit.text = @"lb:oz";
+                heightUnit = @"inch";
+                unit = @"lb:oz";
+                break;
+                
+            case WTFLAG_OVERLOAD:
+                self.m_iboWeightLabel.text = @"Error";
+                heightUnit = self.m_iboHeightProgress.unit;
+                break;
+                
+            default:
+                break;
+        }
+        /**
+         身高
+         */
+        if (![self.m_iboHeightProgress.unit isEqualToString:heightUnit]) {
+            if (![self.m_iboHeightProgress.unit isEqualToString:@"cm"]) {
+                self.m_iboHeightProgress.minValue = DEV_SPEC_HEIGHT_MIN;
+                self.m_iboHeightProgress.maxValue = DEV_SPEC_HEIGHT_MAX;
+                self.m_iboHeightProgress.unit = @"cm";
+            } else {
+                self.m_iboHeightProgress.minValue = floor(DEV_SPEC_HEIGHT_MIN * 101.0f / 256.0f * 10.0f) / 10.0f;
+                self.m_iboHeightProgress.maxValue = floor(DEV_SPEC_HEIGHT_MAX * 101.0f / 256.0f * 10.0f) / 10.0f;
+                self.m_iboHeightProgress.unit = @"inch";
+            }
+        }
+        if ([self.m_iboHeightProgress.unit isEqualToString:@"cm"]) {
+            self.m_iboHeightProgress.value = _height;
+        } else {
+            self.m_iboHeightProgress.value = floor(_height * 101.0f / 256.0f * 10.0f) / 10.0f;
+        }
+        /**
+         头围
+         */
+        if (![self.m_iboHeadcircleSlider.unit isEqualToString:heightUnit]) {
+            
+            if ([self.m_iboHeadcircleSlider.unit isEqualToString:@"cm"]) {
+                _headCircle = self.m_iboHeadcircleSlider.value;
+                
+            } else {
+                _headCircle = round(self.m_iboHeadcircleSlider.value * 256.0 / 101.0f);
+               
+            }
+           /* if (![self.m_iboHeadcircleSlider.unit isEqualToString:@"cm"]) {
+                self.m_iboHeadcircleSlider.minValue = DEV_SPEC_HEADCL_MIN;
+                self.m_iboHeadcircleSlider.maxValue = DEV_SPEC_HEADCL_MAX;
+                self.m_iboHeadcircleSlider.unit = @"cm";
+              
+            } else {
+                self.m_iboHeadcircleSlider.minValue = floor(DEV_SPEC_HEADCL_MIN * 101.0f / 256.0f * 10.0f) / 10.0f;
+                self.m_iboHeadcircleSlider.maxValue = floor(DEV_SPEC_HEADCL_MAX * 101.0f / 256.0f * 10.0f) / 10.0f;
+                self.m_iboHeadcircleSlider.unit = @"inch";
+                
+            }
+        
+            if ([self.m_iboHeadcircleSlider.unit isEqualToString:@"cm"]) {
+                self.m_iboHeadcircleSlider.value = _headCircle;
+              
+            } else {
+                self.m_iboHeadcircleSlider.value = floor(_headCircle * 101.0f / 256.0f * 10.0f) / 10.0f;
+               
+            }*/
+        }
+        
+//        NSLog(@"5保存时头围数据为：%.f",_headCircle);
+        NSString *oldUnit = [UserList sharedInstance].currentKid.unit;
+        if (![oldUnit isEqualToString:unit]) {
+            [[UserList sharedInstance].currentKid saveUserUnit:unit];
+        }
+    });
+}
+
+- (void)parseDataPacket:(NSData *)data     //分析数据包
+{
+    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+    if ([proPacket isPacketIllegal])
+    {
+        return;
+    }
+
+    if ([proPacket isImmediateData])
+    {
+        PROV2IMDATA imData = [proPacket getImmediateData];
+        [self bluetoothDidReceiveIMData:imData];
+    }
+    else if ([proPacket isHistoryData])
+    {
+        dbgLog(@"history data:%@",data);
+        PROV2HISDATA hisData = [proPacket getHistoryData];
+        [m_historyData addObject:data];
+        if (m_historyData.count == hisData.total)
+        {
+            // 同步完成
+            NSLog(@"历史数据数组里面的内容为：%@",m_historyData);
+            [self syncDidFinish];
+        }
+    }
+}
+
+- (void)parseCmdSignaling:(NSData *)data
+{
+    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+    if ([proPacket isSignalIllegal])
+    {
+        return;
+    }
+    
+    m_ack = YES;
+    
+    if ([proPacket isTimeSyncSIG])
+    {
+        dbgLog(@"SIG data:%@, sync time ack",data);
+    }
+    else if ([proPacket isHistorySyncSIG])
+    {
+        dbgLog(@"SIG data:%@, sync history ack",data);
+    }
+    else if ([proPacket isUserSelectSIG])
+    {
+        dbgLog(@"SIG data:%@, select user ack",data);
+    }
+    else if ([proPacket isUserAddSIG])
+    {
+        dbgLog(@"SIG data:%@, add user ack",data);
+    }
+    else if ([proPacket isUserRemoveSIG])
+    {
+        dbgLog(@"SIG data:%@, remove user ack",data);
+    }
+    else
+    {
+        dbgLog(@"SIG data:%@, unknown msg",data);
+    }
+}
+
+#pragma mark - Actions
+- (IBAction)willShareToSocialMedia:(id)sender {
+    UIButton *b = sender;
+    UIImage *screenshot = [self makeScreenshot];
+    
+    //1、创建分享参数
+    NSArray* imageArray = @[screenshot];
+    //（注意：图片必须要在Xcode左边目录里面，名称必须要传正确，如果要分享网络图片，可以这样传iamge参数 images:@[@"http://mob.com/Assets/images/logo.png?v=20150320"]）
+    if (imageArray) {
+        
+        NSMutableDictionary *shareParams = [NSMutableDictionary dictionary];
+        [shareParams SSDKSetupShareParamsByText:@""
+                                         images:imageArray
+                                            url:[NSURL URLWithString:@"http://mob.com"]
+                                          title:@""
+                                           type:SSDKContentTypeAuto];
+        //2、分享（可以弹出我们的分享菜单和编辑界面）
+        [ShareSDK showShareActionSheet:b //要显示菜单的视图, iPad版中此参数作为弹出菜单的参照视图，只有传这个才可以弹出我们的分享菜单，可以传分享的按钮对象或者自己创建小的view 对象，iPhone可以传nil不会影响
+                                 items:nil
+                           shareParams:shareParams
+                   onShareStateChanged:^(SSDKResponseState state, SSDKPlatformType platformType, NSDictionary *userData, SSDKContentEntity *contentEntity, NSError *error, BOOL end) {
+                       
+                       switch (state) {
+                           case SSDKResponseStateSuccess:
+                           {
+                               UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"分享成功"
+                                                                                   message:nil
+                                                                                  delegate:nil
+                                                                         cancelButtonTitle:@"确定"
+                                                                         otherButtonTitles:nil];
+                               [alertView show];
+                               break;
+                           }
+                           case SSDKResponseStateFail:
+                           {
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+                                                                               message:[NSString stringWithFormat:@"%@",error]
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"OK"
+                                                                     otherButtonTitles:nil, nil];
+                               [alert show];
+                               break;
+                           }
+                           default:
+                               break;
+                       }
+                   }
+         ];}
+//    // 截图
+//    UIImage *screenshot = [self makeScreenshot];
+//    
+//    //构造分享内容
+//    id<ISSContent> publishContent = [ShareSDK content:@""
+//                                       defaultContent:@""
+//                                                image:[ShareSDK pngImageWithImage:screenshot]
+//                                                title:@""
+//                                                  url:URL_ITUNES_SELF
+//                                          description:@""
+//                                            mediaType:SSPublishContentMediaTypeImage];
+//    //创建弹出菜单容器
+//    id<ISSContainer> container = [ShareSDK container];
+//    [container setIPadContainerWithView:sender arrowDirect:UIPopoverArrowDirectionUp];
+//    
+//    //弹出分享菜单
+//    [ShareSDK showShareActionSheet:container
+//                         shareList:nil
+//                           content:publishContent
+//                     statusBarTips:YES
+//                       authOptions:nil
+//                      shareOptions:nil
+//                            result:^(ShareType type, SSResponseState state, id<ISSPlatformShareInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+//                                if (state == SSResponseStateSuccess)
+//                                {
+//                                    //dbgLog(NSLocalizedString(@"TEXT_ShARE_SUC", @"分享成功"));
+//                                    dbgLog(@"分享成功");
+//                                }
+//                                else if (state == SSResponseStateFail)
+//                                {
+//                                    //dbgLog(NSLocalizedString(@"TEXT_ShARE_FAI", @"分享失败,错误码:%d,错误描述:%@"), [error errorCode], [error errorDescription]);
+//                                    dbgLog(@"分享失败,错误描述:%@", [error errorDescription]);
+//                                    
+//                                    NSString *message = [NSString stringWithFormat:@"%@%@", LOCALSTR_SHARE_ERROR, [error errorDescription]];
+//                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:message delegate:self cancelButtonTitle:LOCALSTR_CONFIRM otherButtonTitles:nil];
+//                                    [alert show];
+//                                }
+//                            }];
+//    
+//    if (self.m_iboHeightProgress.value >= self.m_iboHeightProgress.maxValue)
+//    {
+//        self.m_iboHeightProgress.value = 0.0;
+//    }
+//    else
+//    {
+//        self.m_iboHeightProgress.value += 5;
+//    }
+//    
+//    if (self.m_iboWeightProgress.value >= self.m_iboWeightProgress.maxValue)
+//    {
+//        self.m_iboWeightProgress.value = 0.0;
+//    }
+//    else
+//    {
+//        self.m_iboWeightProgress.value += 1;
+//    }
+//    self.m_iboWeightLabel.text = [NSString stringWithFormat:@"%.1f", self.m_iboWeightProgress.value];
+}
+
+- (IBAction)didSlideHeadThumb:(UIPanGestureRecognizer *)sender
+{
+    switch (sender.state)
+    {
+        case UIGestureRecognizerStateBegan:
+        case UIGestureRecognizerStateChanged:
+        {
+            CGPoint translation = [sender translationInView:self.view];
+            
+            CGFloat availableWidth = self.m_iboHeadcircleSlider.frame.size.width;
+            CGFloat range = self.m_iboHeadcircleSlider.maxValue - self.m_iboHeadcircleSlider.minValue;
+            
+            self.m_iboHeadcircleSlider.value += translation.x / availableWidth * range;
+            
+            [sender setTranslation:CGPointZero inView:self.view];
+            
+            [self refreshheadThumb];
+
+            break;
+        }
+
+        default:
+            break;
+    }
+}
+
+- (IBAction)willSaveResult:(id)sender     //测量界面数据保存操作
+{
+//    static PROV2IMDATA idata = {0};
+//    idata.brWeight += 1.0f;
+//    idata.mtrHeight += 1.0f;
+//    idata.mtrWeight += 1.0f;
+//    idata.flag += 1;
+//    [self bluetoothDidReceiveIMData:idata];
+//    [m_bleMgr sendMSG:[COMMprotocol makeSyncTimeSIG]];
+//    return;
+
+    if (1.0 > self.m_iboWeightProgress.value)
+    {
+        NSString *invalidWeight = [AppData getString:@"weiht invalid meas again"];
+        NSString *Confirm = [AppData getString:@"confirm"];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:invalidWeight/*LOCALSTR_INVALID_WEIGHT*/
+                                                       delegate:self
+                                              cancelButtonTitle:Confirm/*LOCALSTR_CONFIRM*/
+                                              otherButtonTitles:nil, nil];
+        [alert show];
+       return;
+    }
+    
+    if (_height < DEV_SPEC_HEIGHT_MIN) {
+        _height = DEV_SPEC_HEIGHT_MIN;
+    } else if (_height > DEV_SPEC_HEIGHT_MAX) {
+        _height = DEV_SPEC_HEIGHT_MAX;
+    }
+    
+   /**
+    对头围重新赋值
+    */
+    
+    
+        
+        if ([self.m_iboHeadcircleSlider.unit isEqualToString:@"cm"]) {
+            _headCircle = self.m_iboHeadcircleSlider.value;
+            if (_headCircle < DEV_SPEC_HEADCL_MIN) {
+                _headCircle = DEV_SPEC_HEADCL_MIN;
+            } else if (_headCircle > DEV_SPEC_HEADCL_MAX) {
+                _headCircle = DEV_SPEC_HEADCL_MAX;
+            }
+            
+        } else {
+            _headCircle = round(self.m_iboHeadcircleSlider.value * 256.0 / 101.0f);
+            
+            if (_headCircle < DEV_SPEC_HEADCL_MIN) {
+                _headCircle = DEV_SPEC_HEADCL_MIN;
+            } else if (_headCircle > DEV_SPEC_HEADCL_MAX) {
+                _headCircle = DEV_SPEC_HEADCL_MAX;
+            }
+        }
+    
+   
+//    if (_headCircle < DEV_SPEC_HEADCL_MIN) {
+//        _headCircle = DEV_SPEC_HEADCL_MIN;
+//    } else if (_headCircle > DEV_SPEC_HEADCL_MAX) {
+//        _headCircle = DEV_SPEC_HEADCL_MAX;
+//    }
+    
+//    NSLog(@"6保存时头围数据为：%.f",_headCircle);
+    
+    //用户所测数据记录到record里面 --> name
+    Record *data = [[Record alloc] initWithName:[UserList sharedInstance].currentKid.name];
+    data.weight  = _weight;
+    data.weightLB = _weightLB;
+    data.height  = _height;
+    data.headCircle = _headCircle;
+//    NSLog(@"data的头围是：%.f====%.f",data.headCircle,_headCircle);
+    
+    [[UserList sharedInstance].currentKid addRecord:data];
+    
+    // 提示
+    
+    NSString *recordSaved = [AppData getString:@"saverecord"];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:recordSaved/*LOCALSTR_RECORD_SAVED*/
+                                                   delegate:self
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+    [UIView animateWithDuration:0
+                          delay:5.0
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^{}
+                     completion:^(BOOL finished)
+                     {
+                         [alert dismissWithClickedButtonIndex:alert.cancelButtonIndex animated:YES];
+                     }
+    ];
+}
+
+- (IBAction)tapToCloseGuideView:(id)sender
+{
+    [self.m_iboGuideView removeFromSuperview];
+    [[AppData sharedInstance] markGuidePresent];
+}
+
+#pragma mark - Utilities
+- (void)refreshheadThumb
+{
+    CGFloat availableWidth = self.m_iboHeadcircleSlider.frame.size.width;
+    CGFloat range  = self.m_iboHeadcircleSlider.maxValue - self.m_iboHeadcircleSlider.minValue;
+    CGFloat offset = self.m_iboHeadcircleSlider.value - self.m_iboHeadcircleSlider.minValue;
+    CGFloat x = self.m_iboHeadcircleSlider.frame.origin.x;
+    
+    x += offset / range * availableWidth;
+    
+    x -= self.m_iboHeadThumb.frame.size.width / 2;
+    
+    self.m_iboHeadThumb.frame = CGRectMake(x, self.m_iboHeadThumb.frame.origin.y, self.m_iboHeadThumb.frame.size.width, self.m_iboHeadThumb.frame.size.height);
+}
+
+- (UIImage *)makeScreenshot
+{
+    // 整理视图元素
+    self.m_iboHeightProgress.hidden     = YES;
+    self.m_iboHeightTag.hidden          = YES;
+    self.m_iboHeightIcon.hidden         = YES;
+    self.m_iboHeadcircleSlider.hidden   = YES;
+    self.m_iboHeadcircleTag.hidden      = YES;
+    self.m_iboHeadcircleIcon.hidden     = YES;
+    self.m_iboHeadThumb.hidden          = YES;
+    self.m_iboSaveButton.hidden         = YES;
+    self.m_iboEvaluation.hidden         = NO;
+    BOOL hideAge = self.m_iboAge.hidden;
+    self.m_iboAge.hidden = YES;
+    
+    NSString *age = [[UserList sharedInstance].currentKid ageOnDate:[NSDate date]];
+    //self.m_iboEvaluation.text = [NSString stringWithFormat:@"宝宝%@啦！体重%.3fkg，身高%.1fcm，头围%.1fcm，体型很标准哦！",
+    NSString *nameString = [NSString stringWithFormat:descBaby/*LOCALSTR_DESC_BABY*/, @""];
+    NSString *text = [NSString stringWithFormat:@"%@%@%@ %@%.3fkg,",// %@%.1fcm, %@%.1fcm, %@",
+                                 nameString, age, descLa/*LOCALSTR_DESC_LA*/,
+                                [AppData getString:@"weightIs"]/*LOCALSTR_DESC_WEIGHT*/, self.m_iboWeightProgress.value];
+                                 //LOCALSTR_DESC_HEIGHT, self.m_iboHeightProgress.value,
+                                 //LOCALSTR_DESC_HEADCRCL, self.m_iboHeadcircleSlider.value,
+                                 //LOCALSTR_DESC_HEATHY];
+    if (DEV_SPEC_HEIGHT_MIN <= self.m_iboHeightProgress.value)
+    {
+        
+        NSString *descHeight = [AppData getString:@"heightIs"];
+        
+        text = [text stringByAppendingFormat:@" %@%.1fcm,", descHeight/*LOCALSTR_DESC_HEIGHT*/, self.m_iboHeightProgress.value];
+    }
+    if (DEV_SPEC_HEADCL_MIN <= self.m_iboHeadcircleSlider.value)
+    {
+        
+        NSString *descHeadCrcl = [AppData getString:@"headsizeIs"];
+        
+        text = [text stringByAppendingFormat:@" %@%.1fcm,", descHeadCrcl/*LOCALSTR_DESC_HEADCRCL*/, self.m_iboHeadcircleSlider.value];
+    }
+    
+    NSString *descHealthy = [AppData getString:@"good"];
+    
+    self.m_iboEvaluation.text = [text stringByAppendingFormat:@" %@", descHealthy/*LOCALSTR_DESC_HEATHY*/];
+
+    // 截图
+    UIGraphicsBeginImageContext(self.view.frame.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [self.view.layer renderInContext:context];
+    UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // 恢复视图元素
+    self.m_iboEvaluation.text           = @"";
+    self.m_iboEvaluation.hidden         = YES;
+    self.m_iboHeightProgress.hidden     = NO;
+    self.m_iboHeightTag.hidden          = NO;
+    self.m_iboHeightIcon.hidden         = NO;
+    self.m_iboHeadcircleSlider.hidden   = NO;
+    self.m_iboHeadcircleTag.hidden      = NO;
+    self.m_iboHeadcircleIcon.hidden     = NO;
+    self.m_iboHeadThumb.hidden          = NO;
+    self.m_iboSaveButton.hidden         = NO;
+    self.m_iboAge.hidden                = hideAge;
+
+    return screenshot;
+}
+
+//- (void)saveHistoryRecord     //保存历史数据记录的操作
+//{
+//    UserProfile *kid = [UserList sharedInstance].currentKid;
+//    NSUInteger  uID  = kid.devMSlot;
+//    
+//    //int i = 0, j = 0;
+//    for (NSData *data in m_historyData)
+//    {
+//        COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+//        PROV2HISDATA hisData = [proPacket getHistoryData];
+//        //j++;
+//        if ((uID != hisData.userID) || (0 == hisData.year))
+//        {
+//            continue;
+//        }
+//        //i++;
+//        NSDateComponents *comps = [[NSDateComponents alloc] init];
+//        comps.year = hisData.year + 2000;
+//        comps.day  = hisData.dayOfYear;
+//        NSCalendar *calen = [NSCalendar currentCalendar];
+//        NSDate *date = [calen dateFromComponents:comps];
+//        
+//        Record *rcdItem = [kid getRecordByKey:date];
+//        if (nil == rcdItem)
+//        {
+//            rcdItem = [[Record alloc] initWithName:kid.name];
+//            rcdItem.measureDate = date;
+//            rcdItem.headCircle  = 0;
+//        }
+//        rcdItem.weight  = hisData.mtrWeight;
+//        rcdItem.weightLB = round(hisData.mtrWeight * 2.2046226f * 100.0f) / 100.0f;
+//        rcdItem.height  = hisData.mtrHeight;
+//        [kid addRecord:rcdItem];
+//    }
+//    //dbgLog(@"save %d/%d record", i, j);
+//}
+
+@end

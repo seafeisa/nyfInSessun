@@ -1,0 +1,605 @@
+//
+//  BthMgr.m
+//  ChildGrowth
+//
+//  Created by admin on 14-11-18.
+//  Copyright (c) 2014年 camry. All rights reserved.
+//
+
+#import "BthMgr.h"
+
+//extern NSMutableArray *g_bthData;
+
+@interface BthMgr ()
+{
+    CBCentralManager *m_bthCentralMgr;              // bluetooth central manager
+    CBPeripheral     *m_bthDiscoveredPeripheral;    // bluetooth peripheral(discovered)
+    NSString         *m_appointedPeripheral;
+    
+    CBUUID           *m_serviceUUID;
+    CBUUID           *m_characteristicUUID;
+    
+    BLELinkMode m_linkMode;
+    BLEScanMode m_scanMode;
+}
+@end
+
+@implementation BthMgr
+
+#pragma mark - CoreBluetooth delegate
+
+//#define PERIPHERAL_SERVICE_UUID         [CBUUID UUIDWithString:@"FFF0"]
+//#define PERIPHERAL_CHARACTERISTIC_UUID  [CBUUID UUIDWithString:@"FFF1"]
+//#define PERIPHERAL_SERVICE_UUID         [self serviceUUID]
+//#define PERIPHERAL_CHARACTERISTIC_UUID  [self characteristicUUID]
+
+// the singleton bluetooth instance.
++ (BthMgr *)sharedInstance
+{
+    static BthMgr *s_bthMgr = nil;
+
+    if (nil == s_bthMgr)
+    {
+        s_bthMgr = [[BthMgr alloc] init];
+    }
+    
+    return s_bthMgr;
+}
+
+- (id)init
+{
+    NSLog(@"68");
+    self = [super init];
+    if (self)
+    {
+        // 初始化BLE中心设备。如果需要多线程运行，创建queue
+        dispatch_queue_t bthQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        m_bthCentralMgr = [[CBCentralManager alloc] initWithDelegate:self queue:bthQueue]; //options:@{CBCentralManagerOptionShowPowerAlertKey: @YES}];
+        m_bthDiscoveredPeripheral = nil;
+        m_appointedPeripheral = nil;
+        
+        m_serviceUUID        = nil;
+        m_characteristicUUID = nil;
+        
+        self.delegate   = nil;
+        //self.dataSource = nil;
+        
+        m_linkMode = LINK_AUTO;
+        m_scanMode = SCAN_ONCE;
+    }
+    
+    return self;
+}
+
+- (void)appointPeripheralWithUUID:(NSString *)UUIDString
+{
+    m_appointedPeripheral = UUIDString;
+}
+
+//- (CBUUID *)serviceUUID
+//{
+//    if (nil == m_serviceUUID)
+//    {
+//        if ([self.dataSource respondsToSelector:@selector(peripheralServiceUUID)])
+//        {
+//            m_serviceUUID = [self.dataSource peripheralServiceUUID];
+//        }
+//    }
+//    return m_serviceUUID;
+//}
+
+//- (CBUUID *)characteristicUUID
+//{
+//    if (nil == m_characteristicUUID)
+//    {
+//        if ([self.dataSource respondsToSelector:@selector(peripheralCharacteristicUUID)])
+//        {
+//            m_characteristicUUID = [self.dataSource peripheralCharacteristicUUID];
+//        }
+//    }
+//    return m_characteristicUUID;
+//}
+
+// 蓝牙状态更新
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    dbgLog(@"Central manager state: %d", (int)central.state);
+    
+    switch (central.state)
+    {
+        case CBCentralManagerStatePoweredOn:
+            // 扫描外设
+            [self startScan];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+// 开始扫描
+- (void)startScan
+{
+    if (CBCentralManagerStatePoweredOn != m_bthCentralMgr.state)
+    {
+        return;
+    }
+    
+    dbgLog(@"start scaning...");
+    m_bthDiscoveredPeripheral = nil;
+    [m_bthCentralMgr scanForPeripheralsWithServices:@[PERIPHERAL_SERVICE_UUID]
+                                            options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @YES}];
+}
+
+- (void)keepScannig
+{
+    m_scanMode = SCAN_ALWAYS;
+    
+    [self startScan];
+}
+
+- (void)stopScan
+{
+    m_scanMode = SCAN_ONCE;
+    
+    if (CBCentralManagerStatePoweredOn != m_bthCentralMgr.state)
+    {
+        return;
+    }
+    
+    dbgLog(@"stop scaning.");
+    [m_bthCentralMgr stopScan];
+}
+
+// 发现外设
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
+{
+    if (![peripheral.name isEqualToString:PERIPHERAL_DEVICE_NAME])
+    {
+        return;
+    }
+    
+    dbgLog(@"发现外设 %@, RSSI:%@", peripheral.name, RSSI);
+    if (SCAN_ALWAYS == m_scanMode)
+    {
+        // 在主线程更新数据
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.delegate respondsToSelector:@selector(bluetoothDidDiscoverPeripheral:RSSI:)])
+            {
+                [self.delegate bluetoothDidDiscoverPeripheral:peripheral RSSI:RSSI];
+            }
+        });
+
+        return;
+    }
+    
+    if ((nil != m_appointedPeripheral) && ![peripheral.identifier.UUIDString isEqualToString:m_appointedPeripheral])
+    {
+        // 不是指定的外设
+        return;
+    }
+    
+    // 停止扫描
+    [self stopScan];
+    
+    if (m_bthDiscoveredPeripheral != peripheral)
+    {
+        m_bthDiscoveredPeripheral = peripheral;
+    }
+    
+    // 连接外设
+    [self connect];
+}
+
+// 连接外设
+- (void)connect
+{
+    if (nil == m_bthDiscoveredPeripheral)
+    {
+        // 没有外设重新扫描
+        [self startScan];
+        return;
+    }
+    
+    if (CBPeripheralStateConnected == m_bthDiscoveredPeripheral.state)
+    {
+        // 已连接直接退出
+        return;
+    }
+    
+    dbgLog(@"connecting...");
+    // option 可弹出事件提示
+    [m_bthCentralMgr connectPeripheral:m_bthDiscoveredPeripheral options:nil];
+    
+    m_linkMode = LINK_AUTO;
+}
+
+// 连接成功
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
+{
+    dbgLog(@"已连接外设 %@", peripheral.name);
+    
+    // 停止扫描
+    //[self stopScan];
+    
+    // 查询服务
+    [self checkServices];
+}
+
+// 连接失败
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    dbgLog(@"连接 %@ 失败，原因：%@", peripheral.name, [error localizedDescription]);
+    [self disconnect];
+    
+    dbgLog(@"重新扫描");
+    [self startScan];
+    //dbgLog(@"重新连接");
+    //[self connect];
+}
+
+// 外设连接断开
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    if (error)
+    {
+        //dbgLog(@"failed disconnecting with %@, error: %@", peripheral.name, [error localizedDescription]);
+        //return;
+    }
+    
+    dbgLog(@"外设 %@ 已断开: %@", peripheral.name, [error localizedDescription]);
+    //self.m_bthDiscoveredPeripheral = nil;
+
+    if (LINK_MANUAL == m_linkMode)
+    {
+        return;
+    }
+    //dbgLog(@"重新连接");
+    //[self connect];
+    
+    dbgLog(@"重新扫描");
+    [self startScan];
+}
+
+// 断开连接
+- (void)disconnect
+{
+    if (CBPeripheralStateDisconnected == m_bthDiscoveredPeripheral.state)
+    {
+        // 没有连接直接退出
+        return;
+    }
+    
+    // 停止接收特征通知
+    [self setNotify:NO];
+    
+    // 断开连接
+    dbgLog(@"peripheral disconnected!");
+    [m_bthCentralMgr cancelPeripheralConnection:m_bthDiscoveredPeripheral];
+}
+
+// 停止连接，等待发起主动连接
+- (void)stopConnect
+{
+    [self disconnect];
+    
+    m_linkMode = LINK_MANUAL;
+}
+
+// 停止接收特征通知
+- (void)setNotify:(BOOL)enabled
+{
+    // 判断是否已经预定了特征
+    if (nil == m_bthDiscoveredPeripheral.services)
+    {
+        return;
+    }
+    
+    // 遍历服务
+    for (CBService *service in m_bthDiscoveredPeripheral.services)
+    {
+        if (nil == service.characteristics)
+        {
+            continue;
+        }
+        
+        // 遍历特征
+        for (CBCharacteristic *characteristic in service.characteristics)
+        {
+            if ((![characteristic.UUID isEqual:PERIPHERAL_CHARACTERISTIC_UUID])
+                || (!characteristic.isNotifying))
+            {
+                continue;
+            }
+            
+            // 停止接收特征通知
+            [m_bthDiscoveredPeripheral setNotifyValue:enabled forCharacteristic:characteristic];
+        }
+    }
+}
+
+// 查询服务
+- (void)checkServices
+{
+    dbgLog(@"discovering services...");
+    
+    // 外设对象委托到本地
+    //peripheral.delegate = self;
+    m_bthDiscoveredPeripheral.delegate = self;
+    
+    // 查询服务
+    //[peripheral discoverServices:@[[CBUUID UUIDWithString:PERIPHERAL_SERVICE_UUID]]];
+    [m_bthDiscoveredPeripheral discoverServices:@[PERIPHERAL_SERVICE_UUID]];
+}
+
+// 发现服务
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
+{
+    if (error)
+    {
+        dbgLog(@"Error discovering services: %@", [error localizedDescription]);
+        [self disconnect];
+        return;
+    }
+    
+    for (CBService *service in peripheral.services)
+    {
+        dbgLog(@"发现服务 %@", service.UUID);
+        
+        if (![service.UUID isEqual:PERIPHERAL_SERVICE_UUID])
+        {
+            continue;
+        }
+        
+        // 查询特征
+        dbgLog(@"discovering characteristics...");
+        [m_bthDiscoveredPeripheral discoverCharacteristics:@[PERIPHERAL_CHARACTERISTIC_UUID] forService:service];
+        //[m_bthDiscoveredPeripheral discoverCharacteristics:nil forService:service]; // all of the Characteristics
+    }
+}
+
+// 发现特征
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
+{
+    if (error)
+    {
+        dbgLog(@"Error discovering characteristics: %@", [error localizedDescription]);
+        [self disconnect];
+        return;
+    }
+    
+    if (![service.UUID isEqual:PERIPHERAL_SERVICE_UUID])
+    {
+        return;
+    }
+    
+    for (CBCharacteristic *characteristic in service.characteristics)
+    {
+        dbgLog(@"发现特征 %@", characteristic.UUID);
+        
+        if (![characteristic.UUID isEqual:PERIPHERAL_CHARACTERISTIC_UUID])
+        {
+            continue;
+        }
+        
+        // 预定特征通知
+        dbgLog(@"set characteristic notify ok");
+        [m_bthDiscoveredPeripheral setNotifyValue:YES forCharacteristic:characteristic];
+    }
+}
+
+// 特征状态更新通知
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    if (error)
+    {
+        dbgLog(@"Error changing notification state: %@", [error localizedDescription]);
+        //return;
+    }
+    
+    if (![characteristic.UUID isEqual:PERIPHERAL_CHARACTERISTIC_UUID])
+    {
+        return;
+    }
+    
+    if (characteristic.isNotifying)
+    {
+        dbgLog(@"特征通知启动 %@", characteristic);
+        //[peripheral readValueForCharacteristic:characteristic];
+        
+//        [self sendMSG:[COMMprotocol makeSyncTimeSIG]];
+//
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            if ([self.delegate respondsToSelector:@selector(bluetoothDidConnectPeripheral:)])
+//            {
+//                [self.delegate bluetoothDidConnectPeripheral:peripheral];
+//            }
+//        });
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.delegate respondsToSelector:@selector(bluetoothDidConnectPeripheral:)])
+            {
+                [self.delegate bluetoothDidConnectPeripheral:peripheral];
+            }
+        });
+    }
+    else
+    {
+        dbgLog(@"特征通知停止 %@", characteristic);
+        [self disconnect];
+    }
+}
+
+// 特征值更新通知
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+//    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:characteristic.value];
+//    if (![proPacket isSignalIllegal])
+//    {
+//        dbgLog(@"SIG data:%@",characteristic.value);
+//    }
+
+    if (error)
+    {
+        dbgLog(@"Error updating data: %@", [error localizedDescription]);
+        return;
+    }
+    
+//    [self parseDataPacket:characteristic.value];
+//    [self parseSignalMsg:characteristic.value];
+    
+    NSData *bleData = [NSData dataWithData:characteristic.value];
+    // 在主线程更新数据
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.delegate respondsToSelector:@selector(bluetoothDidReceiveData:)])
+        {
+            [self.delegate bluetoothDidReceiveData:bleData];
+        }
+    });
+}
+
+// 发送消息
+- (void)sendMSG:(NSData *)data
+{
+    if ((nil == m_bthDiscoveredPeripheral) || (CBPeripheralStateConnected != m_bthDiscoveredPeripheral.state))
+    {
+        return;
+    }
+    
+    CBCharacteristic * writeCharacteristic = nil;
+    for (CBService *service in m_bthDiscoveredPeripheral.services)
+    {
+        if (![service.UUID isEqual:PERIPHERAL_SERVICE_UUID])
+        {
+            continue;
+        }
+        
+        for (CBCharacteristic *characteristic in service.characteristics)
+        {
+            if ([characteristic.UUID isEqual:PERIPHERAL_CHARACTERISTIC_UUID])
+            {
+                writeCharacteristic = characteristic;
+                break;
+            }
+        }
+    }
+    
+    if (nil == writeCharacteristic)
+    {
+        return;
+    }
+    
+    [m_bthDiscoveredPeripheral writeValue:data
+                        forCharacteristic:writeCharacteristic
+                                     type:CBCharacteristicWriteWithoutResponse];
+    dbgLog(@"send:%@",data);
+    //dbgLog(@"send:%@ to %@",data,writeCharacteristic);
+
+    //[NSThread sleepForTimeInterval:2];
+}
+
+//{    // 校验数据有效性
+//    if (PROV0_PKT_LEN > [characteristic.value length])
+//    {
+//        dbgLog(@"invalid data: %@", characteristic.value);
+//        return;
+//    }
+    
+    // 接收数据
+    //[m_bthData appendData:characteristic.value];
+    
+    //dbgLog(@"Received: %@", characteristic.value);
+    
+//    ushort usWeight = 0;
+//    [characteristic.value getBytes:&usWeight range:NSMakeRange(2, 2)];
+//    usWeight = ntohs(usWeight);
+    
+    //dispatch_async(dispatch_get_main_queue(), ^{
+        // 在主线程更新ui
+        //self.m_iboLableWeight.text = [NSString stringWithFormat:METER_FORMAT, ((float)usWeight/10)];
+        //self.m_iboLableHeight.text = [NSString stringWithFormat:METER_FORMAT, 80.0];
+        //self.m_iboLableBMI.text    = [NSString stringWithFormat:METER_FORMAT, ((float)usWeight/10/pow(0.8, 2))];
+    //});
+    
+    //[self saveData:usWeight];
+    
+    //Byte data[PROV0_PKT_LEN] = {0};
+    //[characteristic.value getBytes:data length:PROV0_PKT_LEN];
+    //dbgLog(@"%x %x %x %x %x %x %x %x, weight: %d",
+    //       data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], usWeight);
+//}
+
+//- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+//{
+//    dbgLog(@"did write data to service:%@ character:%@, err: %@", characteristic.service.UUID, characteristic.UUID, [error localizedDescription]);
+//}
+
+//- (void)parseDataPacket:(NSData *)data
+//{
+//    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+//    if ([proPacket isPacketIllegal])
+//    {
+//        return;
+//    }
+//    
+//    if ([proPacket isImmediateData])
+//    {
+//        PROV2IMDATA imData = [proPacket getImmediateData];
+//        // 在主线程更新数据
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if ([self.delegate respondsToSelector:@selector(bluetoothDidReceiveIMData:)])
+//            {
+//                [self.delegate bluetoothDidReceiveIMData:imData];
+//            }
+//        });
+//    }
+//    else if ([proPacket isHistoryData])
+//    {
+//        dbgLog(@"history data:%@",data);
+//        PROV2HISDATA hisData = [proPacket getHistoryData];
+//        // 在主线程更新数据
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if ([self.delegate respondsToSelector:@selector(bluetoothDidReceiveHisData:)])
+//            {
+//                [self.delegate bluetoothDidReceiveHisData:hisData];
+//            }
+//        });
+//    }
+//}
+
+//- (void)parseSignalMsg:(NSData *)data
+//{
+//    COMMprotocol *proPacket = [[COMMprotocol alloc] initWithPacket:data];
+//    if ([proPacket isSignalIllegal])
+//    {
+//        return;
+//    }
+//    dbgLog(@"SIG data:%@",data);
+//
+//    if ([proPacket isTimeSyncSIG])
+//    {
+//        dbgLog(@"sync time ack");
+//        //[self sendMSG:[COMMprotocol makeAddUserSIG:7]];
+//    }
+//    else if ([proPacket isHistorySyncSIG])
+//    {
+//        dbgLog(@"sync history ack");
+//        //[self sendMSG:[COMMprotocol makeSyncNewRecordSIG:6]];
+//    }
+//    else if ([proPacket isUserSelectSIG])
+//    {
+//        dbgLog(@"select user ack");
+//        //[self sendMSG:[COMMprotocol makeSyncAllRecordSIG:7]];
+//    }
+//    else if ([proPacket isUserAddSIG])
+//    {
+//        dbgLog(@"add user ack");
+//        //[self sendMSG:[COMMprotocol makeRemoveUserSIG:3]];
+//    }
+//    else if ([proPacket isUserRemoveSIG])
+//    {
+//        dbgLog(@"remove user ack");
+//        //[self sendMSG:[COMMprotocol makeSelectUserSIG:7]];
+//    }
+//}
+@end

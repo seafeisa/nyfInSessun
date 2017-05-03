@@ -1,0 +1,30 @@
+//
+//  Record.h
+//  ChildGrowth
+//
+//  Created by admin on 14-12-3.
+//  Copyright (c) 2014年 camry. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface Record : NSObject
+
+@property (nonatomic, strong) NSString *userName;
+@property (nonatomic, strong) NSDate    *measureDate;   // 键值，精确到天
+@property (nonatomic, assign) CGFloat   height;
+@property (nonatomic, assign) CGFloat   weight;         //kg
+@property (nonatomic, assign) CGFloat   weightLB;   //体重 单位lb
+@property (nonatomic, assign) CGFloat   weightOZ;
+@property (nonatomic, assign) CGFloat   headCircle;
+@property (nonatomic, retain) NSString *unit;           //单位kg lb oz lb:oz
+
+- (CGFloat)BMI;
+
+- (id)initWithName:(NSString *)userName;
+
+- (NSDateComponents *)ageWithBirthday:(NSDate *)birthday;
+
+- (NSComparisonResult)compareRecordByDate:(Record *)other;
+
+@end

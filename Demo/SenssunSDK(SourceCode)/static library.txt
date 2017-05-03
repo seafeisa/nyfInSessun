@@ -1,0 +1,17 @@
+/Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products
+
+
+lipo -info /Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products/Release-iphoneos/liblibBLE.a
+
+
+lipo -info /Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products/Release-iphonesimulator/liblibBLE.a
+
+
+//通过lipo -create 命令来合并2个静态库文件
+
+lipo -create /Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products/Release-iphoneos/liblibBLE.a /Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products/Release-iphonesimulator/liblibBLE.a -output /Users/macmini/Library/Developer/Xcode/DerivedData/libBLE-cmspmtyrfofivbboildgdgeaevlt/Build/Products/liblibBLE.a
+
+
+lipo -create /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos/liblibBLE.a /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/Release-iphonesimulator/liblibBLE.a -output /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/liblibBLE.a
+
+lipo -create /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/libBLE.a /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphonesimulator/libBLE.a -output /Users/macmini/Library/Developer/Xcode/DerivedData/Build/Products/libBLE.a

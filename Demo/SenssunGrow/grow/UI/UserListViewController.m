@@ -1,0 +1,475 @@
+//
+//  UserListViewController.m
+//  grow
+//
+//  Created by admin on 15-3-13.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "UserList.h"
+#import "UIBasegroundView.h"
+#import "UserProfileViewController.h"
+#import "UserListViewController.h"
+//#import "AppData.h"
+
+/*******************************************************/
+/*
+ usersCell
+ */
+/*******************************************************/
+@interface UserListViewCell ()
+
+@end
+
+@implementation UserListViewCell
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+//        _UserListViewCell.text = [AppData getString:@"onename"];
+        
+    }
+    return self;
+    
+}
+
+- (void)didMoveToSuperview
+{
+    _UserListViewCellName.text = [AppData getString:@"onename"];
+    _UserlistviewCellAddusername.text = [AppData getString:@"addUser"];
+    
+    for (id obj in self.contentView.subviews)
+    {
+        if ([obj isKindOfClass:[UIImageView class]])
+        {
+            self.leftView = obj;
+            //dbgLog(@"leftview");
+            self.leftView.layer.cornerRadius  = self.leftView.frame.size.height/2;
+            self.leftView.layer.masksToBounds = YES;
+            self.leftView.layer.borderColor   = [[UIColor whiteColor] CGColor];
+            //self.leftView.layer.borderWidth   = 1.0f;
+            self.leftView.contentMode         = UIViewContentModeScaleAspectFill;
+            self.leftView.clipsToBounds       = YES;
+        }
+        else if ([obj isKindOfClass:[UILabel class]])
+        {
+            self.title = obj;
+            //dbgLog(@"title");
+        }
+        else if ([obj isKindOfClass:[UIButton class]])
+        {
+            UIButton *btn = obj;
+            if ([btn.titleLabel.text isEqualToString:@"delete"])
+            {
+                self.rightView = obj;
+                //dbgLog(@"rightview");
+            }
+        }
+    }
+}
+
+@end
+
+
+#pragma mark -
+@interface UserListViewController ()
+
+@property (strong, nonatomic) IBOutlet UIBasegroundView *m_iboBackground;
+
+@property (strong, nonatomic) IBOutlet UITableView *m_iboTableView;
+
+@property (strong, nonatomic) IBOutlet UIButton *m_iboPortrait;
+@property (strong, nonatomic) IBOutlet UILabel *m_iboName;
+@property (strong, nonatomic) IBOutlet UILabel *m_iboGender;
+@property (strong, nonatomic) IBOutlet UILabel *m_iboAge;
+
+@end
+
+@implementation UserListViewController
+{
+    BOOL m_isEditing;
+    BOOL m_isFirstUser;
+    
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    _UserListViewUsertitle.text = [AppData getString:@"user"];
+    
+    [_UserListViewEditTitle setTitle:[AppData getString:@"editor"] forState:UIControlStateNormal];
+    
+//    [_UserListViewAddtitle setTitle:[AppData getString:@"addUser"] forState:UIControlStateNormal];
+//    NSLog(@"6666");
+    // Do any additional setup after loading the view.
+    m_isEditing = NO;
+    m_isFirstUser = NO;
+
+    if (isFirstLogin())
+    {
+        self.view.hidden = YES;
+    }
+    
+//    self.m_iboPortrait.layer.cornerRadius  = self.m_iboPortrait.frame.size.height/2;
+//    self.m_iboPortrait.layer.masksToBounds = YES;
+//    self.m_iboPortrait.layer.borderColor   = [[UIColor whiteColor] CGColor];
+//    self.m_iboPortrait.layer.borderWidth   = 2.0f;
+//    self.m_iboPortrait.contentMode         = UIViewContentModeScaleAspectFill;
+//    self.m_iboPortrait.clipsToBounds       = YES;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+//    NSLog(@"777");
+    self.view.hidden = isFirstLogin() ? YES : NO;
+    
+    [self.m_iboTableView reloadData];
+    [self.m_iboBackground updateView];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    
+//    NSLog(@"888");
+    if (isFirstLogin())
+    {
+        m_isFirstUser = YES;
+        [self performSegueWithIdentifier:SEGUE_ADD_USER sender:/*nil*/@"1stLogin"];
+        //[self presentViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileViewController"]
+        //                   animated:NO
+        //                 completion:nil];
+        
+        return;
+    }
+
+    if (m_isFirstUser)
+    {
+        [self backToPreView:/*nil*/@"uerAdded"];
+        return;
+    }
+    
+    // list current user
+//    NSInteger row = [[UserList sharedInstance] rowForCurrentKid];
+//    if (NSNotFound == row)
+//    {
+//        self.m_iboPortrait.superview.hidden = YES;
+//        return;
+//    }
+    
+//    NSUInteger cnt = [[UserList sharedInstance].kidsArray count];
+//    for (NSUInteger i = 0; i < cnt; i++)
+//    {
+//        NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+//        UserListViewCell *cell = (id)[self.m_iboTableView cellForRowAtIndexPath:index];
+//        [cell.rightView setImage:[UIImage imageNamed:IMG_BTN_DEL_LIGHT] forState:UIControlStateNormal];
+//    }
+//    
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+//    [self.m_iboTableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+//    [self tableView:self.m_iboTableView didSelectRowAtIndexPath:indexPath];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"999");
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+
+    //dbgLog(@"segue:%@ sender:%@", segue.identifier, sender);
+    if ([segue.identifier isEqualToString:SEGUE_ADD_USER])
+    {
+        UserProfileViewController *destVC = [segue destinationViewController];
+        destVC.accessMode = ACCESS_MODE_CREATE;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_EDIT_USER])
+    {
+        UserProfileViewController *destVC = [segue destinationViewController];
+        destVC.accessMode = ACCESS_MODE_UPDATE;
+
+        UIButton *infoBtn = sender;
+        CGRect rect = [sender convertRect:infoBtn.bounds toView:self.m_iboTableView];
+        NSIndexPath *indexPath = [self.m_iboTableView indexPathForRowAtPoint:rect.origin];
+        [[UserList sharedInstance] setCurrentKidForRow:indexPath.row];
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_GOGOGO])
+    {
+    }
+}
+
+- (IBAction)backToPreView:(id)sender
+{
+    
+//    NSLog(@"10");
+    [self dismissViewControllerAnimated:NO completion:^{}];
+}
+
+- (IBAction)onTapPortrait:(id)sender
+{
+//    NSLog(@"11");
+    [self goMeterView];
+}
+
+- (void)goMeterView
+{
+//    NSLog(@"12");
+    UIViewController *parentVC = self.presentingViewController;
+    // close current view
+    [self dismissViewControllerAnimated:NO completion:
+     ^{
+        // prensent new view
+        [parentVC presentViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"MeterViewController"]
+                               animated:NO
+                             completion:^{}];
+      }
+    ];
+}
+
+#pragma mark - Table view data source
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    //NSArray *array = @[@"01",@"02",@"03"];
+    //return [array count];
+    return [[UserList sharedInstance].kidsArray count] + 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    NSLog(@"13");
+    NSInteger maxRow = [[UserList sharedInstance].kidsArray count];
+    NSString *reuseIdentifier = (indexPath.row < maxRow) ? @"usersCell" : @"addCell";
+    UserListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
+    // Configure the cell...
+    if (cell == nil)
+    {
+        cell = [[UserListViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    }
+    
+    if (indexPath.row < maxRow)
+    {
+        UserProfile *kid = [[UserList sharedInstance] kidForRow:indexPath.row];
+        cell.title.text = kid.name;
+        
+        UIImage *image = [kid portraitImage];
+        if (kid.isDefaultPortrait)
+        {
+            image = [kid defaultPortrait:ICON_SIZE_S];
+        }
+        cell.leftView.image = image;
+        
+        cell.rightView.hidden = m_isEditing ? NO : YES;
+    }
+
+    return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger maxRow = [[UserList sharedInstance].kidsArray count];
+    return (indexPath.row < maxRow) ? YES : NO;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    NSLog(@"14");
+    switch (editingStyle)
+    {
+        case UITableViewCellEditingStyleNone:
+            break;
+        
+        case UITableViewCellEditingStyleDelete:
+            [self deleteUserWithRowIndex:indexPath.row];
+            break;
+            
+        case UITableViewCellEditingStyleInsert:
+            break;
+            
+        default:
+            break;
+    }
+    //[tableView reloadData];
+}
+
+#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    NSLog(@"15");
+    if (m_isEditing)
+    {
+        return;
+    }
+
+    NSInteger maxRow = [[UserList sharedInstance].kidsArray count];
+    if (indexPath.row >= maxRow)
+    {
+        [self performSegueWithIdentifier:SEGUE_ADD_USER sender:@"addCell"];
+        return;
+    }
+
+    // 设置当前用户
+    [[UserList sharedInstance] setCurrentKidForRow:indexPath.row];
+
+    // 用户面板
+//    UserProfile *kid = [[UserList sharedInstance] kidForRow:indexPath.row];
+//    self.m_iboName.text   = ;
+//    self.m_iboGender.text = [UserProfile titleOfGender:kid.gender];
+//    self.m_iboAge.text    = [kid ageOnDate:[NSDate date]];
+//    
+//    UIImage *image = [kid portraitImage];
+//    if (kid.isDefaultPortrait)
+//    {
+//        image = [kid defaultPortrait:ICON_SIZE_L];
+//    }
+//    [self.m_iboPortrait setImage:image forState:UIControlStateNormal];
+    
+    [self.m_iboBackground updateView];
+    
+    // cell
+    //UserListViewCell *cell = (id)[tableView cellForRowAtIndexPath:indexPath];
+    //[cell.rightView setImage:[UIImage imageNamed:IMG_BTN_DEL_DARK] forState:UIControlStateNormal];
+
+    [self goMeterView];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // cell
+    //UserListViewCell *cell = (id)[tableView cellForRowAtIndexPath:indexPath];
+    //[cell.rightView setImage:[UIImage imageNamed:IMG_BTN_DEL_LIGHT] forState:UIControlStateNormal];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [AppData getString:@"delete"];//LOCALSTR_DELETE;
+}
+
+#pragma mark - UIAlertView Delegate
+// 响应警告框事件
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+//    NSLog(@"16");
+    // 取消
+    if (buttonIndex == alertView.cancelButtonIndex)
+    {
+        return;
+    }
+    
+    NSInteger rowToDelete = alertView.tag;
+    [self deleteUserWithRowIndex:rowToDelete];
+}
+
+#pragma mark - Action
+- (IBAction)onToggleEditMode:(UIButton *)sender
+{
+//    NSLog(@"17");
+    if (m_isEditing)
+    {
+        m_isEditing = NO;
+        [sender setTitle:[AppData getString:@"editor"]/*LOCALSTR_EDIT*/ forState:UIControlStateNormal];
+        //[self.m_iboTableView setEditing:NO animated:YES];
+    }
+    else
+    {
+        m_isEditing = YES;
+        [sender setTitle:[AppData getString:@"done"]/*LOCALSTR_DONE*/ forState:UIControlStateNormal];
+        //[self.m_iboTableView setEditing:YES animated:YES];
+    }
+    
+    // refresh view
+    [self.m_iboTableView reloadData];
+}
+
+- (IBAction)onDeleteUser:(UIButton *)sender
+{
+//    NSLog(@"18");
+    if (!m_isEditing)
+    {
+        return;
+    }
+    
+    CGRect rect = [sender convertRect:sender.bounds toView:self.m_iboTableView];
+    NSIndexPath *indexPath = [self.m_iboTableView indexPathForRowAtPoint:rect.origin];
+    //dbgLog(@"delete index:%ld", (long)indexPath.row);
+    
+    // make item selected
+    //[self.m_iboTableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    //[self tableView:self.m_iboTableView didSelectRowAtIndexPath:indexPath];
+    
+    // 提示删除
+    
+    NSString *alertDelete = [AppData getString:@"delete"];
+    NSString *userTips = [AppData getString:@"deletecurrenusr"];
+    NSString *alertCancel = [AppData getString:@"cancel"];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertDelete/*LOCALSTR_ALERT_DEL*/
+                                                    message:userTips/*LOCALSTR_DEL_USER_TIPS*/
+                                                   delegate:self
+                                          cancelButtonTitle:alertCancel/*LOCALSTR_CANCEL*/
+                                          otherButtonTitles:alertDelete/*LOCALSTR_DELETE*/, nil];
+    // 标识待删除对象
+    alert.tag = indexPath.row;
+    [alert show];
+}
+
+#pragma mark - Utilities
+- (void)deleteUserWithRowIndex:(NSInteger)rowToDelete
+{
+//    NSLog(@"19");
+    NSInteger rowForCurrentKid = [[UserList sharedInstance] rowForCurrentKid];
+    // Delete row from tableview datasource
+    [[UserList sharedInstance] rmvKidForRow:rowToDelete];
+    //dbgLog(@"delete index:%ld", (long)rowToDelete);
+    
+    // refresh view
+    [self.m_iboTableView reloadData];
+    
+    if (0 != [[UserList sharedInstance].kidsArray count])
+    {
+        // set current user
+        //NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        //[self.m_iboTableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+        //[self tableView:self.m_iboTableView didSelectRowAtIndexPath:indexPath];
+        if (rowToDelete == rowForCurrentKid)
+        {
+            [[UserList sharedInstance] setCurrentKidForRow:0];
+            [self.m_iboBackground updateView];
+        }
+    }
+    else
+    {
+        [self performSegueWithIdentifier:SEGUE_ADD_USER sender:@"noUser"];
+    }
+}
+
+@end
+
+

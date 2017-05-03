@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>0pT-MF-5s2.normalTitle</key>
+	<string>Edit</string>
+	<key>2Ao-JH-86I.normalTitle</key>
+	<string>Done</string>
+	<key>2JO-Im-Qvk.normalTitle</key>
+	<string>Camera</string>
+	<key>2R8-H2-CPl.text</key>
+	<string>2015年3月</string>
+	<key>2RE-Zt-7yE.placeholder</key>
+	<string>Date of Birth</string>
+	<key>3GS-uQ-qun.text</key>
+	<string>cm</string>
+	<key>3iy-sj-2Y2.text</key>
+	<string>Detail</string>
+	<key>3qq-IZ-ToA.text</key>
+	<string>User</string>
+	<key>4mY-qG-NsY.normalTitle</key>
+	<string>Write a diary</string>
+	<key>4qt-P2-7vT.normalTitle</key>
+	<string>Select all</string>
+	<key>5vu-Qv-9fS.text</key>
+	<string>Detail</string>
+	<key>5wA-0D-xvN.normalTitle</key>
+	<string>Save</string>
+	<key>6Aj-AA-XSL.text</key>
+	<string>25.000</string>
+	<key>6TC-7e-8TK.text</key>
+	<string>Height</string>
+	<key>6fe-OL-E0U.text</key>
+	<string>Diary</string>
+	<key>706-TH-Xwp.normalTitle</key>
+	<string>UserInfo</string>
+	<key>7Fo-zo-0Tf.text</key>
+	<string>Measurements</string>
+	<key>7po-8Z-PPv.normalTitle</key>
+	<string> Add</string>
+	<key>8IR-dT-Roi.normalTitle</key>
+	<string>Measure</string>
+	<key>8ek-06-PjK.normalTitle</key>
+	<string>Back</string>
+	<key>9wD-Am-1lC.normalTitle</key>
+	<string>Write an entry</string>
+	<key>ABR-Kw-H35.normalTitle</key>
+	<string> Add</string>
+	<key>AkN-MQ-lkr.text</key>
+	<string>Growth Curve</string>
+	<key>B4f-O7-Crg.normalTitle</key>
+	<string>All data</string>
+	<key>BMR-yg-4jq.placeholder</key>
+	<string>Theme</string>
+	<key>Bpd-4j-vZB.text</key>
+	<string>Growth Curve</string>
+	<key>ByI-Kx-QwK.normalTitle</key>
+	<string>delete</string>
+	<key>DRU-by-8uD.placeholder</key>
+	<string>Weight</string>
+	<key>Dbc-sj-J5J.text</key>
+	<string>Head size-for-age</string>
+	<key>Dki-JD-8sT.normalTitle</key>
+	<string>Delete</string>
+	<key>Dmf-LX-tqd.text</key>
+	<string>kg</string>
+	<key>Efr-EF-C0m.text</key>
+	<string>Title</string>
+	<key>FlZ-cw-F4J.text</key>
+	<string>Baby&apos;s name</string>
+	<key>G94-JQ-KTU.normalTitle</key>
+	<string>Portrait</string>
+	<key>H2E-tZ-yVa.placeholder</key>
+	<string>Gender</string>
+	<key>HWq-Hd-tWO.text</key>
+	<string>(Percentiles)</string>
+	<key>IHB-uL-VD8.normalTitle</key>
+	<string>Portrait</string>
+	<key>IId-Hq-fX8.normalTitle</key>
+	<string>Share</string>
+	<key>IY0-JZ-i0v.text</key>
+	<string>Height</string>
+	<key>Icr-Au-Wqt.title</key>
+	<string>Time</string>
+	<key>Kiv-qL-Prk.title</key>
+	<string>Confirm</string>
+	<key>LRc-2P-83X.placeholder</key>
+	<string>Time</string>
+	<key>LfE-Jc-u2u.title</key>
+	<string>Cancel</string>
+	<key>MCK-e7-W6T.normalTitle</key>
+	<string>Edit</string>
+	<key>MkU-1l-Kug.normalTitle</key>
+	<string>    EditProfile</string>
+	<key>NA2-0E-IWe.normalTitle</key>
+	<string>Back</string>
+	<key>NNz-rU-rHQ.normalTitle</key>
+	<string>GrowthCurve</string>
+	<key>NiI-aG-ngy.text</key>
+	<string>Weight-for-age</string>
+	<key>O2v-eJ-dfi.text</key>
+	<string>(Percentiles)</string>
+	<key>O7z-YV-IGh.title</key>
+	<string>Confirm</string>
+	<key>O9L-PS-vLt.normalTitle</key>
+	<string>History</string>
+	<key>Oho-4W-k6B.text</key>
+	<string>Name</string>
+	<key>PZG-FS-LOG.normalTitle</key>
+	<string>Back</string>
+	<key>QLC-Mx-VBo.placeholder</key>
+	<string>Time</string>
+	<key>QZr-AC-WsK.title</key>
+	<string>Cancel</string>
+	<key>RJL-gm-kL6.normalTitle</key>
+	<string> Add</string>
+	<key>RL5-cU-Bjf.text</key>
+	<string>(Percentiles)</string>
+	<key>RPl-5y-XrO.normalTitle</key>
+	<string> Add</string>
+	<key>Rc0-iz-HIj.text</key>
+	<string>Detail</string>
+	<key>RxA-p6-cYI.normalTitle</key>
+	<string>Users</string>
+	<key>SEX-89-P5q.normalTitle</key>
+	<string>Back</string>
+	<key>SUj-qQ-R6C.normalTitle</key>
+	<string>Change cover</string>
+	<key>TNH-2M-12q.normalTitle</key>
+	<string>Home</string>
+	<key>TO2-9R-0Pb.text</key>
+	<string>Age</string>
+	<key>TOI-f4-hCF.normalTitle</key>
+	<string>Back</string>
+	<key>UeH-EO-AGQ.text</key>
+	<string>Edit</string>
+	<key>Ukc-ty-oGL.title</key>
+	<string>Confirm</string>
+	<key>Uks-os-Wwe.placeholder</key>
+	<string>Name</string>
+	<key>Uo0-7Q-cAX.title</key>
+	<string>Cancel</string>
+	<key>Utj-A3-1fR.text</key>
+	<string>Head Circumference</string>
+	<key>VFL-QY-qbk.text</key>
+	<string>Gender</string>
+	<key>VhV-9a-CzT.normalTitle</key>
+	<string>Home</string>
+	<key>WHl-cS-Ge0.normalTitle</key>
+	<string>Back</string>
+	<key>WYw-NG-IWF.text</key>
+	<string>2015年3月</string>
+	<key>Xhv-Bh-SHC.title</key>
+	<string>Confirm</string>
+	<key>Y6r-zz-6M8.placeholder</key>
+	<string>User No.</string>
+	<key>YAT-2K-wuR.text</key>
+	<string>Weight-for-age</string>
+	<key>YQz-uH-ay8.normalTitle</key>
+	<string>Back</string>
+	<key>aSD-fA-uxf.text</key>
+	<string>Diary</string>
+	<key>baN-hq-QoC.text</key>
+	<string>(Percentiles)</string>
+	<key>bbq-XQ-NlF.text</key>
+	<string>Add user</string>
+	<key>bgw-2s-HGW.text</key>
+	<string>Weight-for-length</string>
+	<key>cqM-u8-8VU.placeholder</key>
+	<string>Height</string>
+	<key>eRk-ia-iBD.normalTitle</key>
+	<string>Edit</string>
+	<key>eTj-HX-cIx.normalTitle</key>
+	<string>Diary</string>
+	<key>epR-rx-cl3.text</key>
+	<string>Diary</string>
+	<key>eqU-Uf-AiI.text</key>
+	<string>Senssun Scale</string>
+	<key>fZO-I2-wq5.text</key>
+	<string>kg</string>
+	<key>gCd-HQ-ttO.title</key>
+	<string>Gender</string>
+	<key>gCn-ba-5ab.text</key>
+	<string>Write a diary</string>
+	<key>h2Q-jr-GBI.normalTitle</key>
+	<string>Home</string>
+	<key>hW8-oC-flX.title</key>
+	<string>Date of Birth</string>
+	<key>hXk-KN-IqZ.text</key>
+	<string>cm</string>
+	<key>hm4-wg-4F2.text</key>
+	<string>Copyright © 2015 Senssun. All Rights Reserved.</string>
+	<key>hpX-2z-R5o.text</key>
+	<string>Name</string>
+	<key>ipb-Bd-w2w.text</key>
+	<string>SenssunBaby</string>
+	<key>jWm-Vi-Xmd.text</key>
+	<string>Baby profile</string>
+	<key>jde-hr-tym.text</key>
+	<string>Settings</string>
+	<key>k2I-8l-kfs.placeholder</key>
+	<string>Diary</string>
+	<key>kAA-56-Ytv.text</key>
+	<string>Diary</string>
+	<key>kPz-fj-c1a.text</key>
+	<string>Growth Curve</string>
+	<key>kvL-su-s5d.text</key>
+	<string>Settings</string>
+	<key>l5R-fB-jZf.normalTitle</key>
+	<string>Done</string>
+	<key>lZD-yz-fRR.normalTitle</key>
+	<string>Home</string>
+	<key>lct-xK-tby.text</key>
+	<string>Add data</string>
+	<key>m2v-EW-Bo8.text</key>
+	<string>(Percentiles)</string>
+	<key>mNv-Yj-f7l.normalTitle</key>
+	<string>Back</string>
+	<key>mnb-wz-929.placeholder</key>
+	<string>Set cover</string>
+	<key>mze-hK-n6A.text</key>
+	<string>No diary entries</string>
+	<key>nEa-88-e6r.text</key>
+	<string>Title</string>
+	<key>njf-eT-kNR.title</key>
+	<string>Time</string>
+	<key>ntg-7N-W8r.normalTitle</key>
+	<string>Settings</string>
+	<key>nwP-MW-1C2.normalTitle</key>
+	<string>Home</string>
+	<key>o4d-2q-CsF.normalTitle</key>
+	<string>Done</string>
+	<key>oDH-60-Hru.text</key>
+	<string>Devices</string>
+	<key>oTK-UR-vrY.title</key>
+	<string>Confirm</string>
+	<key>p3U-wO-FNH.text</key>
+	<string>Title</string>
+	<key>pHg-gu-pUe.normalTitle</key>
+	<string>Select all</string>
+	<key>ptG-9W-4hE.normalTitle</key>
+	<string>Delete</string>
+	<key>q93-8d-28E.text</key>
+	<string>Measurements</string>
+	<key>qEY-28-hQu.text</key>
+	<string>Height-for-age</string>
+	<key>qSR-Tj-ipa.placeholder</key>
+	<string>Select month</string>
+	<key>qUk-Ks-6CR.text</key>
+	<string>Title</string>
+	<key>rnu-NW-56F.text</key>
+	<string>Data synching...</string>
+	<key>spa-CF-hBJ.normalTitle</key>
+	<string>Back</string>
+	<key>ssC-th-AEF.text</key>
+	<string>About</string>
+	<key>sui-mN-196.text</key>
+	<string>Title</string>
+	<key>tJe-UI-EYI.normalTitle</key>
+	<string>Home</string>
+	<key>tgE-9C-EA9.text</key>
+	<string>User</string>
+	<key>tp6-Jm-Kr2.text</key>
+	<string>Weight</string>
+	<key>uAA-hb-UXh.placeholder</key>
+	<string>Head Size</string>
+	<key>uZ1-8R-mju.normalTitle</key>
+	<string>All data</string>
+	<key>wBy-cj-Cvd.title</key>
+	<string>Cancel</string>
+	<key>wU0-wi-k7w.title</key>
+	<string>Cancel</string>
+	<key>wbN-AL-Myu.normalTitle</key>
+	<string>Exit</string>
+	<key>xgh-IF-dwc.normalTitle</key>
+	<string>Done</string>
+	<key>yW7-ik-z0E.text</key>
+	<string>Head Circumference</string>
+	<key>yY5-jg-chM.title</key>
+	<string>Time</string>
+</dict>
+</plist>

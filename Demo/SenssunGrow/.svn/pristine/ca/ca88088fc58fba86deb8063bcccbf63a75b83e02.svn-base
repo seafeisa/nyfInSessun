@@ -1,0 +1,23 @@
+//
+//  UserListViewController.h
+//  grow
+//
+//  Created by admin on 15-3-13.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface UserListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
+
+
+@end
+
+
+@interface UserListViewCell : UITableViewCell
+
+@property (strong, nonatomic) UIImageView *leftView;
+@property (strong, nonatomic) UILabel     *title;
+@property (strong, nonatomic) UIButton    *rightView;
+
+@end

@@ -1,0 +1,172 @@
+//
+//  SettingTwoViewController.m
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/22.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import "SettingTwoViewController.h"
+#import "Common.h"
+#import "SettingThreeViewController.h"
+#import "Masonry.h"
+
+@interface SettingTwoViewController ()
+
+@end
+
+@implementation SettingTwoViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+  
+    //设置左上角button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [button setImage:[UIImage imageNamed:@"3"] forState:UIControlStateNormal];
+    
+    button.frame = CGRectMake(0, 0, 28 , 18);
+    [button addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:button];
+    
+    //设置字体颜色
+    UILabel *navTitle = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 44)];
+    navTitle.text = @"计价称A";
+    navTitle.textAlignment = NSTextAlignmentCenter;
+    navTitle.textColor = [UIColor whiteColor];
+    self.navigationItem.titleView = navTitle;
+    
+    //设置与导航栏的距离
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = NO;
+        self.modalPresentationCapturesStatusBarAppearance = NO;
+    
+    UIView *backView = [UIView new];
+    backView.backgroundColor = CalculateColor(22, 147, 196, 215);
+    UIImageView *backImageView = [UIImageView new];
+    backImageView.image = [UIImage imageNamed:@"15"];
+    
+    UILabel *backLabel = [UILabel new];
+    NSString *labelStr =@"1234";
+    backLabel.text = [NSString stringWithFormat:@"型号：%@",labelStr];
+    backLabel.textAlignment = NSTextAlignmentCenter;
+    backLabel.textColor = [UIColor whiteColor];
+    
+    [backView addSubview:backImageView];
+    [backView addSubview:backLabel];
+    [self.view addSubview:backView];
+    
+    UILabel *nameLabel = [UILabel new];
+    NSString *nameStr =@"计价称A";
+    nameLabel.text = [NSString stringWithFormat:@"  名称：%@",nameStr];
+    nameLabel.textAlignment = NSTextAlignmentLeft;
+    nameLabel.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:nameLabel];
+    
+    UILabel *pinLabel = [UILabel new];
+    pinLabel.text = @"  品项设置";
+    pinLabel.textAlignment = NSTextAlignmentLeft;
+    pinLabel.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:pinLabel];
+    
+    UIButton *selectButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    selectButton.backgroundColor = [UIColor whiteColor];
+    [selectButton setImage:[UIImage imageNamed:@"Advance.png"] forState:UIControlStateNormal];
+    [selectButton addTarget:self action:@selector(select) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:selectButton];
+    
+    UIButton *botomone = [UIButton buttonWithType:UIButtonTypeCustom];
+    [botomone setTitle:@"解除绑定" forState:UIControlStateNormal];
+    [botomone setTitleColor:CalculateColor(216, 72, 83, 255) forState:UIControlStateNormal];
+    [botomone addTarget:self action:@selector(tieOff) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:botomone];
+   
+    [backView makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH);
+        make.height.equalTo(HEIGHT/4);
+        make.top.equalTo(self.view);
+    }];
+    
+    [backImageView makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH/4);
+        make.height.equalTo(WIDTH/4);
+        make.center.equalTo(backView);
+
+    }];
+    
+    [backLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH);
+        make.height.equalTo(10);
+        make.bottom.equalTo(backView.bottom).offset(-5);
+    }];
+    
+    [nameLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH);
+        make.height.equalTo(30);
+        make.top.equalTo(backView.bottom);
+    }];
+    
+    [pinLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH-15);
+        make.height.equalTo(25);
+        make.top.equalTo(nameLabel.bottom);
+        make.left.equalTo(self.view);
+    }];
+    
+    [selectButton makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(15);
+        make.height.equalTo(25);
+        make.top.equalTo(nameLabel.bottom);
+        make.right.equalTo(self.view);
+    }];
+    
+    [botomone makeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(WIDTH);
+        make.height.equalTo(10);
+        make.bottom.equalTo(self.view).offset(-15);
+    }];
+}
+
+- (void)tieOff {
+    
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否要解除绑定？" preferredStyle:UIAlertControllerStyleActionSheet];
+    [self presentViewController:alertVC animated:YES completion:nil];
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"解除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSLog(@"解除");
+    }]];
+    [alertVC addAction:[UIAlertAction actionWithTitle:@"不解除" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"不解除");
+    }]];
+    
+}
+
+- (void)back {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)select {
+    
+    SettingThreeViewController *three =[SettingThreeViewController new];
+    [self.navigationController pushViewController:three animated:YES];
+
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

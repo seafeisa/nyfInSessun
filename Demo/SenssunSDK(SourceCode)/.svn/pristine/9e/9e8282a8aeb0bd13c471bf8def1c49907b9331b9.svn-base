@@ -1,0 +1,165 @@
+#import "BodyMeasure.h"
+
+
+@implementation BodyMeasure
+
+@synthesize dataType;
+
+@synthesize userID;
+@synthesize deviceID;
+@synthesize deviceType;
+@synthesize bodyMassKG;
+@synthesize bodyMassLB;
+@synthesize ifStable;
+@synthesize unitID;
+
+@synthesize deviceUserID;
+@synthesize biologicalSexID;
+@synthesize age;
+@synthesize heightCM;
+@synthesize heightIN;
+@synthesize number;
+@synthesize recordDate;
+@synthesize dayInterval;
+@synthesize bodyMassIndex;
+@synthesize bodyFatPercentage;
+@synthesize hydro;
+@synthesize muscle;
+@synthesize bone;
+@synthesize kcal;
+
+@synthesize protein;
+@synthesize visceralFat;
+@synthesize cellHydro;
+@synthesize bodyAge;
+@synthesize healthScore;
+@synthesize leanBodyMass;
+
+@synthesize bcutaneousFat;
+
+@synthesize heartRate;
+@synthesize hco;
+@synthesize hci;
+@synthesize tpr;
+@synthesize hac;
+
+@synthesize overLoad;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        userID = @"";
+        deviceID = @"";
+        deviceType = -1;
+        dataType = DataTypeNone;
+        
+        bodyMassKG = -1;
+        bodyMassLB = -1;
+        ifStable = NO;
+        unitID = @"";
+
+        deviceUserID = -1;
+        biologicalSexID = -1;
+        age = -1;
+        heightCM = -1;
+        heightIN = -1;
+        number = -1;
+        recordDate = @"";
+        dayInterval = -1;
+        bodyMassIndex = -1;
+        bodyFatPercentage = -1;
+        hydro = -1;
+        muscle = -1;
+        bone = -1;
+        kcal = -1;
+        
+        protein = -1;
+        visceralFat = -1;
+        cellHydro = -1;
+        bodyAge = -1;
+        healthScore = -1;
+        leanBodyMass = -1;
+                
+        heartRate = -1;
+        hco = -1;
+        hci = -1;
+        tpr = -1;
+        hac = -1;
+        
+        overLoad = NO;
+    }
+    return self;
+}
+
+- (int)getBcutaneousFat {
+    int value = -1;
+    
+    if (visceralFat > 0) {
+        value = bodyFatPercentage - visceralFat;
+    }
+    
+    return value;
+}
+
+- (void)setBcutaneousFat:(int)bcutaneousFat {
+}
+
+- (id)copy {
+    BodyMeasure *measure = [[BodyMeasure alloc] init];
+    
+    measure.userID = userID;
+    measure.deviceID = deviceID;
+    measure.deviceType = deviceType;
+    measure.dataType = dataType;
+    
+    measure.bodyMassKG = bodyMassKG;
+    measure.bodyMassLB = bodyMassLB;
+    measure.ifStable = ifStable;
+    measure.unitID = unitID;
+    
+    measure.deviceUserID = deviceUserID;
+    measure.biologicalSexID = biologicalSexID;
+    measure.age = age;
+    measure.heightCM = heightCM;
+    measure.heightIN = heightIN;
+    measure.number = number;
+    measure.recordDate = recordDate;
+    measure.dayInterval = dayInterval;
+    measure.bodyMassIndex = bodyMassIndex;
+    measure.bodyFatPercentage = bodyFatPercentage;
+    measure.hydro = hydro;
+    measure.muscle = muscle;
+    measure.bone = bone;
+    measure.kcal = kcal;
+    
+    measure.protein = protein;
+    measure.visceralFat = visceralFat;
+    measure.cellHydro = cellHydro;
+    measure.bodyAge = bodyAge;
+    measure.healthScore = healthScore;
+    measure.leanBodyMass = leanBodyMass;
+        
+    measure.heartRate = heartRate;
+    measure.hco = hco;
+    measure.hci = hci;
+    measure.tpr = tpr;
+    measure.hac = hac;
+    
+    measure.overLoad = overLoad;
+
+    return measure;
+}
+
++ (int)getAMR:(int)bmr :(int)sportMode :(int)biologicalSexID {
+    NSArray *coeffs = nil;
+    if (biologicalSexID == GenderMale) {
+        coeffs = @[@(1.15), @(1.4), @(1.5), @(1.85), @(2.1)];
+    } else if (biologicalSexID == GenderFemale) {
+        coeffs = @[@(1.15), @(1.35), @(1.45), @(1.7), @(2.0)];
+    }
+    
+    NSNumber *number = [coeffs objectAtIndex:sportMode - 1];
+    return (int)round([number doubleValue] * bmr);
+}
+
+@end

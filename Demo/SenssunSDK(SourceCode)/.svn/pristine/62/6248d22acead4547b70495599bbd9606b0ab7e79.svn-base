@@ -1,0 +1,26 @@
+#import "SSBLEReadWriteData.h"
+
+
+@implementation SSBLEReadWriteData
+
+@synthesize data;
+@synthesize dataType;
+@synthesize maxRewriteCount;
+@synthesize readValues;
+@synthesize writeDateTime;
+@synthesize ifReply;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        data = nil;
+        dataType = -1;
+        maxRewriteCount = NSIntegerMax;
+        readValues = nil;
+        writeDateTime = -1;
+        ifReply = NO;
+    }
+    return self;
+}
+
+@end

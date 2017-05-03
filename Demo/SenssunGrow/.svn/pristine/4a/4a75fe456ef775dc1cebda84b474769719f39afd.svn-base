@@ -1,0 +1,13 @@
+//
+//  TieUpViewController.h
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/23.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface TieUpViewController : UIViewController
+
+@end

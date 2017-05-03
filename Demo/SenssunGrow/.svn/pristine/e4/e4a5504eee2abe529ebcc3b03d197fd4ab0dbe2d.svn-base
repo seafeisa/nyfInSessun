@@ -1,0 +1,29 @@
+//
+//  Utilities.h
+//  grow
+//
+//  Created by admin on 15-3-26.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface Utilities : NSObject
+
+NSString* stringFromTime(NSDate *date);
+NSString* stringFromDate(NSDate *date);
+NSDate*   dateFromString(NSString *dateString);
+NSDate*   midnightOfDate(NSDate *date);
+
+NSString* stringFromMonth(NSDate *month);
+NSDate*   monthFromString(NSString *string);
+NSDate*   monthOfDate(NSDate *date);
+
+NSDateComponents* calcAge(NSDate *birthday, NSDate *dstDate);
+
+BOOL isSameMonth(NSDate *oneDate, NSDate *otherDate);
+
+void writePlist(NSString *filename, NSDictionary *data);
+NSDictionary* readPlist(NSString *filename);
+
+@end

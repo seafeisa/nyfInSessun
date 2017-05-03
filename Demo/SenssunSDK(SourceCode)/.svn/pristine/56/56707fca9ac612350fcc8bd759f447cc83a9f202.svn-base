@@ -1,0 +1,37 @@
+#import <UIKit/UIKit.h>
+
+
+@interface MassFatClockController : UIViewController
+
+
+@property (nonatomic, assign) int deviceType;
+@property (nonatomic, copy) NSString *deviceID;
+@property (nonatomic, copy) NSString *advertiseName;
+@property (nonatomic, copy) NSString *serialNO;
+
+
+@property (nonatomic, assign) IBOutlet UILabel *lblWeightKg;
+@property (nonatomic, assign) IBOutlet UILabel *lblWeightlb;
+@property (nonatomic, assign) IBOutlet UILabel *lblStable;
+
+
+@property (nonatomic, assign) IBOutlet UILabel *lblTestFat;
+
+
+@property (nonatomic, assign) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, assign) IBOutlet UILabel *lblHistory;
+
+
+@property (nonatomic, assign) IBOutlet UIButton *button1;
+@property (nonatomic, assign) IBOutlet UIButton *button2;
+@property (nonatomic, assign) IBOutlet UIButton *button3;
+
+
+- (IBAction)backClick:(id)sender;
+- (IBAction)testFat:(id)sender;
+- (IBAction)setClock1:(id)sender;
+- (IBAction)setClock2:(id)sender;
+- (IBAction)setClock3:(id)sender;
+- (IBAction)getHistory:(id)sender;
+
+@end

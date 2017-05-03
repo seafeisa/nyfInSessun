@@ -1,0 +1,309 @@
+//
+//  AppDelegate.m
+//  grow
+//
+//  Created by admin on 15-3-3.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "AppDelegate.h"
+//#import "Fileoperator.h"
+
+#import <ShareSDK/ShareSDK.h>
+#import <ShareSDKConnector/ShareSDKConnector.h>
+
+//腾讯开放平台（对应QQ和QQ空间）SDK头文件
+#import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/QQApiInterface.h>
+
+//微信SDK头文件
+#import "WXApi.h"
+
+//新浪微博SDK头文件
+#import "WeiboSDK.h"
+//新浪微博SDK需要在项目Build Settings中的Other Linker Flags添加"-ObjC"
+
+//人人SDK头文件
+#import <RennSDK/RennSDK.h>
+
+
+@implementation AppDelegate
+
+//static enum LangueType _Langue = LangueTypeNone;
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    
+//    NSLog(@"11111");
+    // Override point for customization after application launch.
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self initializePlat];
+
+    return YES;
+}
+							
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    //dbgLog(@"applicationWillResignActive");
+    [AppData writeToFile];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    //dbgLog(@"applicationDidEnterBackground");
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    //dbgLog(@"applicationWillEnterForeground");
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    //dbgLog(@"applicationDidBecomeActive");
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    //dbgLog(@"applicationWillTerminate");
+    [AppData writeToFile];
+}
+
+//+ (enum LangueType)getLangue{
+//    NSLog(@"判断语言");
+//    if (_Langue == LangueTypeNone) {
+//        NSArray *langues = [NSLocale preferredLanguages];
+//        NSString *currentLangue = [langues objectAtIndex:0];
+//        if ([currentLangue hasPrefix:@"zh-Hans"]) {
+//            _Langue = LangueTypeCN;
+//        } else if ([currentLangue rangeOfString:@"zh-Hant"].length > 0 ||[currentLangue rangeOfString:@"zh-HK"].length > 0||[currentLangue rangeOfString:@"zh-TW"].length > 0){
+//            _Langue = LangueTypeCN;
+//        } else if ([currentLangue rangeOfString:@"ar"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"de"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"es"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"it"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"ja"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"ko"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"pt"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"ru"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"tr"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"fr"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else if ([currentLangue rangeOfString:@"en"].length > 0||[currentLangue rangeOfString:@"en-AU"].length > 0||[currentLangue rangeOfString:@"en-GB"].length > 0){
+//            _Langue = LangueTypeEN;
+//        } else {
+//            _Langue = LangueTypeEN;
+//        }
+//    }
+//    
+//    return _Langue;
+//    
+//}
+//
+//+ (NSString *)getString:(NSString *)key{
+//    NSLog(@"写入plist");
+//    [AppDelegate getLangue];
+//    NSString *filename = nil;
+//    if (_Langue == LangueTypeCN) {
+//        filename = @"CN";
+//    } else if (_Langue == LangueTypeTW){
+//        filename = @"TW";
+//    } else if (_Langue == LangueTypeEN){
+//        filename =@"EN";
+//    }
+//    //    filename = @"CN";
+//    NSString *path = [[NSBundle mainBundle]pathForResource:filename     ofType:@"plist"];
+//    NSLog(@"==%@==",[Fileoperator getResourceValue:path :key]);
+//    return [Fileoperator getResourceValue:path :key];
+//    
+//}
+
+#pragma mark - ShareSDK configuration
+- (void)initializePlat
+{
+//    NSLog(@"222222");
+    [ShareSDK registerApp:@"3df7a36158b2"
+     
+          activePlatforms:@[
+                            @(SSDKPlatformTypeSinaWeibo),
+                            @(SSDKPlatformTypeMail),
+                            @(SSDKPlatformTypeSMS),
+                            @(SSDKPlatformTypeWechat),
+                            @(SSDKPlatformTypeQQ),
+                            @(SSDKPlatformTypeRenren)]
+                 onImport:^(SSDKPlatformType platformType)
+     {
+         switch (platformType)
+         {
+             case SSDKPlatformTypeWechat:
+                 [ShareSDKConnector connectWeChat:[WXApi class]];
+                 break;
+             case SSDKPlatformTypeQQ:
+                 [ShareSDKConnector connectQQ:[QQApiInterface class] tencentOAuthClass:[TencentOAuth class]];
+                 break;
+             case SSDKPlatformTypeSinaWeibo:
+                 [ShareSDKConnector connectWeibo:[WeiboSDK class]];
+                 break;
+             case SSDKPlatformTypeRenren:
+                 [ShareSDKConnector connectRenren:[RennClient class]];
+                 break;
+             default:
+                 break;
+         }
+     }
+          onConfiguration:^(SSDKPlatformType platformType, NSMutableDictionary *appInfo)
+     {
+         
+         switch (platformType)
+         {
+             case SSDKPlatformTypeSinaWeibo:
+                 //设置新浪微博应用信息,其中authType设置为使用SSO＋Web形式授权
+                 [appInfo SSDKSetupSinaWeiboByAppKey:@"568898243"
+                                           appSecret:@"38a4f8204cc784f81f9f0daaf31e02e3"
+                                         redirectUri:@"http://www.sharesdk.cn"
+                                            authType:SSDKAuthTypeBoth];
+                 break;
+             case SSDKPlatformTypeWechat:
+                 [appInfo SSDKSetupWeChatByAppId:@"wx4868b35061f87885"
+                                       appSecret:@"64020361b8ec4c99936c0e3999a9f249"];
+                 break;
+             case SSDKPlatformTypeQQ:
+                 [appInfo SSDKSetupQQByAppId:@"100371282"
+                                      appKey:@"aed9b0303e3ed1e27bae87c33761161d"
+                                    authType:SSDKAuthTypeBoth];
+                 break;
+             case SSDKPlatformTypeRenren:
+                 [appInfo        SSDKSetupRenRenByAppId:@"226427"
+                                                 appKey:@"fc5b8aed373c4c27a05b712acba0f8c3"
+                                              secretKey:@"f29df781abdd4f49beca5a2194676ca4"
+                                               authType:SSDKAuthTypeBoth];
+                 break;
+             default:
+                 break;
+         }
+     }];
+    
+//    //初始化新浪，在http://open.weibo.com上注册新浪微博开放平台应用，此应用需要引用SinaWeiboConnection.framework
+//    [ShareSDK connectSinaWeiboWithAppKey:@"568898243"
+//                               appSecret:@"38a4f8204cc784f81f9f0daaf31e02e3"
+//                             redirectUri:@"http://www.sharesdk.cn"
+//                             //redirectUri:@"https://api.weibo.com/oauth2/default.html"
+//                             weiboSDKCls:[WeiboSDK class]];
+//    //上面的方法会首先跳转客户端，没客户端跳web.
+//    
+//    //下面这方法，如果不想用新浪客户端授权只用web的话就可以使用。
+//    //[ShareSDK connectSinaWeiboWithAppKey:<#(NSString *)#> appSecret:<#(NSString *)#> redirectUri:<#(NSString *)#>]
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化腾讯微博，在http://dev.t.qq.com上注册腾讯微博开放平台应用，此应用需要引用TencentWeiboConnection.framework
+//    [ShareSDK connectTencentWeiboWithAppKey:@"801307650"
+//                                  appSecret:@"ae36f4ee3946e1cbb98d6965b0b2ff5c"
+//                                redirectUri:@"http://www.sharesdk.cn"
+//                                //redirectUri:@"http://dev.t.qq.com"
+//                                   wbApiCls:[WeiboApi class]];
+//    /**
+//     跟新浪一样如要求只用web授权那么用下面的
+//     [ShareSDK connectTencentWeiboWithAppKey:<#(NSString *)#> appSecret:<#(NSString *)#> redirectUri:<#(NSString *)#>]
+//     **/
+//    
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化人人网，在http://dev.renren.com上注册人人网开放平台应用，此应用需要引用RenRenConnection.framework
+//    [ShareSDK connectRenRenWithAppId:@"226427"
+//                              appKey:@"fc5b8aed373c4c27a05b712acba0f8c3"
+//                           appSecret:@"f29df781abdd4f49beca5a2194676ca4"
+//                   renrenClientClass:[RennClient class]];
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化微信, http://open.weixin.qq.com上注册应用，微信开放平台上注册应用，此应用需要引用WeChatConnection.framework和微信官方SDK
+////    [ShareSDK connectWeChatWithAppId:@"wx4868b35061f87885"
+////                           appSecret:@"64020361b8ec4c99936c0e3999a9f249"
+////                           wechatCls:[WXApi class]];
+//    
+//    //如果在分享菜单中想取消微信收藏，可以初始化微信及微信朋友圈，取代上面整体初始化的方法
+//    //微信好友
+//    [ShareSDK connectWeChatSessionWithAppId:@"wx4868b35061f87885"
+//                                  appSecret:@"64020361b8ec4c99936c0e3999a9f249"
+//                                  wechatCls:[WXApi class]];
+//    //微信朋友圈
+//    [ShareSDK connectWeChatTimelineWithAppId:@"wx4868b35061f87885"
+//                                   appSecret:@"64020361b8ec4c99936c0e3999a9f249"
+//                                   wechatCls:[WXApi class]];
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化QQ,QQ空间，使用同样的key，请在腾讯开放平台上申请，注意导入头文件：
+//    /**
+//     #import <TencentOpenAPI/QQApiInterface.h>
+//     #import <TencentOpenAPI/TencentOAuth.h>
+//     **/
+//    
+//    //连接QQ应用, http://mobile.qq.com/api/上注册应用，此应用需要引用QQConnection.framework和QQApi.framework库
+//    //旧版中申请的AppId（如：QQxxxxxx类型），可以通过下面方法进行初始化
+//    //    [ShareSDK connectQQWithAppId:@"QQ075BCD15" qqApiCls:[QQApi class]];
+//    [ShareSDK connectQQWithQZoneAppKey:@"100371282"
+//                     qqApiInterfaceCls:[QQApiInterface class]
+//                       tencentOAuthCls:[TencentOAuth class]];
+//
+//    //连接QQ空间应用, http://connect.qq.com/intro/login/上申请加入QQ登录，此应用需要引用QZoneConnection.framework
+//    [ShareSDK connectQZoneWithAppKey:@"100371282"
+//                           appSecret:@"aed9b0303e3ed1e27bae87c33761161d"
+//                   qqApiInterfaceCls:[QQApiInterface class]
+//                     tencentOAuthCls:[TencentOAuth class]];
+//    //开启QQ空间网页授权开关(optional)
+//    id<ISSQZoneApp> app =(id<ISSQZoneApp>)[ShareSDK getClientWithType:ShareTypeQQSpace];
+//    [app setIsAllowWebAuthorize:YES];
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化Facebook,在https://developers.facebook.com上注册应用，此应用需要引用FacebookConnection.framework
+//    [ShareSDK connectFacebookWithAppKey:@"107704292745179"
+//                              appSecret:@"38053202e1a5fe26c80c753071f0b573"];
+//
+//    //开启Facebook网页授权开关(optional)
+//    id<ISSFacebookApp> facebookApp =(id<ISSFacebookApp>)[ShareSDK getClientWithType:ShareTypeFacebook];
+//    [facebookApp setIsAllowWebAuthorize:YES];
+//    /**---------------------------------------------------------**/
+//    
+//    //初始化Twitter,在https://dev.twitter.com上注册应用，此应用需要引用TwitterConnection.framework
+////    [ShareSDK connectTwitterWithConsumerKey:@"LRBM0H75rWrU9gNHvlEAA2aOy"
+////                             consumerSecret:@"gbeWsZvA9ELJSdoBzJ5oLKX0TU09UOwrzdGfo9Tg7DjyGuMe8G"
+////                                redirectUri:@"http://mob.com"];
+//    [ShareSDK connectTwitterWithConsumerKey:@"1dJMOpqHbtZMhuKwqC0jSKXOz"
+//                             consumerSecret:@"PzUXUxEfIA8gBfEylxaDIpRg2zcpXmaw6UElD4pjinQmOke0KG"
+//                                redirectUri:@"https://apps.twitter.com/app"];
+//    
+//    /**---------------------------------------------------------**/
+//    
+//    //连接邮件
+//    [ShareSDK connectMail];
+//    //连接短信
+//    [ShareSDK connectSMS];
+}
+
+////添加两个回调方法,return的必须要ShareSDK的方法
+//- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+//{
+//    return [ShareSDK handleOpenURL:url wxDelegate:self];
+//}
+//
+//- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+//{
+//    return [ShareSDK handleOpenURL:url sourceApplication:sourceApplication annotation:annotation wxDelegate:self];
+//}
+
+@end

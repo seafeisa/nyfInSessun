@@ -1,0 +1,68 @@
+#import "DeviceSearchCell.h"
+#import "SSBLEDevice.h"
+
+
+#define TableCellHeight 40.0f
+
+
+@interface DeviceSearchCell () {
+    UILabel *_nameLabel;
+    UILabel *_rssiLabel;
+}
+@end
+
+
+@implementation DeviceSearchCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        CGRect rect = CGRectMake(10.0, 0.0f, 300, TableCellHeight);
+        _nameLabel = [[UILabel alloc] initWithFrame:rect];
+        _nameLabel.textAlignment = NSTextAlignmentLeft;
+        _nameLabel.numberOfLines = 0;
+        _nameLabel.font = [UIFont systemFontOfSize:10.0f];
+        [self.contentView addSubview:_nameLabel];
+        
+        rect = CGRectMake(10, 0.0f, 300, TableCellHeight);
+        _rssiLabel = [[UILabel alloc] initWithFrame:rect];
+        _rssiLabel.textAlignment = NSTextAlignmentRight;
+        _rssiLabel.font = [UIFont systemFontOfSize:10.0f];
+        [self.contentView addSubview:_rssiLabel];
+
+    }
+    return self;
+}
+
+- (void)loadData:(id)obj {
+    CBPeripheral *peripheral = (CBPeripheral *)obj;
+    
+    int deviceType = peripheral.deviceType.intValue;
+    if (deviceType == SSBLESENSSUNBODY) {
+        _nameLabel.text = [NSString stringWithFormat:@"人体秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNFAT) {
+        _nameLabel.text = [NSString stringWithFormat:@"脂肪秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNHEART) {
+        _nameLabel.text = [NSString stringWithFormat:@"心率秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNEQi99) {
+        _nameLabel.text = [NSString stringWithFormat:@"EQi99: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNEQi912) {
+        _nameLabel.text = [NSString stringWithFormat:@"EQi912: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNSUPERFAT) {
+        _nameLabel.text = [NSString stringWithFormat:@"八电极: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNBODYCLOCK ||
+               deviceType == SSBLESENSSUNFATCLOCK) {
+        _nameLabel.text = [NSString stringWithFormat:@"闹钟秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNGROWTH) {
+        _nameLabel.text = [NSString stringWithFormat:@"成长秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    } else if (deviceType == SSBLESENSSUNFOOD) {
+        _nameLabel.text = [NSString stringWithFormat:@"营养秤: %@\r\nSerialNO:%@", peripheral.deviceID, peripheral.serialNO];
+    }
+    _rssiLabel.text = [NSString stringWithFormat:@"%d dBm", peripheral.newRSSI.intValue];
+}
+
++ (NSInteger)heightForCell:(id)obj {
+    return TableCellHeight;
+}
+
+@end

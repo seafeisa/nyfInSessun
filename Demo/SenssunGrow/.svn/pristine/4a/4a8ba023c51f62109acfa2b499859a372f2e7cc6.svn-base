@@ -1,0 +1,19 @@
+//
+//  RecordViewController.h
+//  grow
+//
+//  Created by admin on 15-4-22.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+//#import "Record.h"
+#import "PickerView.h"
+
+@interface RecordViewController : UIBaseListItemViewController <UITextFieldDelegate, PickerViewDelegate>
+
+//@property (nonatomic, assign) ENAccessMode accessMode;
+//@property (nonatomic, assign) NSInteger    selectedItem;     // accessMode != CREATE 时有效
+//@property (nonatomic, strong) Record       *sampleData;
+
+@end

@@ -1,0 +1,296 @@
+//
+//  DBLink.m
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/24.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import "DBLink.h"
+
+
+@implementation DBLink
+
+//统一从这里引用实例
++ (DBLink *)shareInstance{
+    
+    static DBLink * one_db = nil;
+    if(!one_db){
+        one_db = [[DBLink alloc]init];
+    }
+    
+    return one_db;
+}
+
+- (id)init
+{
+    self = [super init];
+    if(self)
+    {
+        [self DBCreateWithName:@"data.db"];
+        BOOL isOpen = [self DBOpen];
+        if (isOpen)
+        {
+            [self DBCreateTable];
+        }
+    }
+
+    return self;
+}
+
+
+#pragma mark - 数据库处理
+
+/**
+ * @brief 创建数据库
+ * @param name 数据库名称
+ * @return void
+ */
+- (void)DBCreateWithName:(NSString *) name
+{
+    if (self.m_db != nil)
+    {
+        NSLog(@"DB exist already");
+        return;
+    }
+    
+    //输出数据库路径
+    NSString *document = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *DBpath = [document stringByAppendingPathComponent:name];
+    
+    //创建数据库
+    _m_db = [FMDatabase databaseWithPath:DBpath];
+}
+
+/**
+ *打开数据库
+ */
+- (BOOL)DBOpen
+{
+    return [self.m_db open];
+}
+
+/**
+ *关闭数据库
+ */
+- (BOOL)DBClose
+{
+    
+    return [self.m_db close];
+}
+
+- (void)dealloc
+{
+    [self DBClose];
+}
+
+#pragma mark - 记录集处理
+
+/**
+ *在数据库中建表
+ */
+- (BOOL)DBCreateTable
+{
+    if (self.m_db == nil)
+    {
+        return NO;
+    }
+    
+    BOOL bRet = YES;
+
+    NSString *sql;
+    
+    //创建称体用户表
+    if (![self isTableExist:@"scales"])
+    {
+        sql = @"CREATE TABLE scales (name TEXT PRIMARY KEY NOT NULL UNIQUE, modelnum TEXT)";
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    //创建称重记录表
+    if (![self isTableExist:@"records"])
+    {
+        sql = @"CREATE TABLE records (vegenum INTERGER PRIMARY KEY NOT NULL UNIQUE, vegename TEXT)";
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    //创建蔬菜记录表
+    if (![self isTableExist:@"vegetable"])
+    {
+        sql = @"CREATE TABLE vegetable (vegenum INTERGER PRIMARY KEY NOT NULL UNIQUE, vegename TEXT)";
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    return bRet;
+}
+
+/**
+ *销毁记录表
+ */
+- (BOOL)DBDestoryTable
+{
+    if (self.m_db == nil)
+    {
+        return NO;
+    }
+    NSString *sql = @"DROP TABLE records";
+    BOOL bRet = [self.m_db executeUpdate:sql];
+    
+    sql = @"DROP TABLE scales";
+    bRet &= [self.m_db executeUpdate:sql];
+    
+    sql = @"DROP TABLE vegetable";
+    bRet &= [self.m_db executeUpdate:sql];
+
+    return bRet;
+}
+
+/**
+ *表是否存在
+ */
+- (BOOL)isTableExist:(NSString *)tableName
+{
+    NSString *sql;
+    sql = [NSString stringWithFormat:@"SELECT COUNT(*) FROM sqlite_master WHERE TYPE = 'table' AND NAME = '%@'",tableName];
+    FMResultSet *rset = [self.m_db executeQuery:sql];
+    [rset next];
+    NSInteger count = [rset intForColumnIndex:0];
+    [rset close];
+    
+    return (0 != count);
+}
+
+#pragma mark - 称体
+/**
+ *称体的增加
+ */
+- (BOOL)addScales
+{
+    if ((self.m_db == nil))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"INSERT INTO scales (name, model) VALUES(?, ?)";
+    
+    return [self.m_db executeUpdate:sql];
+}
+/**
+ *称体的删除
+ */
+- (BOOL)deleteScales:(NSString *)sname
+{
+    if ((nil == self.m_db) || (nil == sname))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"DELETE FROM scales WHERE sname = ?";
+    
+    return [self.m_db executeUpdate:sql,sname];
+}
+
+//称体有增加和删除，修改暂时空置
+- (BOOL)update
+{
+
+    return YES;
+}
+
+#pragma mark - 蔬菜
+/**
+ *增加蔬菜项
+ */
+- (BOOL)addVegetable
+{
+    if(nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"INSERT INTO vegetable (vegename, vegenum) VALUES(?, ?)";
+    
+    return [self.m_db executeUpdate:sql];
+}
+
+/**
+ *修改蔬菜项
+ */
+- (BOOL)updateVegetable
+{
+    if (nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"UPDATE vegetable SET vegename = ?, vegenum = ? WHERE vegenum = ?";
+    return [self.m_db executeUpdate:sql];
+}
+
+//暂时空置删除项
+- (BOOL)deletetwo
+{
+    
+    return YES;
+}
+
+#pragma mark - 交易流水
+/**
+ *交易的增加
+ */
+- (BOOL)addList
+{
+    if(nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"INSERT INTO vegetable (vegename, vegenum) VALUES(?, ?)";
+    
+    return [self.m_db executeUpdate:sql];
+}
+
+/**
+ *重复交易的查询结果
+ */
+- (BOOL)selectList
+{
+    if (nil == self.m_db)
+    {
+        return NO;
+    }
+    NSString *sql = @"SELECT * FROM records";
+    
+    return [self.m_db executeUpdate:sql];
+}
+
+/**
+ *重复交易的删除
+ */
+- (BOOL)deleteList:(NSDate *)time
+{
+    if ((nil == self.m_db) || (nil == time))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"DELETE FROM scales WHERE time = ?";
+    
+    return [self.m_db executeUpdate:sql,time];
+}
+
+//暂时空置
+- (BOOL)save
+{
+
+    return YES;
+}
+
+//查询每一条记录，暂时空置
+- (void)dump
+{
+
+
+}
+
+@end

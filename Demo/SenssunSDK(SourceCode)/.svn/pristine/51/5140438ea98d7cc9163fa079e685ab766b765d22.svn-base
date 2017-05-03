@@ -1,0 +1,48 @@
+#import <Foundation/Foundation.h>
+
+
+typedef NS_ENUM(int, SSBLESENSSUNFATWriteDataTypeEnum) {
+    SSBLESENSSUNFATWriteTestFat = 0x10,
+    SSBLESENSSUNFATWriteSearchHistory = 0x20,
+    SSBLESENSSUNFATWriteSearchHistory2 = 0x21,
+    SSBLESENSSUNFATWriteSyncDate = 0x30,
+    SSBLESENSSUNFATWriteSyncTime = 0x31,
+    SSBLESENSSUNFATWriteTestHeartRate = 0x40,
+    SSBLESENSSUNFATWriteExitTestHeartRate = 0x41,
+    SSBLESENSSUNFATWriteClearData = 0x50,
+    SSBLESENSSUNFATWriteTestMode = 0x5a,
+    SSBLESENSSUNFATWriteCloseScale = 0xF0
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNSUPERFATWriteDataTypeEnum) {
+    SSBLESENSSUNSUPERFATWriteTestFat = 0x10,
+    SSBLESENSSUNSUPERFATWriteTestProduct = 0x11
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNBODYCLOCKWriteDataTypeEnum) {
+    SSBLESENSSUNBODYCLOCKWriteSetting = 0x32
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNGROWTHWriteDataTypeEnum) {
+    SSBLESENSSUNGROWTHWriteUserAdd = 0x50,
+    SSBLESENSSUNGROWTHWriteUserDelete = 0x51,
+    SSBLESENSSUNGROWTHWriteUserSet = 0x52,
+    SSBLESENSSUNGROWTHWriteSyncDateTime = 0x60,
+    SSBLESENSSUNGROWTHWriteSyncDataShallow = 0x61,
+    SSBLESENSSUNGROWTHWriteSyncDataDeep = 0x6a
+};
+
+
+@interface SSBLEReadWriteData : NSObject
+
+@property (nonatomic, retain) NSData *data;
+@property (nonatomic, assign) int dataType;
+@property (nonatomic, assign) NSInteger maxRewriteCount;
+@property (nonatomic, retain) NSDictionary *readValues;
+@property (nonatomic, assign) NSInteger writeDateTime;
+@property (nonatomic, assign) BOOL ifReply;
+
+@end

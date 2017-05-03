@@ -1,0 +1,477 @@
+//
+//  DBMgr.m
+//  ChildGrowth
+//
+//  Created by admin on 14-10-15.
+//  Copyright (c) 2014年 camry. All rights reserved.
+//
+
+#import "DBMgr.h"
+
+//extern NSString *g_sandboxDir;
+
+#define LOCAL_DBF @"dbf.db"
+#define DB_TBLNAME_CHILD @"children"
+#define DB_TBLNAME_RECORD @"records"
+
+@implementation DBMgr
+
+// the singleton db instance.
+// 统一从这里引用实例
++ (DBMgr *)sharedInstance
+{
+    static DBMgr *s_dbMgr = nil;
+
+    if (nil == s_dbMgr)
+    {
+        s_dbMgr = [[DBMgr alloc] init];
+    }
+    
+    return s_dbMgr;
+}
+
+- (id)init
+{
+//    NSLog(@"69");
+    self = [super init];
+    if (self)
+    {
+        [self dbCreateWithName:LOCAL_DBF];
+        BOOL isOpen = [self dbOpen];
+        if (isOpen)
+        {
+            [self dbCreateTable];
+        }
+    }
+    
+    return self;
+}
+
+#pragma mark - 数据库处理
+
+/**
+ * @brief 创建数据库
+ * @param name 数据库名称
+ * @return void
+ */
+- (void)dbCreateWithName:(NSString *) name
+{
+    if (nil != self.m_db)
+    {
+        dbgLog(@"db exist already");
+        return;
+    }
+    
+    // 输出数据库路径
+    //NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    //NSString *dbPath = [g_sandboxDir stringByAppendingPathComponent:name];
+    NSString *dbPath = [[AppData sandboxDir] stringByAppendingPathComponent:name];
+    //dbPath = @"/Volumes/XDATA/Xproj/ChildGrowth/ChildGrowth/db/dbl.db"; // for debug
+    //dbgLog(@"db path: %@", dbPath);
+
+    // 创建数据库
+    _m_db = [FMDatabase databaseWithPath:dbPath];
+}
+
+// 打开数据库
+- (BOOL)dbOpen
+{
+    return [self.m_db open];
+}
+
+// 关闭
+- (BOOL)dbClose
+{
+    //s_dbMgr = nil;
+    
+    return [self.m_db close];
+}
+
+- (void)dealloc
+{
+    [self dbClose];
+}
+
+#pragma mark - 记录集处理
+
+/**
+ * @brief 创建数据表
+ * @param
+ * @return YES/NO
+ */
+- (BOOL)dbCreateTable
+{
+    if (nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    BOOL bRet = YES;
+    
+    NSString *sql;
+    //sql = [NSString stringWithFormat:@"SELECT COUNT(*) FROM sqlite_master WHERE TYPE = 'table' AND NAME = '%@'", @"children"];
+    //sql = @"SELECT COUNT(*) FROM sqlite_master WHERE TYPE = 'table' AND NAME = 'children'";
+    //FMResultSet *rset = [self.m_db executeQuery:sql];
+    //[rset next];
+    //NSInteger count = [rset intForColumnIndex:0];
+    //[rset close];
+    //dbgLog(@"table count %d", count);
+    
+    //if (0 == count)
+    //{
+        //dbgLog(@"table is already existed");
+        //return YES;
+        
+        //BOOL b = [self dbDestoryTable];
+        //dbgLog(@"destory %d", b);
+    //}
+    
+    // 打开外键支持
+    sql = @"PRAGMA foreign_keys=ON";
+    bRet &= [self.m_db executeUpdate:sql];
+    
+    // 创建用户表
+    if (![self isTableExisted:@"children"])
+    {
+        sql = @"CREATE TABLE children (name TEXT PRIMARY KEY NOT NULL UNIQUE, birthday DATETIME, gender INTEGER, portrait TEXT, theme INTEGER, devMemSlot INTEGER)";
+        
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    // 创建记录表
+    if (![self isTableExisted:@"records"])
+    {
+        sql = @"CREATE TABLE records (username TEXT NOT NULL, date DATETIME NOT NULL, height FLOAT, weight FLOAT, headcircle FLOAT, stand BOOLEAN, weightLB FLOAT DEFAULT 0, weightOZ FLOAT DEFAULT 0, PRIMARY KEY (username, date), UNIQUE (username, date), CONSTRAINT username FOREIGN KEY(username) REFERENCES children(name) ON DELETE CASCADE ON UPDATE CASCADE)";
+        
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    if (![self isFieldExisted:@"records" :@"weightLB"]) {
+        sql = @"ALTER TABLE records ADD COLUMN weightLB FLOAT DEFAULT 0";
+        
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    
+    if (![self isFieldExisted:@"records" :@"weightOZ"]) {
+        sql = @"ALTER TABLE records ADD COLUMN weightOZ FLOAT DEFAULT 0";
+        
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+    // 创建记录表
+    if (![self isTableExisted:@"Settings"])
+    {
+        sql = @"CREATE TABLE Settings (parameter TEXT NOT NULL PRIMARY KEY, value TEXT NOT NULL)";
+        
+        bRet &= [self.m_db executeUpdate:sql];
+    }
+
+    return bRet;
+}
+
+- (BOOL)dbDestoryTable
+{
+    if (nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"DROP TABLE children";
+    BOOL bRet = [self.m_db executeUpdate:sql];
+    
+    sql = @"DROP TABLE records";
+    bRet &= [self.m_db executeUpdate:sql];
+    
+    sql = @"DROP TABLE Settings";
+    bRet &= [self.m_db executeUpdate:sql];
+
+    return bRet;
+}
+
+- (BOOL)isTableExisted:(NSString *)tableName
+{
+    NSString *sql;
+    sql = [NSString stringWithFormat:@"SELECT COUNT(*) FROM sqlite_master WHERE TYPE = 'table' AND NAME = '%@'", tableName];
+    FMResultSet *rset = [self.m_db executeQuery:sql];
+    [rset next];
+    NSInteger count = [rset intForColumnIndex:0];
+    [rset close];
+    
+    return (0 != count);
+}
+
+- (BOOL)isFieldExisted:(NSString *)tableName :(NSString *)fieldName
+{
+    NSString *sql;
+    sql = [NSString stringWithFormat:@"SELECT sql FROM sqlite_master WHERE TYPE = 'table' AND tbl_name = '%@'", tableName];
+    FMResultSet *rset = [self.m_db executeQuery:sql];
+    [rset next];
+    sql = [rset stringForColumn:@"sql"];
+    [rset close];
+    
+    NSRange range = [sql rangeOfString:fieldName];
+    
+    return (range.length > 0);
+}
+
+#pragma mark - 用户
+/**
+ * @brief 添加一条用户记录
+ * @param user 需要添加的用户数据
+ * @return YES/NO
+ */
+- (BOOL)addUser:(UserProfile *)user
+{
+    if ((nil == self.m_db) || (nil == user))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"INSERT INTO children (name, birthday, gender, portrait, theme, devMemSlot) VALUES (?, ?, ?, ?, ?, ?)";
+    NSNumber *gender     = [NSNumber numberWithInteger:user.gender];
+    NSNumber *themeIndex = [NSNumber numberWithInteger:user.themeIndex];
+    NSNumber *devMemSlot = [NSNumber numberWithInteger:user.devMSlot];
+    
+    
+    return [self.m_db executeUpdate:sql, user.name, user.birthday, gender, user.portrait, themeIndex, devMemSlot];
+}
+
+/**
+ * @brief 删除一条用户数据
+ * @param uname 需要删除用户的名字
+ * @return YES/NO
+ */
+- (BOOL)deleteUser:(NSString *)uname
+{
+    if ((nil == self.m_db) || (nil == uname))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"DELETE FROM children WHERE name = ?";
+    
+   
+    
+    return [self.m_db executeUpdate:sql, uname];
+}
+
+/**
+ * @brief 修改用户的信息
+ * @param user 需要修改的用户信息
+ * @return YES/NO
+ */
+- (BOOL)mergeUser:(NSString *)name with:(UserProfile *)user
+{
+    if ((nil == self.m_db) || (nil == user))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"UPDATE children SET name = ?, birthday = ?, gender = ?, portrait = ?, theme = ?, devMemSlot = ? WHERE name = ?";
+    NSNumber *gender     = [NSNumber numberWithInteger:user.gender];
+    NSNumber *themeIndex = [NSNumber numberWithInteger:user.themeIndex];
+    NSNumber *devMemSlot = [NSNumber numberWithInteger:user.devMSlot];
+
+   
+    
+    return [self.m_db executeUpdate:sql, user.name, user.birthday, gender, user.portrait, themeIndex, devMemSlot, name];
+}
+
+#pragma mark - 记录
+/**
+ * @brief 添加一条测量记录
+ * @param record 需要添加的测量数据
+ * @return YES/NO
+ */
+- (BOOL)addRecord:(Record *)record
+{
+    if ((nil == self.m_db) || (nil == record))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"INSERT INTO records (username, date, height, weight, headcircle, stand, weightLB, weightOZ) VALUES (?, ?, ?, ?, ?, 0, ?, ?)";
+    NSNumber *height = [NSNumber numberWithFloat:record.height];
+    NSNumber *weight = [NSNumber numberWithFloat:record.weight];
+    NSNumber *headCircle = [NSNumber numberWithFloat:record.headCircle];
+    NSNumber *weightLB = [NSNumber numberWithFloat:record.weightLB];
+    NSNumber *weightOZ = [NSNumber numberWithFloat:record.weightOZ];
+
+    
+    
+    return [self.m_db executeUpdate:sql, record.userName, record.measureDate, height, weight, headCircle, weightLB, weightOZ];
+}
+
+/**
+ * @brief 删除一条测量记录
+ * @param measureDate 记录日期
+ * @param uname 记录对应的用户名
+ * @return YES/NO
+ */
+- (BOOL)deleteRecord:(NSDate *)measureDate fromUser:(NSString *)userName
+{
+    if (nil == self.m_db)
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"DELETE FROM records WHERE username = ? and date = ?";
+    
+
+    
+    return [self.m_db executeUpdate:sql, userName, measureDate];
+}
+
+/**
+ * @brief 修改记录
+ * @param source 修改前的记录信息
+ * @param target 修改后的记录信息
+ * @return YES/NO
+ */
+- (BOOL)mergeRecord:(Record *)source with:(Record *)target
+{
+    if ((nil == self.m_db) || (nil == source) || (nil == target))
+    {
+        return NO;
+    }
+    
+    NSString *sql = @"UPDATE records SET username = ?, date = ?, height = ?, weight = ?, headcircle = ?, stand = 0, weightLB = ?, weightOZ = ? WHERE username = ? and date = ?";
+    NSNumber *height = [NSNumber numberWithFloat:target.height];
+    NSNumber *weight = [NSNumber numberWithFloat:target.weight];
+    NSNumber *headCircle = [NSNumber numberWithFloat:target.headCircle];
+    NSNumber *weightLB = [NSNumber numberWithFloat:target.weightLB];
+    NSNumber *weightOZ = [NSNumber numberWithFloat:target.weightOZ];
+   
+    
+    return [self.m_db executeUpdate:sql, target.userName, target.measureDate, height, weight, headCircle,  weightLB, weightOZ, source.userName, source.measureDate];
+}
+
+- (BOOL)saveUserUnit:(NSString *)userName :(NSString *)unit {
+    if (!userName || [userName isEqualToString:@""] || !unit || [unit isEqualToString:@""]) {
+        return NO;
+    }
+
+    NSString *key = [NSString stringWithFormat:@"%@_Unit", userName];
+    NSString *sql = @"replace into Settings(parameter, value) values(?,?)";
+    
+    return [self.m_db executeUpdate:sql, key, unit];
+}
+
+#pragma mark - 数据库恢复
+/**
+ * @brief 加载用户列表
+ * @param
+ * @return NSArray 用户列表
+ */
+- (NSArray *)restoreUsers
+{
+    NSString *sql = @"SELECT * FROM children";
+
+    FMResultSet *rset = [self.m_db executeQuery:sql];
+
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[rset columnCount]];
+    
+    //dbgLog(@"restore from db...");
+    while ([rset next])
+    {
+        UserProfile *user = [[UserProfile alloc] initWithName:nil];
+        user.name       = [rset stringForColumn:@"name"];
+        user.birthday   = [rset dateForColumn:@"birthday"];
+        user.gender     = [rset intForColumn:@"gender"];
+        user.portrait   = [rset stringForColumn:@"portrait"];
+        user.themeIndex = [rset intForColumn:@"theme"];
+        user.devMSlot   = [rset intForColumn:@"devMemSlot"];
+        
+        user.recordList = [self restoreRecordsOfUser:user.name];
+        
+        user.unit = [self restoreUserUnit:user.name];
+        
+        [array addObject:user];
+        
+        //dbgLog(@"user %@, gender:%d, birth: %@", user.name, user.gender, user.birthday);
+    }
+    [rset close];
+    
+    return array;
+}
+
+/**
+ * @brief 加载用户的测量记录
+ * @param user 用户
+ * @return NSDictionary 用户的测量记录列表
+ */
+- (NSMutableDictionary *)restoreRecordsOfUser:(NSString *)userName
+{
+    NSString *sql = @"SELECT * FROM records where username = ?";
+    
+    FMResultSet *rset = [self.m_db executeQuery:sql, userName];
+    
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:[rset columnCount]];
+    
+    while ([rset next])
+    {
+        //Record *record = [[Record alloc] initWithName:userName birthday:date];
+        Record *record = [[Record alloc] initWithName:userName];
+        [record setMeasureDate:[rset dateForColumn:@"date"]];
+        [record setHeight:[rset doubleForColumn:@"height"]];
+        [record setWeight:[rset doubleForColumn:@"weight"]];
+        [record setHeadCircle:[rset doubleForColumn:@"headcircle"]];
+        [record setWeightLB:[rset doubleForColumn:@"weightLB"]];
+        [record setWeightOZ:[rset doubleForColumn:@"weightOZ"]];
+        
+        [dic setObject:record forKey:record.measureDate];
+    }
+    [rset close];
+    
+    return dic;
+}
+
+
+- (NSString *)restoreUserUnit:(NSString *)userName {
+    NSString *value = nil;
+    
+    NSString *sql = @"SELECT value FROM Settings where parameter = ?";
+    NSString *key = [NSString stringWithFormat:@"%@_Unit", userName];
+    FMResultSet *rset = [self.m_db executeQuery:sql, key];
+    if ([rset next]) {
+        value = [rset stringForColumn:@"value"];
+    }
+    [rset close];
+    
+    return value;
+}
+
+- (void)dump
+{
+    dbgLog(@"dump db...");
+
+    FMResultSet *rset = [self.m_db executeQuery:@"SELECT * FROM children"];
+    while ([rset next])
+    {
+        NSString *name     = [rset stringForColumn:@"name"];
+        NSDate   *date     = [rset dateForColumn:@"birthday"];
+        NSString *portrait = [rset stringForColumn:@"portrait"];
+        NSInteger gender   = [rset intForColumn:@"gender"];
+        NSInteger theme    = [rset intForColumn:@"theme"];
+        NSInteger devMSlot = [rset intForColumn:@"devMemSlot"];
+        
+        dbgLog(@"%@ birth:%@, gender:%ld, portrait:%@, theme:%ld, memSlot:%ld", name, stringFromDate(date), (long)gender, portrait, (long)theme, (long)devMSlot);
+        
+        FMResultSet *recset = [self.m_db executeQuery:@"SELECT * FROM records where username = ?", name];
+        while ([recset next])
+        {
+            NSString *userName = [recset stringForColumn:@"username"];
+            NSDate *measureDate = [recset dateForColumn:@"date"];
+            float height = [recset doubleForColumn:@"height"];
+            float weight = [recset doubleForColumn:@"weight"];
+            float weightLB = [recset doubleForColumn:@"weightLB"];
+            float weightOZ = [recset doubleForColumn:@"weightOZ"];
+            float headcircle = [recset doubleForColumn:@"headcircle"];
+            BOOL  isstand = [recset boolForColumn:@"stand"];
+            
+            dbgLog(@"%@ date:%@, height:%.1f weight:%.1f headcircle:%.1f weightLB:%.1f weightOZ:%.1f stand:%d", userName, stringFromDate(measureDate), height, weight, headcircle, weightLB, weightOZ, isstand);
+        }
+    }
+    [rset close];
+}
+
+@end

@@ -1,0 +1,282 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9AC9547D1C57012A00AFEA90 /* BodyMeasure.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC954721C57012A00AFEA90 /* BodyMeasure.m */; };
+		9AC9547E1C57012A00AFEA90 /* CBPeripheralAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC954741C57012A00AFEA90 /* CBPeripheralAdditions.m */; };
+		9AC9547F1C57012A00AFEA90 /* SSBLEDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC954761C57012A00AFEA90 /* SSBLEDevice.m */; };
+		9AC954801C57012A00AFEA90 /* SSBLEDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC954781C57012A00AFEA90 /* SSBLEDeviceManager.m */; };
+		9AC954811C57012A00AFEA90 /* SSBLEReadWriteData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC9547A1C57012A00AFEA90 /* SSBLEReadWriteData.m */; };
+		9AC954821C57012A00AFEA90 /* SSBLEReadWriteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC9547C1C57012A00AFEA90 /* SSBLEReadWriteManager.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9AA24A2F1B95382700365A5A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9AA24A311B95382700365A5A /* liblibBLE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibBLE.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		9AC954711C57012A00AFEA90 /* BodyMeasure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyMeasure.h; sourceTree = "<group>"; };
+		9AC954721C57012A00AFEA90 /* BodyMeasure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyMeasure.m; sourceTree = "<group>"; };
+		9AC954731C57012A00AFEA90 /* CBPeripheralAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBPeripheralAdditions.h; sourceTree = "<group>"; };
+		9AC954741C57012A00AFEA90 /* CBPeripheralAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBPeripheralAdditions.m; sourceTree = "<group>"; };
+		9AC954751C57012A00AFEA90 /* SSBLEDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSBLEDevice.h; sourceTree = "<group>"; };
+		9AC954761C57012A00AFEA90 /* SSBLEDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSBLEDevice.m; sourceTree = "<group>"; };
+		9AC954771C57012A00AFEA90 /* SSBLEDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSBLEDeviceManager.h; sourceTree = "<group>"; };
+		9AC954781C57012A00AFEA90 /* SSBLEDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSBLEDeviceManager.m; sourceTree = "<group>"; };
+		9AC954791C57012A00AFEA90 /* SSBLEReadWriteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSBLEReadWriteData.h; sourceTree = "<group>"; };
+		9AC9547A1C57012A00AFEA90 /* SSBLEReadWriteData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSBLEReadWriteData.m; sourceTree = "<group>"; };
+		9AC9547B1C57012A00AFEA90 /* SSBLEReadWriteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSBLEReadWriteManager.h; sourceTree = "<group>"; };
+		9AC9547C1C57012A00AFEA90 /* SSBLEReadWriteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSBLEReadWriteManager.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9AA24A2E1B95382700365A5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9AA24A281B95382700365A5A = {
+			isa = PBXGroup;
+			children = (
+				9AC954701C57012A00AFEA90 /* BLE */,
+				9AA24A321B95382700365A5A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9AA24A321B95382700365A5A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9AA24A311B95382700365A5A /* liblibBLE.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9AC954701C57012A00AFEA90 /* BLE */ = {
+			isa = PBXGroup;
+			children = (
+				9AC954711C57012A00AFEA90 /* BodyMeasure.h */,
+				9AC954721C57012A00AFEA90 /* BodyMeasure.m */,
+				9AC954731C57012A00AFEA90 /* CBPeripheralAdditions.h */,
+				9AC954741C57012A00AFEA90 /* CBPeripheralAdditions.m */,
+				9AC954751C57012A00AFEA90 /* SSBLEDevice.h */,
+				9AC954761C57012A00AFEA90 /* SSBLEDevice.m */,
+				9AC954771C57012A00AFEA90 /* SSBLEDeviceManager.h */,
+				9AC954781C57012A00AFEA90 /* SSBLEDeviceManager.m */,
+				9AC954791C57012A00AFEA90 /* SSBLEReadWriteData.h */,
+				9AC9547A1C57012A00AFEA90 /* SSBLEReadWriteData.m */,
+				9AC9547B1C57012A00AFEA90 /* SSBLEReadWriteManager.h */,
+				9AC9547C1C57012A00AFEA90 /* SSBLEReadWriteManager.m */,
+			);
+			path = BLE;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9AA24A301B95382700365A5A /* libBLE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9AA24A451B95382700365A5A /* Build configuration list for PBXNativeTarget "libBLE" */;
+			buildPhases = (
+				9AA24A2D1B95382700365A5A /* Sources */,
+				9AA24A2E1B95382700365A5A /* Frameworks */,
+				9AA24A2F1B95382700365A5A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libBLE;
+			productName = libBLE;
+			productReference = 9AA24A311B95382700365A5A /* liblibBLE.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9AA24A291B95382700365A5A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				TargetAttributes = {
+					9AA24A301B95382700365A5A = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = 9AA24A2C1B95382700365A5A /* Build configuration list for PBXProject "libBLE" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9AA24A281B95382700365A5A;
+			productRefGroup = 9AA24A321B95382700365A5A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9AA24A301B95382700365A5A /* libBLE */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9AA24A2D1B95382700365A5A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AC9547E1C57012A00AFEA90 /* CBPeripheralAdditions.m in Sources */,
+				9AC954821C57012A00AFEA90 /* SSBLEReadWriteManager.m in Sources */,
+				9AC9547D1C57012A00AFEA90 /* BodyMeasure.m in Sources */,
+				9AC9547F1C57012A00AFEA90 /* SSBLEDevice.m in Sources */,
+				9AC954801C57012A00AFEA90 /* SSBLEDeviceManager.m in Sources */,
+				9AC954811C57012A00AFEA90 /* SSBLEReadWriteData.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9AA24A431B95382700365A5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		9AA24A441B95382700365A5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9AA24A461B95382700365A5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		9AA24A471B95382700365A5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9AA24A2C1B95382700365A5A /* Build configuration list for PBXProject "libBLE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AA24A431B95382700365A5A /* Debug */,
+				9AA24A441B95382700365A5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9AA24A451B95382700365A5A /* Build configuration list for PBXNativeTarget "libBLE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AA24A461B95382700365A5A /* Debug */,
+				9AA24A471B95382700365A5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9AA24A291B95382700365A5A /* Project object */;
+}

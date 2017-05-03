@@ -1,0 +1,69 @@
+//
+//  DBLink.h
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/24.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FMDB.h"
+
+@interface DBLink : NSObject
+
+//数据库操作对象，封装SQLite API
+@property (nonatomic,readonly) FMDatabase *m_db;
+
+//单实例
++ (DBLink *)shareInstance;
+
+//关闭数据库
+- (BOOL)DBClose;
+
+/**
+ *称体的增加
+ */
+- (BOOL)addScales;
+
+/**
+ *称体的删除
+ */
+- (BOOL)deleteScales:(NSString *)sname;
+
+
+
+/**
+ *增加蔬菜项
+ */
+- (BOOL)addVegetable;
+
+/**
+ * 删除two
+ */
+- (BOOL)deletetwo;
+
+/**
+ *修改蔬菜项
+ */
+- (BOOL)updateVegetable;
+
+/**
+ *交易的增加
+ */
+- (BOOL)addList;
+
+/**
+ *重复交易的删除
+ */
+- (BOOL)deleteList:(NSDate *)time;
+
+/**
+ * 保存
+ */
+- (BOOL)save;
+
+
+
+- (void)dump;
+
+@end

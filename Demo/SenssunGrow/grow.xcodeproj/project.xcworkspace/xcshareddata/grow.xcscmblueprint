@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "f10f12df-b940-364b-a62f-5b6cf834ae6c++720",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "f10f12df-b940-364b-a62f-5b6cf834ae6c++720" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "f10f12df-b940-364b-a62f-5b6cf834ae6c++720" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "51EE6A0F-609F-43C7-BA08-370C895D4373",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "f10f12df-b940-364b-a62f-5b6cf834ae6c++720" : "SenssunGrow\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "grow",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "grow.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/10.8.8.25:8443\/svn\/FW-SW",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10f12df-b940-364b-a62f-5b6cf834ae6c++720"
+    }
+  ]
+}

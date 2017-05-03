@@ -1,0 +1,93 @@
+#import <Foundation/Foundation.h>
+
+
+typedef NS_ENUM(int, SSBLESENSSUNFATWriteDataTypeEnum) {
+    SSBLESENSSUNFATWriteTestFat = 0x10,
+    SSBLESENSSUNFATWriteSearchHistory = 0x20,
+    SSBLESENSSUNFATWriteSearchHistory2 = 0x21,
+    SSBLESENSSUNFATWriteSyncDate = 0x30,
+    SSBLESENSSUNFATWriteSyncTime = 0x31,
+    SSBLESENSSUNFATWriteTestHeartRate = 0x40,
+    SSBLESENSSUNFATWriteExitTestHeartRate = 0x41,
+    SSBLESENSSUNFATWriteClearData = 0x50,
+    SSBLESENSSUNFATWriteResetScale = 0x5A,
+    SSBLESENSSUNFATWriteCloseScale = 0xF0
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNSUPERFATWriteDataTypeEnum) {
+    SSBLESENSSUNSUPERFATWriteTestFat = 0x10,
+    SSBLESENSSUNSUPERFATWriteTestFat2 = 0x11
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNBODYCLOCKWriteDataTypeEnum) {
+    SSBLESENSSUNBODYCLOCKWriteSetting = 0x32
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNGROWTHWriteDataTypeEnum) {
+    SSBLESENSSUNGROWTHWriteUserAdd = 0x50,
+    SSBLESENSSUNGROWTHWriteUserDelete = 0x51,
+    SSBLESENSSUNGROWTHWriteUserSet = 0x52,
+    SSBLESENSSUNGROWTHWriteSyncDateTime = 0x60,
+    SSBLESENSSUNGROWTHWriteSyncDataShallow = 0x61,
+    SSBLESENSSUNGROWTHWriteSyncDataDeep = 0x6A
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNPADWriteDataTypeEnum) {
+    SSBLESENSSUNPADWriteWaterPlan = 0x50,
+    SSBLESENSSUNPADWriteSyncDateTime = 0x60,
+    SSBLESENSSUNPADWriteSyncWaterData = 0x61,
+    SSBLESENSSUNPADWriteDeleteWaterData = 0x6A,
+    SSBLESENSSUNPADWriteWeighMode = 0x70,
+    SSBLESENSSUNPADWriteWeighZero = 0x71,
+    SSBLESENSSUNPADWriteStandbyMode = 0x72,
+    SSBLESENSSUNPADWriteBatteryLevel = 0x83,
+    SSBLESENSSUNPADWriteBuild = 0xAA,
+    SSBLESENSSUNPADWriteSetting = 0xAF
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNPADReadDataTypeEnum) {
+    SSBLESENSSUNPADReadWaterPlanReply = 0x50,
+    SSBLESENSSUNPADReadSyncDateTimeReply = 0x60,
+    SSBLESENSSUNPADReadSyncWaterDataReply = 0x61,
+    SSBLESENSSUNPADReadDeleteWaterDataReply = 0x6A,
+    SSBLESENSSUNPADReadMassData = 0x70,
+    SSBLESENSSUNPADReadWeighZeroReply = 0x71,
+    SSBLESENSSUNPADReadStandbyModeReply = 0x72,
+    SSBLESENSSUNPADReadBuildData = 0x73,
+    SSBLESENSSUNPADReadSyncWaterData = 0x75,
+    SSBLESENSSUNPADReadSyncWaterData2 = 0x77,
+    SSBLESENSSUNPADReadBatteryLevelReply = 0x83,
+    SSBLESENSSUNPADReadBuildReply = 0xAA,
+    SSBLESENSSUNPADReadSettingReply = 0xAF
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNTRACKWriteDataTypeEnum) {
+    SSBLESENSSUNTRACKWriteTest = 0xF1
+};
+
+
+typedef NS_ENUM(int, SSBLESENSSUNWriteDataTypeEnum) {
+    SSBLESENSSUNWriteGetProductUUID = 0xF0,
+    SSBLESENSSUNWriteSyncUserData = 0xF1,
+    SSBLESENSSUNWriteSyncDateTime = 0xF2,
+    SSBLESENSSUNWriteResetScale = 0x5A
+};
+
+
+@interface SSBLEReadWriteData : NSObject
+
+@property (nonatomic, retain) NSData *data;
+@property (nonatomic, assign) int dataType;
+@property (nonatomic, assign) NSInteger maxRewriteCount;
+@property (nonatomic, retain) NSDictionary *readValues;
+@property (nonatomic, assign) NSInteger writeDateTime;
+@property (nonatomic, assign) BOOL ifReply;
+@property (nonatomic, assign) int replyCount;
+
+@end

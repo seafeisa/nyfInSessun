@@ -1,0 +1,378 @@
+
+/* Class = "IBUILabel"; text = "kg"; ObjectID = "0Oo-Iw-T0R"; */
+"0Oo-Iw-T0R.text" = "kg";
+
+/* Class = "IBUITextField"; placeholder = "姓名/昵称"; ObjectID = "0Ww-9f-GPz"; */
+"0Ww-9f-GPz.placeholder" = "姓名/昵称";
+
+/* Class = "IBUIBarButtonItem"; title = "宝宝性别"; ObjectID = "1W5-fu-8FP"; */
+"1W5-fu-8FP.title" = "宝宝性别";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "1el-M7-7Hb"; */
+"1el-M7-7Hb.text" = "Title";
+
+/* Class = "IBUILabel"; text = "所有数据"; ObjectID = "2bk-we-TfK"; */
+"2bk-we-TfK.text" = "所有数据";
+
+/* Class = "IBUIButton"; normalTitle = "GrowthCurve"; ObjectID = "2d5-Ty-xYc"; */
+"2d5-Ty-xYc.normalTitle" = "GrowthCurve";
+
+/* Class = "IBUILabel"; text = "头围"; ObjectID = "3hv-iR-3Xv"; */
+"3hv-iR-3Xv.text" = "头围";
+
+/* Class = "IBUILabel"; text = "当前还莫有笔记哦～记录宝宝点滴生活从这里开始啦～赶快写起来吧～"; ObjectID = "4Sf-4j-YEG"; */
+"4Sf-4j-YEG.text" = "当前还莫有笔记哦～记录宝宝点滴生活从这里开始啦～赶快写起来吧～";
+
+/* Class = "IBUIButton"; normalTitle = "编辑"; ObjectID = "5o4-rv-Rhn"; */
+"5o4-rv-Rhn.normalTitle" = "编辑";
+
+/* Class = "IBUIButton"; normalTitle = "Portrait"; ObjectID = "6q0-Ze-fGG"; */
+"6q0-Ze-fGG.normalTitle" = "Portrait";
+
+/* Class = "IBUILabel"; text = "成长曲线"; ObjectID = "6zP-eA-1ak"; */
+"6zP-eA-1ak.text" = "成长曲线";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "7Ig-F7-6fb"; */
+"7Ig-F7-6fb.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "设置"; ObjectID = "7dD-H1-IHy"; */
+"7dD-H1-IHy.text" = "设置";
+
+/* Class = "IBUIButton"; normalTitle = "写笔记"; ObjectID = "7uR-ec-WZe"; */
+"7uR-ec-WZe.normalTitle" = "写笔记";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "7vE-e3-ETD"; */
+"7vE-e3-ETD.normalTitle" = "Home";
+
+/* Class = "IBUIButton"; normalTitle = "完成"; ObjectID = "91T-4J-fDB"; */
+"91T-4J-fDB.normalTitle" = "完成";
+
+/* Class = "IBUIButton"; normalTitle = "写笔记"; ObjectID = "9Va-jK-tpf"; */
+"9Va-jK-tpf.normalTitle" = "写笔记";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "Bpl-pI-szp"; */
+"Bpl-pI-szp.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "关于"; ObjectID = "BuI-hh-xcN"; */
+"BuI-hh-xcN.text" = "关于";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "Ceh-gW-L1s"; */
+"Ceh-gW-L1s.normalTitle" = "Back";
+
+/* Class = "IBUIBarButtonItem"; title = "取消"; ObjectID = "DG8-r9-6vi"; */
+"DG8-r9-6vi.title" = "取消";
+
+/* Class = "IBUILabel"; text = "添加数据"; ObjectID = "DQc-J7-DjE"; */
+"DQc-J7-DjE.text" = "添加数据";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "Dzw-1r-7rr"; */
+"Dzw-1r-7rr.normalTitle" = "Back";
+
+/* Class = "IBUIButton"; normalTitle = "所有数据"; ObjectID = "Ea5-KN-1RW"; */
+"Ea5-KN-1RW.normalTitle" = "所有数据";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "Et7-1d-OHq"; */
+"Et7-1d-OHq.normalTitle" = "Back";
+
+/* Class = "IBUIButton"; normalTitle = "UserInfo"; ObjectID = "GZB-GT-XfH"; */
+"GZB-GT-XfH.normalTitle" = "UserInfo";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "H04-18-pXl"; */
+"H04-18-pXl.text" = "Title";
+
+/* Class = "IBUILabel"; text = "(百分位数)"; ObjectID = "HBe-x9-m7P"; */
+"HBe-x9-m7P.text" = "(百分位数)";
+
+/* Class = "IBUILabel"; text = "Name"; ObjectID = "HKS-HE-l8u"; */
+"HKS-HE-l8u.text" = "Name";
+
+/* Class = "IBUILabel"; text = "(百分位数)"; ObjectID = "IYo-X8-kJ8"; */
+"IYo-X8-kJ8.text" = "(百分位数)";
+
+/* Class = "IBUITextField"; placeholder = "主题风格"; ObjectID = "IwX-sP-XUw"; */
+"IwX-sP-XUw.placeholder" = "主题风格";
+
+/* Class = "IBUIButton"; normalTitle = "换封面"; ObjectID = "JSO-eu-Qha"; */
+"JSO-eu-Qha.normalTitle" = "换封面";
+
+/* Class = "IBUIButton"; normalTitle = "完成"; ObjectID = "JcB-kg-bHE"; */
+"JcB-kg-bHE.normalTitle" = "完成";
+
+/* Class = "IBUILabel"; text = "2015年3月"; ObjectID = "Jxk-sS-EB2"; */
+"Jxk-sS-EB2.text" = "2015年3月";
+
+/* Class = "IBUIButton"; normalTitle = "删除"; ObjectID = "KDL-yR-HwM"; */
+"KDL-yR-HwM.normalTitle" = "删除";
+
+/* Class = "IBUILabel"; text = "编辑笔记本"; ObjectID = "KLc-gD-JlD"; */
+"KLc-gD-JlD.text" = "编辑笔记本";
+
+/* Class = "IBUILabel"; text = "Baby's name"; ObjectID = "KcQ-F3-1NC"; */
+"KcQ-F3-1NC.text" = "Baby's name";
+
+/* Class = "IBUIButton"; normalTitle = "Camera"; ObjectID = "Lae-XI-O21"; */
+"Lae-XI-O21.normalTitle" = "Camera";
+
+/* Class = "IBUIButton"; normalTitle = "delete"; ObjectID = "Ni4-PW-fxE"; */
+"Ni4-PW-fxE.normalTitle" = "delete";
+
+/* Class = "IBUIBarButtonItem"; title = "取消"; ObjectID = "NkC-I1-9pk"; */
+"NkC-I1-9pk.title" = "取消";
+
+/* Class = "IBUITextField"; placeholder = "关联设备用户号"; ObjectID = "O4w-Pe-7qZ"; */
+"O4w-Pe-7qZ.placeholder" = "关联设备用户号";
+
+/* Class = "IBUITextField"; placeholder = "时间"; ObjectID = "O6d-aT-GdA"; */
+"O6d-aT-GdA.placeholder" = "时间";
+
+/* Class = "IBUILabel"; text = "kg"; ObjectID = "Ojd-P7-BUg"; */
+"Ojd-P7-BUg.text" = "kg";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "PHK-Pe-Elc"; */
+"PHK-Pe-Elc.normalTitle" = "Home";
+
+/* Class = "IBUILabel"; text = "用户"; ObjectID = "PfL-6v-bzI"; */
+"PfL-6v-bzI.text" = "用户";
+
+/* Class = "IBUILabel"; text = "测量"; ObjectID = "Pkt-78-AX3"; */
+"Pkt-78-AX3.text" = "测量";
+
+/* Class = "IBUIButton"; normalTitle = "Settings"; ObjectID = "PyU-G8-egr"; */
+"PyU-G8-egr.normalTitle" = "Settings";
+
+/* Class = "IBUILabel"; text = "添加用户"; ObjectID = "QeF-v8-ZZo"; */
+"QeF-v8-ZZo.text" = "添加用户";
+
+/* Class = "IBUIButton"; normalTitle = "完成"; ObjectID = "RYH-k7-ynv"; */
+"RYH-k7-ynv.normalTitle" = "完成";
+
+/* Class = "IBUITextField"; placeholder = "身高"; ObjectID = "Rg0-c8-urG"; */
+"Rg0-c8-urG.placeholder" = "身高";
+
+/* Class = "IBUIButton"; normalTitle = "Users"; ObjectID = "Sqp-Ix-ljK"; */
+"Sqp-Ix-ljK.normalTitle" = "Users";
+
+/* Class = "IBUILabel"; text = "用户"; ObjectID = "TxQ-J3-QtB"; */
+"TxQ-J3-QtB.text" = "用户";
+
+/* Class = "IBUIBarButtonItem"; title = "确定"; ObjectID = "UZE-Mq-qhX"; */
+"UZE-Mq-qhX.title" = "确定";
+
+/* Class = "IBUILabel"; text = "数据同步中"; ObjectID = "Ufs-gU-fjA"; */
+"Ufs-gU-fjA.text" = "数据同步中";
+
+/* Class = "IBUITextField"; placeholder = "头围"; ObjectID = "Um7-31-q5t"; */
+"Um7-31-q5t.placeholder" = "头围";
+
+/* Class = "IBUILabel"; text = "成长笔记"; ObjectID = "UxD-9R-pcQ"; */
+"UxD-9R-pcQ.text" = "成长笔记";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "VM3-xg-peE"; */
+"VM3-xg-peE.normalTitle" = "Home";
+
+/* Class = "IBUILabel"; text = "年龄别体重"; ObjectID = "VSa-UY-ilf"; */
+"VSa-UY-ilf.text" = "年龄别体重";
+
+/* Class = "IBUIBarButtonItem"; title = "确定"; ObjectID = "WPM-WA-koP"; */
+"WPM-WA-koP.title" = "确定";
+
+/* Class = "IBUILabel"; text = "(百分位数)"; ObjectID = "WgG-aM-WQM"; */
+"WgG-aM-WQM.text" = "(百分位数)";
+
+/* Class = "IBUIBarButtonItem"; title = "确定"; ObjectID = "XdO-Fs-IIV"; */
+"XdO-Fs-IIV.title" = "确定";
+
+/* Class = "IBUILabel"; text = "宝贝成长"; ObjectID = "Xrn-gn-9oI"; */
+"Xrn-gn-9oI.text" = "宝贝成长";
+
+/* Class = "IBUIButton"; normalTitle = "保    存"; ObjectID = "Y7A-ay-iym"; */
+"Y7A-ay-iym.normalTitle" = "保    存";
+
+/* Class = "IBUILabel"; text = "身高"; ObjectID = "YEL-2G-CxL"; */
+"YEL-2G-CxL.text" = "身高";
+
+/* Class = "IBUIBarButtonItem"; title = "宝宝生日"; ObjectID = "YI4-dR-Ea3"; */
+"YI4-dR-Ea3.title" = "宝宝生日";
+
+/* Class = "IBUILabel"; text = "成长笔记"; ObjectID = "YQG-z2-OlK"; */
+"YQG-z2-OlK.text" = "成长笔记";
+
+/* Class = "IBUIButton"; normalTitle = "Share"; ObjectID = "Yha-9j-WJI"; */
+"Yha-9j-WJI.normalTitle" = "Share";
+
+/* Class = "IBUILabel"; text = "cm"; ObjectID = "ZTe-4I-KQy"; */
+"ZTe-4I-KQy.text" = "cm";
+
+/* Class = "IBUILabel"; text = "设置"; ObjectID = "Zn3-MI-VPr"; */
+"Zn3-MI-VPr.text" = "设置";
+
+/* Class = "IBUIButton"; normalTitle = "编辑"; ObjectID = "arl-dz-blc"; */
+"arl-dz-blc.normalTitle" = "编辑";
+
+/* Class = "IBUITextField"; placeholder = "时间"; ObjectID = "bg0-lV-vI0"; */
+"bg0-lV-vI0.placeholder" = "时间";
+
+/* Class = "IBUIButton"; normalTitle = "编辑"; ObjectID = "c4N-LM-1Wn"; */
+"c4N-LM-1Wn.normalTitle" = "编辑";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "c8q-b3-3DW"; */
+"c8q-b3-3DW.normalTitle" = "Back";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "cEI-9w-VUL"; */
+"cEI-9w-VUL.normalTitle" = "Back";
+
+/* Class = "IBUIButton"; normalTitle = "Measure"; ObjectID = "cmt-Yh-JO2"; */
+"cmt-Yh-JO2.normalTitle" = "Measure";
+
+/* Class = "IBUITextField"; placeholder = "体重"; ObjectID = "d4h-qc-fjI"; */
+"d4h-qc-fjI.placeholder" = "体重";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "d7C-6y-YLb"; */
+"d7C-6y-YLb.normalTitle" = "Home";
+
+/* Class = "IBUILabel"; text = "年龄别头围"; ObjectID = "e5d-jL-8PH"; */
+"e5d-jL-8PH.text" = "年龄别头围";
+
+/* Class = "IBUILabel"; text = "身长别体重"; ObjectID = "eJe-0e-wRE"; */
+"eJe-0e-wRE.text" = "身长别体重";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "f3r-fK-B8r"; */
+"f3r-fK-B8r.normalTitle" = "Home";
+
+/* Class = "IBUILabel"; text = "Name"; ObjectID = "fes-x4-R2D"; */
+"fes-x4-R2D.text" = "Name";
+
+/* Class = "IBUILabel"; text = "成长曲线"; ObjectID = "gTk-XJ-aWf"; */
+"gTk-XJ-aWf.text" = "成长曲线";
+
+/* Class = "IBUIButton"; normalTitle = "Diary"; ObjectID = "gZB-ls-EQi"; */
+"gZB-ls-EQi.normalTitle" = "Diary";
+
+/* Class = "IBUIButton"; normalTitle = "    EditProfile"; ObjectID = "gd8-RU-x7d"; */
+"gd8-RU-x7d.normalTitle" = "    EditProfile";
+
+/* Class = "IBUIBarButtonItem"; title = "测量时间"; ObjectID = "ivf-LZ-09E"; */
+"ivf-LZ-09E.title" = "测量时间";
+
+/* Class = "IBUILabel"; text = "Age"; ObjectID = "j1e-wq-uVg"; */
+"j1e-wq-uVg.text" = "Age";
+
+/* Class = "IBUIButton"; normalTitle = "删除"; ObjectID = "jcZ-Xo-fuW"; */
+"jcZ-Xo-fuW.normalTitle" = "删除";
+
+/* Class = "IBUIButton"; normalTitle = "全部删除"; ObjectID = "jny-vt-0qU"; */
+"jny-vt-0qU.normalTitle" = "全部删除";
+
+/* Class = "IBUILabel"; text = "current age"; ObjectID = "jye-mp-As5"; */
+"jye-mp-As5.text" = "current age";
+
+/* Class = "IBUIBarButtonItem"; title = "测量时间"; ObjectID = "kLQ-QC-vNt"; */
+"kLQ-QC-vNt.title" = "测量时间";
+
+/* Class = "IBUIBarButtonItem"; title = "取消"; ObjectID = "mNJ-VM-NB5"; */
+"mNJ-VM-NB5.title" = "取消";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "ms6-xx-DFw"; */
+"ms6-xx-DFw.normalTitle" = "Back";
+
+/* Class = "IBUIButton"; normalTitle = "所有数据"; ObjectID = "nKM-TR-sI3"; */
+"nKM-TR-sI3.normalTitle" = "所有数据";
+
+/* Class = "IBUITextField"; placeholder = "宝宝生日"; ObjectID = "nmD-Iz-BYi"; */
+"nmD-Iz-BYi.placeholder" = "宝宝生日";
+
+/* Class = "IBUITextField"; placeholder = "性别"; ObjectID = "o3d-Az-eCY"; */
+"o3d-Az-eCY.placeholder" = "性别";
+
+/* Class = "IBUIButton"; normalTitle = " Add"; ObjectID = "oHk-9W-V3s"; */
+"oHk-9W-V3s.normalTitle" = " Add";
+
+/* Class = "IBUIButton"; normalTitle = "History"; ObjectID = "oPa-U2-wRu"; */
+"oPa-U2-wRu.normalTitle" = "History";
+
+/* Class = "IBUILabel"; text = "2015年3月"; ObjectID = "obj-Pd-tBB"; */
+"obj-Pd-tBB.text" = "2015年3月";
+
+/* Class = "IBUIButton"; normalTitle = "Home"; ObjectID = "p2n-iz-RbE"; */
+"p2n-iz-RbE.normalTitle" = "Home";
+
+/* Class = "IBUILabel"; text = "宝宝信息"; ObjectID = "pY3-Vx-Vk4"; */
+"pY3-Vx-Vk4.text" = "宝宝信息";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "pdg-nZ-HbQ"; */
+"pdg-nZ-HbQ.normalTitle" = "Back";
+
+/* Class = "IBUILabel"; text = "设备管理"; ObjectID = "pel-qh-GtX"; */
+"pel-qh-GtX.text" = "设备管理";
+
+/* Class = "IBUILabel"; text = "Copyright © 2015 Senssun. All Rights Reserved."; ObjectID = "qA3-q1-8PH"; */
+"qA3-q1-8PH.text" = "Copyright © 2015 Senssun. All Rights Reserved.";
+
+/* Class = "IBUILabel"; text = "体重"; ObjectID = "qNE-fo-qN4"; */
+"qNE-fo-qN4.text" = "体重";
+
+/* Class = "IBUILabel"; text = "年龄别身长"; ObjectID = "qSc-r9-M8k"; */
+"qSc-r9-M8k.text" = "年龄别身长";
+
+/* Class = "IBUITextField"; placeholder = "笔记"; ObjectID = "qcd-Th-njH"; */
+"qcd-Th-njH.placeholder" = "笔记";
+
+/* Class = "IBUILabel"; text = "年龄别体重"; ObjectID = "qhc-2w-cAo"; */
+"qhc-2w-cAo.text" = "年龄别体重";
+
+/* Class = "IBUIButton"; normalTitle = " Add"; ObjectID = "rIq-YD-kM0"; */
+"rIq-YD-kM0.normalTitle" = " Add";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "rLB-IE-gMf"; */
+"rLB-IE-gMf.text" = "Title";
+
+/* Class = "IBUIButton"; normalTitle = "Back"; ObjectID = "rSy-nN-eBT"; */
+"rSy-nN-eBT.normalTitle" = "Back";
+
+/* Class = "IBUIBarButtonItem"; title = "取消"; ObjectID = "rda-W7-r1c"; */
+"rda-W7-r1c.title" = "取消";
+
+/* Class = "IBUILabel"; text = "(百分位数)"; ObjectID = "ruX-K2-3hC"; */
+"ruX-K2-3hC.text" = "(百分位数)";
+
+/* Class = "IBUILabel"; text = "cm"; ObjectID = "u3L-gq-I7U"; */
+"u3L-gq-I7U.text" = "cm";
+
+/* Class = "IBUILabel"; text = "香山衡器"; ObjectID = "uEz-Qj-5Ik"; */
+"uEz-Qj-5Ik.text" = "香山衡器";
+
+/* Class = "IBUILabel"; text = "成长笔记"; ObjectID = "uQs-uq-Ct0"; */
+"uQs-uq-Ct0.text" = "成长笔记";
+
+/* Class = "IBUIBarButtonItem"; title = "确定"; ObjectID = "uXa-Lv-NnT"; */
+"uXa-Lv-NnT.title" = "确定";
+
+/* Class = "IBUIButton"; normalTitle = "Portrait"; ObjectID = "ubm-gn-f6H"; */
+"ubm-gn-f6H.normalTitle" = "Portrait";
+
+/* Class = "IBUILabel"; text = "成长笔记"; ObjectID = "vTy-QO-kdE"; */
+"vTy-QO-kdE.text" = "成长笔记";
+
+/* Class = "IBUILabel"; text = "成长曲线"; ObjectID = "vpm-QK-mt8"; */
+"vpm-QK-mt8.text" = "成长曲线";
+
+/* Class = "IBUIButton"; normalTitle = "全部删除"; ObjectID = "x31-ej-t9s"; */
+"x31-ej-t9s.normalTitle" = "全部删除";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "xtF-Sb-H7a"; */
+"xtF-Sb-H7a.text" = "Title";
+
+/* Class = "IBUILabel"; text = "Gender"; ObjectID = "y3c-eE-0Nd"; */
+"y3c-eE-0Nd.text" = "Gender";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "yE5-i2-bgM"; */
+"yE5-i2-bgM.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "yig-Sl-Dbd"; */
+"yig-Sl-Dbd.text" = "Title";
+
+/* Class = "IBUILabel"; text = "25.000"; ObjectID = "zp7-j2-0Cs"; */
+"zp7-j2-0Cs.text" = "25.000";
+
+/* Class = "IBUILabel"; text = "(百分位数)"; ObjectID = "zyc-R6-ppg"; */
+"zyc-R6-ppg.text" = "(百分位数)";

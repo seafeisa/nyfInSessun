@@ -1,0 +1,362 @@
+//
+//  PickerView.m
+//  grow
+//
+//  Created by admin on 15-3-19.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "PickerView.h"
+
+enum
+{
+    TOOLBAR_CANCEL = 0,
+    TOOLBAR_TITLE = 2,
+    TOOLBAR_OK = 4,
+    
+    TOOLBAR_BUTT
+};
+
+@implementation PickerView
+{
+    UIToolbar       *m_toolbar;
+    UIBarButtonItem *m_barTitle;
+    UIBarButtonItem *m_btnCancel;
+    UIBarButtonItem *m_btnOK;
+    
+    UIDatePicker    *m_datePicker;
+    UIPickerView    *m_picker;
+    NSArray         *m_pickerData;
+    
+//    NSString *userInfonickName = [AppData getString:@"name"];
+//    NSString *userInfoBirthday = [AppData getString:@"babybirth"];
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        self.delegate = nil;
+        self.isDatePicker = NO;
+        
+    }
+    return self;
+}
+
+- (void)didAddSubview:(UIView *)subview
+{
+    
+//    NSLog(@"53");
+    //dbgLog(@"picker %@", self);
+    if ([subview isKindOfClass:[UIDatePicker class]])
+    {
+        //dbgLog(@"add date picker, %@", subview);
+        m_datePicker = (UIDatePicker *)subview;
+        self.isDatePicker = YES;
+        
+//        NSString *curLang = [[NSLocale preferredLanguages] firstObject];
+//        m_datePicker.locale = [NSLocale localeWithLocaleIdentifier:curLang];
+        //if ([curLang isEqualToString:@"zh_Hans"])
+        //{
+        //    m_datePicker.locale = [NSLocale localeWithLocaleIdentifier:@"zh_Hans"];
+        //}
+        //dbgLog(@"locale:%@",[m_datePicker.locale localeIdentifier]);
+        //dbgLog(@"language:%@",[[NSLocale preferredLanguages] firstObject]);
+    }
+    else if ([subview isKindOfClass:[UIPickerView class]])
+    {
+        //dbgLog(@"add picker view, %@", subview);
+        m_picker = (UIPickerView *)subview;
+        m_picker.delegate = self;
+    }
+    else if ([subview isKindOfClass:[UIToolbar class]])
+    {
+        //dbgLog(@"add toolbar, %@", subview);
+        m_toolbar = (UIToolbar *)subview;
+        
+        m_barTitle = m_toolbar.items[TOOLBAR_TITLE];
+        
+        m_btnCancel = m_toolbar.items[TOOLBAR_CANCEL];
+        [m_btnCancel setTarget:self];
+        [m_btnCancel setAction:@selector(didTapCancel)];
+
+        m_btnOK = m_toolbar.items[TOOLBAR_OK];
+        [m_btnOK setTarget:self];
+        [m_btnOK setAction:@selector(didTapOK)];
+    }
+}
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect
+{
+    // Drawing code
+}
+*/
+
+#pragma mark - PPI
+- (void)changeMode:(NSString *)mode
+{
+    self.title = mode;
+    
+    //获取对应的文字信息
+    NSString *userInfonickName = [AppData getString:@"name"];
+    NSString *userInfogender = [AppData getString:@"gender"];
+    NSString *userInfoBirthday = [AppData getString:@"babybirth"];
+    NSString *userInfoTheme = [AppData getString:@"theme"];
+    NSString *userInfoDevSlot = [AppData getString:@"user num"];
+    
+    if ([mode isEqualToString:userInfonickName/*LOCALSTR_USRINFO_NICKNAME*/])
+    {
+        
+        // NA this time
+    }
+    else if ([mode isEqualToString:userInfogender/*LOCALSTR_USRINFO_GENDER*/])
+    {
+//         dbgLog(@"change to %@", mode);
+
+        [m_barTitle setTitle:mode];
+        
+        NSString *boyData = [AppData getString:@"babyboy"];
+        NSString *girlData = [AppData getString:@"babygirl"];
+        
+        m_pickerData = [NSArray arrayWithObjects:
+                        @[boyData/*LOCALSTR_GENDER_BOY*/,  IMG_PROFILE_BOY],
+                        @[girlData/*LOCALSTR_GENDER_GIRL*/, IMG_PROFILE_GIRL],
+                        nil];
+//        NSLog(@"****%@*****",m_pickerData);
+    }
+    else if ([mode isEqualToString:userInfoBirthday/*LOCALSTR_USRINFO_BIRTHDAY*/])
+    {
+        // NA this time
+    }
+    else if ([mode isEqualToString:userInfoTheme/*LOCALSTR_USRINFO_THEME*/])
+    {
+//         dbgLog(@"change to %@", mode);
+        
+        [m_barTitle setTitle:mode];
+       
+        NSString *purpleData = [AppData getString:@"purple"];
+        NSString *greenData = [AppData getString:@"green"];
+        NSString *yellowData = [AppData getString:@"yellow"];
+        
+        
+        m_pickerData = [NSArray arrayWithObjects:
+                        @[purpleData/*LOCALSTR_THEME_PURPLE*/, IMG_THEME_PURPLE],
+                        @[greenData/*LOCALSTR_THEME_GREEN*/,  IMG_THEME_GREEN],
+                        @[yellowData/*LOCALSTR_THEME_YELLOW*/, IMG_THEME_YELLOW],
+                        nil];
+//         NSLog(@"****%@*****",m_pickerData);
+    }
+    else if ([mode isEqualToString:userInfoDevSlot/*LOCALSTR_USRINFO_DEVMSLOT*/])
+    {
+//         dbgLog(@"change to %@", mode);
+
+        [m_barTitle setTitle:mode];
+        
+        NSString *userOneData = [AppData getString:@"oneuser"];
+        NSString *userTwoData = [AppData getString:@"twouser"];
+        NSString *userThreeData = [AppData getString:@"threeuser"];
+        NSString *userFourData = [AppData getString:@"fouruser"];
+        NSString *userFiveData = [AppData getString:@"fiveuser"];
+        NSString *userSixData = [AppData getString:@"sixuser"];
+        NSString *userSevenData = [AppData getString:@"sevenuser"];
+        NSString *userEightData = [AppData getString:@"eightuser"];
+
+        m_pickerData = [NSArray arrayWithObjects:
+                        @[userOneData/*LOCALSTR_DEVMEM_SLOT1*/, IMG_PROFILE_DEVMSLOT],
+                        @[userTwoData/*LOCALSTR_DEVMEM_SLOT2*/, IMG_PROFILE_DEVMSLOT],
+                        @[userThreeData/*LOCALSTR_DEVMEM_SLOT3*/, IMG_PROFILE_DEVMSLOT],
+                        @[userFourData/*LOCALSTR_DEVMEM_SLOT4*/, IMG_PROFILE_DEVMSLOT],
+                        @[userFiveData/*LOCALSTR_DEVMEM_SLOT5*/, IMG_PROFILE_DEVMSLOT],
+                        @[userSixData/*LOCALSTR_DEVMEM_SLOT6*/, IMG_PROFILE_DEVMSLOT],
+                        @[userSevenData/*LOCALSTR_DEVMEM_SLOT7*/, IMG_PROFILE_DEVMSLOT],
+                        @[userEightData/*LOCALSTR_DEVMEM_SLOT8*/, IMG_PROFILE_DEVMSLOT],
+                        nil];
+//         NSLog(@"****%@*****",m_pickerData);
+    }
+    else
+    {
+        // invalid case
+    }
+    
+    [m_picker reloadAllComponents];
+    [m_picker selectRow:0 inComponent:0 animated:YES];
+}
+
+#pragma mark - Utilities
+- (NSString *)titleForRow:(NSInteger)row
+{
+    row = MIN(row, [m_pickerData count]-1);
+    
+    return [m_pickerData objectAtIndex:row][0];
+}
+
+- (NSString *)iconNameForRow:(NSInteger)row
+{
+    row = MIN(row, [m_pickerData count]-1);
+    
+    return [m_pickerData objectAtIndex:row][1];
+}
+
+- (void)hideView
+{
+    // 退出视图
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:ANIM_DURATION];
+    
+    self.frame = CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, PICKER_HEIGHT);
+    
+    [UIView commitAnimations];
+    
+    //确定委托是否存在相应方法
+    if ([self.delegate respondsToSelector:@selector(pikerviewDidHide:)])
+    {
+        //发送委托方法
+        [self.delegate pikerviewDidHide:self];
+    }
+}
+
+- (void)showView
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:ANIM_DURATION];
+    
+    self.frame = CGRectMake(0, SCREEN_HEIGHT - PICKER_HEIGHT, SCREEN_WIDTH, PICKER_HEIGHT);
+    
+    [UIView commitAnimations];
+    
+    //确定委托是否存在相应方法
+    if ([self.delegate respondsToSelector:@selector(pikerviewDidShow:)])
+    {
+        //发送委托方法
+        [self.delegate pikerviewDidShow:self];
+    }
+}
+
+#pragma mark - IBActions
+- (void)didTapCancel
+{
+    [self hideView];
+    
+    //确定委托是否存在相应方法
+    if ([self.delegate respondsToSelector:@selector(pikerviewDidCancel:)])
+    {
+        //发送委托方法
+        [self.delegate pikerviewDidCancel:self];
+    }
+}
+
+- (void)didTapOK
+{
+    [self hideView];
+    
+    if (nil == self.delegate)
+    {
+        return;
+    }
+    
+    if (self.isDatePicker)
+    {
+        //确定委托是否存在相应方法
+        if ([self.delegate respondsToSelector:@selector(pikerviewDidConfirm: selectedDate:)])
+        {
+            //发送委托方法
+            [self.delegate pikerviewDidConfirm:self selectedDate:m_datePicker.date];
+        }
+    }
+    else
+    {
+        //确定委托是否存在相应方法
+        if ([self.delegate respondsToSelector:@selector(pikerviewDidConfirm: selectedRowTitle: forRow:)])
+        {
+            //发送委托方法
+            NSInteger selectedItem = [m_picker selectedRowInComponent:0];
+            NSString *itemTitle = [self titleForRow:selectedItem];
+            
+            [self.delegate pikerviewDidConfirm:self selectedRowTitle:itemTitle forRow:selectedItem];
+        }
+    }
+}
+
+#pragma mark - UIPickerViewDataSource
+// 返回显示的列数
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+// 返回当前列显示的行数
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [m_pickerData count];
+}
+
+#pragma mark - UIPickerViewDelegate
+//- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+//{
+//    return 200;
+//}
+
+//- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+//{
+//    return 30;
+//}
+
+// 返回当前行的内容,此处是将数组中数值添加到滚动的那个显示栏上
+//-(NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+//{
+//    return [m_pickerData objectAtIndex:row];
+//}
+
+//- (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component
+//{
+//    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:
+//                         [UIFont systemFontOfSize:12], NSFontAttributeName,
+//                         [UIColor whiteColor], NSForegroundColorAttributeName,
+//                         nil];
+//
+//    return [[NSAttributedString alloc] initWithString:[m_pickerData objectAtIndex:row] attributes:dic];
+//}
+
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    //dbgLog(@"%@[%u]:%u",self.title,[pickerView numberOfRowsInComponent:0],row);
+    // 可选项图标
+    UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [icon setImage:[UIImage imageNamed:[self iconNameForRow:row]]];
+    
+    // 段落风格
+    NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+    paragraph.firstLineHeadIndent = 10;     // 首行缩进
+    // 文字属性
+    NSDictionary *attributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16],
+                                 NSForegroundColorAttributeName : [UIColor whiteColor],
+                                 NSParagraphStyleAttributeName : paragraph,
+                                };
+    CGSize textSize = [[self titleForRow:row] sizeWithAttributes:attributes];
+    
+    UITextField *textview = (UITextField *)view;
+    if (!textview)
+    {
+        // 自动适应有效区域
+        textview = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, icon.frame.size.width + paragraph.firstLineHeadIndent + textSize.width, 40)];
+    }
+    
+    // 标题
+//    [textview setFont:[UIFont systemFontOfSize:16]];
+//    [textview setTextColor:[UIColor whiteColor]];
+//    [textview setTextAlignment:NSTextAlignmentLeft];
+//    [textview setText:[m_pickerData objectAtIndex:row]];
+    [textview setAttributedText:[[NSAttributedString alloc] initWithString:[self titleForRow:row] attributes:attributes]];
+    
+    [textview setLeftView:icon];
+    [textview setLeftViewMode:UITextFieldViewModeAlways];
+    [textview.leftView setContentMode:UIViewContentModeScaleAspectFit];
+    
+    return textview;
+}
+
+@end

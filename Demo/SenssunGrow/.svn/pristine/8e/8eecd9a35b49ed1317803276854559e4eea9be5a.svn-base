@@ -1,0 +1,71 @@
+//
+//  UIBackgndImageView.m
+//  grow
+//
+//  Created by admin on 15-6-10.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "UIBackgndImageView.h"
+
+@implementation UIBackgndImageView
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+//    NSLog(@"59");
+    self.clipsToBounds = YES;
+    self.contentMode   = UIViewContentModeScaleAspectFill;
+    
+    [self updateView];
+}
+
+- (void)updateView
+{
+    UIImage *image = [[AppData sharedInstance] backgndImage];
+    if (nil != image)
+    {
+        self.image = image;
+    }
+}
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect
+{
+    // Drawing code
+}
+*/
+
+@end

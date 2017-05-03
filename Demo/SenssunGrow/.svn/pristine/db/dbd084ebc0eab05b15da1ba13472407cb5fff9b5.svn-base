@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>writeNote</key>
+	<string>Write a diary</string>
+	<key>notes</key>
+	<string>Diary</string>
+	<key>save</key>
+	<string>Save</string>
+	<key>25.000</key>
+	<string>25.000</string>
+	<key>growthNote</key>
+	<string>Diary</string>
+	<key>userInfo</key>
+	<string>UserInfo</string>
+	<key>allData</key>
+	<string>All data</string>
+	<key>add</key>
+	<string> Add</string>
+	<key>measure</key>
+	<string>Measure</string>
+	<key>back</key>
+	<string>Back</string>
+	<key>quit</key>
+	<string>Exit</string>
+	<key>Delete</key>
+	<string>delete</string>
+	<key>growthCurve</key>
+	<string>Growth Curve</string>
+	<key>kg</key>
+	<string>kg</string>
+	<key>title</key>
+	<string>Title</string>
+	<key>nameOfbaby</key>
+	<string>Baby&apos;s name</string>
+	<key>portrait</key>
+	<string>Portrait</string>
+	<key>percentage</key>
+	<string>(Percentiles)</string>
+	<key>share</key>
+	<string>Share</string>
+	<key>Tomeasure</key>
+	<string>Measurements</string>
+	<key>measureTime</key>
+	<string>Time</string>
+	<key>editProtrait</key>
+	<string>    EditProfile</string>
+	<key>Growthcurve</key>
+	<string>GrowthCurve</string>
+	<key>history</key>
+	<string>History</string>
+	<key>onename</key>
+	<string>Name</string>
+	<key>users</key>
+	<string>Users</string>
+	<key>home</key>
+	<string>Home</string>
+	<key>age</key>
+	<string>Age</string>
+	<key>oneGender</key>
+	<string>Gender</string>
+	<key>addUser</key>
+	<string>Add user</string>
+	<key>addData</key>
+	<string>Add data</string>
+	<key>editNote</key>
+	<string>Edit</string>
+	<key>dairy</key>
+	<string>Diary</string>
+	<key>SenssunBaby</key>
+	<string>Senssun Scale</string>
+	<key>babyGender</key>
+	<string>Gender</string>
+	<key>creatOneNote</key>
+	<string>Write a diary</string>
+	<key>Copyright © 2015 Senssun. All Rights Reserved.</key>
+	<string>Copyright © 2015 Senssun. All Rights Reserved.</string>
+	<key>Senssun baby</key>
+	<string>SenssunBaby</string>
+	<key>babyInformation</key>
+	<string>Baby profile</string>
+	<key>setting</key>
+	<string>Settings</string>
+	<key>settings</key>
+	<string>Settings</string>
+	<key>selectMonth</key>
+	<string>Select month</string>
+	<key>camera</key>
+	<string>Camera</string>
+	<key>user</key>
+	<string>User</string>
+	<key>detail</key>
+	<string>Detail</string>
+	<key>cm</key>
+	<string>cm</string>
+	<key>yearandmonth</key>
+	<string>2015年3月</string>
+	<key>noNoteWritten</key>
+	<string>No diary entries</string>
+	<key>yues</key>
+	<string> months </string>
+	<key>theme</key>
+	<string>Theme</string>
+	<key>select in album</key>
+	<string>Select from album</string>
+	<key>weiht</key>
+	<string>Weight</string>
+	<key>weiht invalid meas again</key>
+	<string>Invalid value, please measure again</string>
+	<key>information lack</key>
+	<string>profile incompelted</string>
+	<key>about</key>
+	<string>About</string>
+	<key>user num</key>
+	<string>User No.</string>
+	<key>share lost</key>
+	<string>Share failed,</string>
+	<key>allslect</key>
+	<string>Select all</string>
+	<key>cancelslect</key>
+	<string>Deselect all</string>
+	<key>delete</key>
+	<string>Delete</string>
+	<key>cancel</key>
+	<string>Cancel</string>
+	<key>days</key>
+	<string> Days</string>
+	<key>headsize</key>
+	<string>HeadSize</string>
+	<key>babygirl</key>
+	<string>Bady Girl</string>
+	<key>name</key>
+	<string>Name</string>
+	<key>done</key>
+	<string>Done</string>
+	<key>babybirth</key>
+	<string>Date of Birth</string>
+	<key>yearold</key>
+	<string> Year-old </string>
+	<key>year</key>
+	<string>Year</string>
+	<key>weit-age</key>
+	<string>Weight-for-age</string>
+	<key>head-age</key>
+	<string>Head size-for-age</string>
+	<key>height-age</key>
+	<string>Height-for-age</string>
+	<key>gender</key>
+	<string>Gender</string>
+	<key>takephto</key>
+	<string>Take photo</string>
+	<key>syn</key>
+	<string>Synching data...</string>
+	<key>synfail</key>
+	<string>Synchronization failed</string>
+	<key>syndone</key>
+	<string>Synched successfully</string>
+	<key>day</key>
+	<string>Day</string>
+	<key>time</key>
+	<string>Time</string>
+	<key>deleteall</key>
+	<string>Delete all journals?</string>
+	<key>deletecurrenusr</key>
+	<string>Delete current users?</string>
+	<key>deletecurrenjournals</key>
+	<string>Delete current journals?</string>
+	<key>deletecurrennotes</key>
+	<string>Delete current diaries?</string>
+	<key>deleteallinmonth</key>
+	<string>Delete all diaries in this month?</string>
+	<key>ifchangecoverfornote</key>
+	<string>Do you want to change the cover of current diaries?</string>
+	<key>yellow</key>
+	<string>Yellow</string>
+	<key>changecover</key>
+	<string>Change cover</string>
+	<key>Yue</key>
+	<string>Month</string>
+	<key>Yues</key>
+	<string>Months</string>
+	<key>checknewvers</key>
+	<string>Check new version</string>
+	<key>noaccess toset</key>
+	<string>BabyGrowing does not have access to your photos or video. To enable access, tap Settings and turn on Photos in privacy option.</string>
+	<key>noaccess tosetting</key>
+	<string>BabyGrowing does not have access to your camera. To enable access, tap Settings and turn on Camera in privacy option.</string>
+	<key>green</key>
+	<string>Green</string>
+	<key>purple</key>
+	<string>Purple</string>
+	<key>version</key>
+	<string>Version</string>
+	<key>babyboy</key>
+	<string>Baby Boy</string>
+	<key>confirm</key>
+	<string>Confirm</string>
+	<key>oneuser</key>
+	<string>User 1</string>
+	<key>twouser</key>
+	<string>User 2</string>
+	<key>threeuser</key>
+	<string>User 3</string>
+	<key>fouruser</key>
+	<string>User 4</string>
+	<key>fiveuser</key>
+	<string>User 5</string>
+	<key>sixuser</key>
+	<string>User 6</string>
+	<key>sevenuser</key>
+	<string>User 7</string>
+	<key>eightuser</key>
+	<string>User 8</string>
+	<key>editor</key>
+	<string>Edit</string>
+	<key>saverecord</key>
+	<string>Record saved</string>
+	<key>managedevice</key>
+	<string>Devices</string>
+	<key>setcoverpage</key>
+	<string>Set cover</string>
+	<key>set-camera-privacy</key>
+	<string>To enable access of camera, tap Settings and turn it on in privacy option.</string>
+	<key>completeprofile-noeffect</key>
+	<string>To ensure the profile should be complete, which will have effect on the final result.</string>
+	<key>enterallprofile</key>
+	<string>Please enter comprehensive profile.</string>
+	<key>height-weight</key>
+	<string>Weight-for-height</string>
+	<key>heiht</key>
+	<string>Height</string>
+	<key>slectmonth</key>
+	<string>Select Month</string>
+	<key>noprivacyauthorized</key>
+	<string>Privacy unauthorized</string>
+	<key>latestversion</key>
+	<string>The latest version currently</string>
+	<key>babyIs</key>
+	<string>%@ is </string>
+	<key>!</key>
+	<string>!</string>
+	<key>weightIs</key>
+	<string>Weight is </string>
+	<key>heightIs</key>
+	<string>height is </string>
+	<key>headsizeIs</key>
+	<string>head size is </string>
+	<key>good</key>
+	<string>growing heathily.</string>
+	<key>slow</key>
+	<string>growing slower than usual.</string>
+	<key>fast</key>
+	<string>growing faster than usual.</string>
+	<key>haveslect</key>
+	<string>Selected</string>
+	<key>photos</key>
+	<string>photos</string>
+	<key>photo</key>
+	<string>Photos</string>
+	<key>years</key>
+	<string>Years</string>
+	<key>collections</key>
+	<string>Collections</string>
+	<key>moments</key>
+	<string>Moments</string>
+	<key>albums</key>
+	<string>Albums</string>
+	<key>Camera Roll</key>
+	<string>Camera Roll</string>
+	<key>Recently Deleted</key>
+	<string>Recently Deleted</string>
+	<key>Photo Library</key>
+	<string>Photo Library</string>
+</dict>
+</plist>

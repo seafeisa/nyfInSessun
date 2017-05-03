@@ -1,0 +1,16 @@
+#import <UIKit/UIKit.h>
+
+@interface FoodController : UIViewController
+
+@property (nonatomic, copy) NSString *deviceID;
+@property (nonatomic, copy) NSString *advertiseName;
+
+@property (nonatomic, weak) IBOutlet UILabel *saveValueLabel;
+@property (nonatomic, weak) IBOutlet UILabel *displayValueLabel;
+@property (nonatomic, weak) IBOutlet UILabel *stableLabel;
+@property (nonatomic, weak) IBOutlet UILabel *parametersLabel;
+
+- (IBAction)backClick:(id)sender;
+
+
+@end

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>yue</key>
+	<string>个月</string>
+	<key>yues</key>
+	<string>个月</string>
+	<key>theme</key>
+	<string>主题风格</string>
+	<key>select in album</key>
+	<string>从相册选取</string>
+	<key>weiht</key>
+	<string>体重</string>
+	<key>weiht invalid meas again</key>
+	<string>体重数据无效，请重新测量</string>
+	<key>information lack</key>
+	<string>信息不完整</string>
+	<key>about</key>
+	<string>关于</string>
+	<key>user num</key>
+	<string>关联设备用户号</string>
+	<key>share lost</key>
+	<string>分享失败,</string>
+	<key>allslect</key>
+	<string>全选</string>
+	<key>cancelslect</key>
+	<string>取消全选</string>
+	<key>delete</key>
+	<string>删除</string>
+	<key>cancel</key>
+	<string>取消</string>
+	<key>days</key>
+	<string>天</string>
+	<key>headsize</key>
+	<string>头围</string>
+	<key>babygirl</key>
+	<string>女宝宝</string>
+	<key>name</key>
+	<string>姓名/昵称</string>
+	<key>done</key>
+	<string>完成</string>
+	<key>babybirth</key>
+	<string>宝宝生日</string>
+	<key>yearold</key>
+	<string>岁</string>
+	<key>year</key>
+	<string>年</string>
+	<key>weit-age</key>
+	<string>年龄别体重</string>
+	<key>head-age</key>
+	<string>年龄别头围</string>
+	<key>height-age</key>
+	<string>年龄别身长</string>
+	<key>gender</key>
+	<string>性别</string>
+	<key>takephto</key>
+	<string>拍照</string>
+	<key>syn</key>
+	<string>数据同步中</string>
+	<key>synfail</key>
+	<string>数据同步失败</string>
+	<key>syndone</key>
+	<string>数据同步完成</string>
+	<key>day</key>
+	<string>日</string>
+	<key>time</key>
+	<string>时间</string>
+	<key>deleteall</key>
+	<string>是否删除全部笔记本？</string>
+	<key>deletecurrenusr</key>
+	<string>是否删除所选用户？</string>
+	<key>deletecurrenjournals</key>
+	<string>是否删除所选笔记本？</string>
+	<key>deletecurrennotes</key>
+	<string>是否删除所选笔记？</string>
+	<key>deleteallinmonth</key>
+	<string>是否删除本月全部笔记？</string>
+	<key>ifchangecoverfornote</key>
+	<string>是否更换所选笔记本的封面？</string>
+	<key>yellow</key>
+	<string>暖沙黄</string>
+	<key>changecover</key>
+	<string>更换封面</string>
+	<key>Yue</key>
+	<string>月</string>
+	<key>Yues</key>
+	<string>月龄</string>
+	<key>checknewvers</key>
+	<string>检测新版本</string>
+	<key>noaccess toset</key>
+	<string>此应用程序没有权限来访问您的照片，您可以在“隐私设置”中启用访问。</string>
+	<key>noaccess tosetting</key>
+	<string>此应用程序没有权限来访问您的相机，您可以在“隐私设置”中启用访问。</string>
+	<key>green</key>
+	<string>清新绿</string>
+	<key>purple</key>
+	<string>温馨紫</string>
+	<key>version</key>
+	<string>版本</string>
+	<key>babyboy</key>
+	<string>男宝宝</string>
+	<key>confirm</key>
+	<string>确认</string>
+	<key>oneuser</key>
+	<string>秤体 1 号用户</string>
+	<key>twouser</key>
+	<string>秤体 2 号用户</string>
+	<key>threeuser</key>
+	<string>秤体 3 号用户</string>
+	<key>fouruser</key>
+	<string>秤体 4 号用户</string>
+	<key>fiveuser</key>
+	<string>秤体 5 号用户</string>
+	<key>sixuser</key>
+	<string>秤体 6 号用户</string>
+	<key>sevenuser</key>
+	<string>秤体 7 号用户</string>
+	<key>eightuser</key>
+	<string>秤体 8 号用户</string>
+	<key>editor</key>
+	<string>编辑</string>
+	<key>saverecord</key>
+	<string>记录已保存</string>
+	<key>managedevice</key>
+	<string>设备管理</string>
+	<key>setcoverpage</key>
+	<string>设置封面</string>
+	<key>set-camera-privacy</key>
+	<string>请在iPhone的“设置-隐私-相机”选项中，允许本应用访问您的相机。</string>
+	<key>completeprofile-noeffect</key>
+	<string>请完整填写个人信息，确保准确。您填写的信息将影响最终评测结果</string>
+	<key>enterallprofile</key>
+	<string>请输入信息，确保完整。</string>
+	<key>height-weight</key>
+	<string>身长别体重</string>
+	<key>heiht</key>
+	<string>身高</string>
+	<key>slectmonth</key>
+	<string>选择月份</string>
+	<key>noprivacyauthorized</key>
+	<string>隐私设置未授权</string>
+	<key>latestversion</key>
+	<string>当前已是最新版本</string>
+	<key>descbaby</key>
+	<string>%@</string>
+	<key>desc</key>
+	<string>啦!</string>
+	<key>descweiht</key>
+	<string>体重</string>
+	<key>descheiht</key>
+	<string>身高</string>
+	<key>descheadsize</key>
+	<string>头围</string>
+	<key>descgood</key>
+	<string>成长很平稳哦!</string>
+	<key>descslow</key>
+	<string>成长偏缓哦!</string>
+	<key>descfast</key>
+	<string>成长偏快哦!</string>
+	<key>haveslect</key>
+	<string>已选择</string>
+	<key>images</key>
+	<string>张照片</string>
+	<key>Images</key>
+	<string>照片</string>
+	<key>years</key>
+	<string>年度</string>
+	<key>collections</key>
+	<string>精选</string>
+	<key>moments</key>
+	<string>时刻</string>
+	<key>albums</key>
+	<string>相簿</string>
+	<key>Camera Roll</key>
+	<string>相机胶卷</string>
+	<key>Recently Deleted</key>
+	<string>最近删除</string>
+	<key>Photo Library</key>
+	<string>照片图库</string>
+</dict>
+</plist>

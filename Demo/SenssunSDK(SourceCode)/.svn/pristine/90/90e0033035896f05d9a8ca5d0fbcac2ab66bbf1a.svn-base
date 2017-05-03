@@ -1,0 +1,168 @@
+#import <Foundation/Foundation.h>
+#import "SSBLEDevice.h"
+
+
+typedef NS_ENUM(int, SSBLEModeEnum) {
+    SSBLEModeNone = 0,
+    SSBLEModeConnectManual = 1,
+    SSBLEModeConnectAuto = 2
+};
+
+/*
+ 本蓝牙连接管理类，用于连接香山自主品牌的蓝牙产品，
+ 当连接到蓝牙产品后，本类自动管理这些已连接蓝牙产品，
+ 蓝牙产品最大连接数为1，
+ 异常断开连接的蓝牙产品，本类自动重新连接，
+ 调用断开连接命令，后取消连接的蓝牙产品，不回自动再次连接
+*/
+
+@interface SSBLEDeviceManager : NSObject
+
+//
+@property (nonatomic, assign) BOOL ifTestPeripheral;
+//返回已连接设备的映射表
+@property (nonatomic, readonly, retain) NSMutableDictionary *deviceIDToPeripheralMap;
+
+//返回已连接设备的数量
+- (NSInteger)peripheralsCount;
+
+//初始化方法 deviceTypes表示需要连接的设备类型 rssiMin表示连接设备的最差信号强度，范围值（－1～－127），当值为－1时，不限制需要连接的设备的信号强度
+- (id)initWithDeviceTypes:(NSArray *)deviceTypes rssiMin:(int)rssiMin;
+- (void)setRewriteCount:(NSInteger)count;
+- (void)setMaxConnectCount:(NSInteger)count;
+
+#pragma mark add/remove delegate
+//添加代理
+- (void)addDelegate:(id)delegate;
+//移除代理
+- (void)removeDelegate:(id)delegate;
+
+#pragma mark connect/disconnect BLE
+//重置内部变量的值，作用相当于初始化
+- (void)reset;
+//搜索设备
+- (void)scanPeripherals;
+//连接给定deviceID的设备
+- (void)connect:(NSDictionary *)deviceIDToAdvertiseNameMap;
+//断开给定deviceID的设备
+- (void)disconnect:(NSString *)deviceID;
+//连接给定serialNO的设备
+- (void)connectWithSerialNO:(NSDictionary *)serialNOToAdvertiseNameMap;
+//断开给定serialNO的设备
+- (void)disconnectWithSerialNO:(NSString *)serialNO;
+//自动连接设备
+- (void)connect;
+//断开所有连接设备
+- (void)disconnect;
+
+#pragma mark write data to SENSSUNFAT
+//发送测试脂肪命令,
+//(sex表示性别，0-女,1-男)，
+//(userID表示用户序号，值范围1～12)，
+//(age表示年龄，值范围10～100)，
+//(heightCM表示身高，单位cm，值范围10～100)，
+//(heightInch表示身高，单位英寸，值范围100～250)
+- (void)sendSENSSUNFATTestFatWithSex:(int)sex userID:(int)userID age:(int)age heightCM:(int)heightCM heightInch:(int)heightInch peripheral:(CBPeripheral *)peripheral;
+
+//发送查询历史数据命令，
+//(userID表示用户序号，值范围1～12)
+- (void)sendSENSSUNFATSearchHistoryWithUserID:(int)userID peripheral:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNFATClearData:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNFATCloseScale:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNFATResetScale:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNFATHEART
+- (void)sendSENSSUNHEARTTestHeartRate:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNHEARTExitTestHeartRate:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SSBLESENSSUNBODYCLOCK
+//发送闹钟设置指令
+//（repeatSun表示闹钟在星期日是否执行，1－是，0－否）
+//（repeatMon表示闹钟在星期一是否执行，1－是，0－否）
+//（repeatTue表示闹钟在星期二是否执行，1－是，0－否）
+//（repeatWed表示闹钟在星期三是否执行，1－是，0－否）
+//（repeatThu表示闹钟在星期四是否执行，1－是，0－否）
+//（repeatFri表示闹钟在星期五是否执行，1－是，0－否）
+//（repeatSat表示闹钟在星期六是否执行，1－是，0－否）
+//（hour表示设置闹钟执行在哪一小时，值范围0～23）
+//（minute表示设置闹钟执行在哪一分钟，值范围0～59）
+//（tone表示设置哪一首铃声，值范围0~14）铃声文件在文件夹Tones下
+//0.秋日私语               tone1.aac
+//1.杜鹃圆舞曲              tone2.aac
+//2.柴可夫斯基1812序曲      tone3.aac
+//3.钢琴奏鸣曲              tone4.aac
+//4.土耳其进行曲            tone5.aac
+//5.胡桃夹子_进行曲          tone6.aac
+//6.胡桃夹子_俄罗斯舞        tone7.aac
+//7.我心永恒                tone8.aac
+//8.小天鹅之舞              tone9.aac
+//9.恭喜！恭喜！             tone10.aac
+//10.机器猫                 tone11.aac
+//11.我在那一角落患过伤风     tone12.aac
+//12.生日快乐               tone13.aac
+//13.圣诞老公公进城来         tone14.aac
+//14.嘀嘀嘀！               tone15.aac
+// (index表示设置秤体第几个闹钟，当为体重闹钟秤时，index仅为0，当为体脂闹钟秤时，index值范围0－2)
+- (void)sendSENSSUNBODYCLOCKSetting:(CBPeripheral *)peripheral :(int)repeatSun :(int)repeatMon :(int)repeatTue :(int)repeatWed :(int)repeatThu :(int)repeatFri :(int)repeatSat :(int)hour :(int)minute :(int)tone :(int)index;
+
+#pragma mark write data to SENSSUNSUPERFAT
+//发送测试脂肪命令,
+//(sex表示性别，0-女,1-男)，
+//(userID表示用户序号，值范围1～12)，
+//(age表示年龄，值范围10～100)，
+//(heightCM表示身高，单位cm，值范围10～100)，
+//(heightInch表示身高，单位英寸，值范围100～250)
+- (void)sendSENSSUNSUPERFATTestFatWithSex:(int)sex userID:(int)userID age:(int)age heightCM:(int)heightCM heightInch:(int)heightInch peripheral:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNGROWTH
+//发送新增用户命令
+//(userNO表示用户序号，值范围1-8),
+- (void)sendSENSSUNGROWTHUserAdd:(int)userNO :(CBPeripheral *)peripheral;
+//发送删除用户命令
+//(userNO表示用户序号，值范围1-8),
+- (void)sendSENSSUNGROWTHUserDelete:(int)userNO :(CBPeripheral *)peripheral;
+//发送设置用户命令
+//(userNO表示用户序号，值范围1-8),
+- (void)sendSENSSUNGROWTHUserSet:(int)userNO :(CBPeripheral *)peripheral;
+//发送浅度同步用户数据命令
+//(userNO表示用户序号，值范围1-8),
+- (void)sendSENSSUNGROWTHSyncDataShallow:(int)userNO :(CBPeripheral *)peripheral;
+//发送深度同步用户数据命令
+//(userNO表示用户序号，值范围1-8),
+- (void)sendSENSSUNGROWTHSyncDataDeep:(int)userNO :(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNFATCLOCK
+//发送查询历史数据命令，
+- (void)sendSENSSUNFATCLOCKSearchHistory:(CBPeripheral *)peripheral;
+//发送查询所有历史数据命令，
+- (void)sendSENSSUNFATCLOCKSearchHistoryDeep:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNPAD
+- (void)sendSENSSUNPADBuildWithGram:(int)gram :(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADBatteryLevel:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADSyncDateTime:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADDeleteWaterData :(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADWaterPlan:(float)water :(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADSyncWaterData:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADWeighMode:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADWeighZero:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADStandbyMode:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNPADSetting:(int)startSun :(int)endSun :(int)startMon :(int)endMon :(int)startTue :(int)endTue :(int)startWed :(int)endWed :(int)startThu :(int)endThu :(int)startFri :(int)endFri :(int)startSat :(int)endSat :(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNTRACK
+- (void)sendSENSSUNTRACKTest:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNALI
+- (void)sendSENSSUNALITestFatWithSex:(int)sex userID:(int)userID age:(int)age heightCM:(int)heightCM heightInch:(int)heightInch peripheral:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUN
+- (void)sendSENSSUNGetProductUUID:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNSyncUserData:(CBPeripheral *)peripheral :(int)number :(int)sex :(int)age :(int)height;
+- (void)sendSENSSUNSyncDateTime:(CBPeripheral *)peripheral;
+- (void)sendSENSSUNResetScale:(CBPeripheral *)peripheral;
+
+#pragma mark write data to SENSSUNMWS1
+- (void)sendSENSSUNMWS1TestFatWithSex:(int)sex :(int)age :(int)height :(CBPeripheral *)peripheral;
+- (void)sendSENSSUNMWS1Disconnect:(CBPeripheral *)peripheral;
+
+@end

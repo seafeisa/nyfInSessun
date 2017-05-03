@@ -1,0 +1,171 @@
+#import "DeviceSearchController.h"
+#import "DeviceSearchCell.h"
+#import "AppDelegate.h"
+#import "SSBLEDeviceManager.h"
+#import "MassFatController.h"
+#import "MassFatClockController.h"
+#import "FatProController.h"
+#import "GrowController.h"
+#import "FoodController.h"
+
+
+@interface DeviceSearchController () <SSBLEDeviceDelegate, UITableViewDataSource, UITableViewDelegate> {
+    UITableView *_tableView;
+    
+    NSMutableArray *_list;
+    NSMutableDictionary *_deviceIDToPeripheralMap;
+    CBPeripheral *_selectedPeripheral;
+}
+@end
+
+
+@implementation DeviceSearchController
+
+- (void)loadView {
+    [super loadView];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    CGRect rect = CGRectMake(0.0f, 20.0f, 320, 548);
+    _tableView = [[UITableView alloc] initWithFrame:rect];
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.backgroundColor = [UIColor clearColor];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    _tableView.bounces = NO;
+    _tableView.showsHorizontalScrollIndicator = NO;
+    _tableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:_tableView];
+    
+    _list = [NSMutableArray array];
+    _deviceIDToPeripheralMap = [NSMutableDictionary dictionary];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    [delegate.bleMgr addDelegate:self];
+    [delegate.bleMgr scanPeripherals];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    [delegate.bleMgr removeDelegate:self];
+}
+
+- (void)refreshClick:(id)sender {
+    _list = [NSMutableArray array];
+    _deviceIDToPeripheralMap = [NSMutableDictionary dictionary];
+    [_tableView reloadData];
+    
+    AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    [delegate.bleMgr scanPeripherals];
+}
+
+- (void)peripheralDidDiscover:(CBPeripheral *)peripheral {
+    CBPeripheral *temp = [_deviceIDToPeripheralMap objectForKey:peripheral.deviceID];
+    if (peripheral.newRSSI.intValue == 127) {
+        return;
+    }
+   if (!temp) {
+       temp = peripheral;
+        [_list addObject:peripheral];
+        [_deviceIDToPeripheralMap setObject:peripheral forKey:peripheral.deviceID];
+    }
+    temp.newRSSI = peripheral.newRSSI;
+
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [_tableView reloadData];
+    });
+}
+
+- (void)reloadData {
+}
+
+#pragma mark - Table view data source
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [_list count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *identifier = @"DeviceSearchCell";
+    DeviceSearchCell *cell = (DeviceSearchCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
+    if (cell == nil) {
+        cell = [[DeviceSearchCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    
+    CBPeripheral *peripheral = [_list objectAtIndex:indexPath.row];
+    [cell loadData:peripheral];
+    
+    return cell;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [DeviceSearchCell heightForCell:nil];
+}
+
+#pragma mark - Table view delegate
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    _selectedPeripheral = [_list objectAtIndex:indexPath.row];
+    int deviceType = _selectedPeripheral.deviceType.intValue;
+    
+    if (deviceType == SSBLESENSSUNBODY ||
+        deviceType == SSBLESENSSUNFAT ||
+        deviceType == SSBLESENSSUNHEART ||
+        deviceType == SSBLESENSSUNEQi99 ||
+        deviceType == SSBLESENSSUNEQi912 ||
+        deviceType == SSBLESENSSUNJOINTOWN) {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        MassFatController *vc = [sb instantiateViewControllerWithIdentifier:@"MassFatController"];
+        vc.deviceType = _selectedPeripheral.deviceType.intValue;
+        vc.deviceID = _selectedPeripheral.deviceID;
+        vc.advertiseName = _selectedPeripheral.advertiseName;
+        vc.serialNO = _selectedPeripheral.serialNO;
+        [self.navigationController pushViewController:vc animated:YES];
+
+    } else if (deviceType == SSBLESENSSUNBODYCLOCK ||
+               deviceType == SSBLESENSSUNFATCLOCK) {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        MassFatClockController *vc = [sb instantiateViewControllerWithIdentifier:@"MassFatClockController"];
+        vc.deviceType = _selectedPeripheral.deviceType.intValue;
+        vc.deviceID = _selectedPeripheral.deviceID;
+        vc.advertiseName = _selectedPeripheral.advertiseName;
+        vc.serialNO = _selectedPeripheral.serialNO;
+        [self.navigationController pushViewController:vc animated:YES];
+
+    } else if (deviceType == SSBLESENSSUNSUPERFAT) {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        FatProController *vc = [sb instantiateViewControllerWithIdentifier:@"FatProController"];
+        vc.deviceType = _selectedPeripheral.deviceType.intValue;
+        vc.deviceID = _selectedPeripheral.deviceID;
+        vc.advertiseName = _selectedPeripheral.advertiseName;
+        vc.serialNO = _selectedPeripheral.serialNO;
+        [self.navigationController pushViewController:vc animated:YES];
+
+    } else if (deviceType == SSBLESENSSUNFOOD) {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        FoodController *vc = [sb instantiateViewControllerWithIdentifier:@"FoodController"];
+        vc.deviceID = _selectedPeripheral.deviceID;
+        vc.advertiseName = _selectedPeripheral.advertiseName;
+        [self.navigationController pushViewController:vc animated:YES];
+
+    } else if (deviceType == SSBLESENSSUNGROWTH) {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        GrowController *vc = [sb instantiateViewControllerWithIdentifier:@"GrowController"];
+        vc.deviceID = _selectedPeripheral.deviceID;
+        vc.advertiseName = _selectedPeripheral.advertiseName;
+        vc.serialNO = _selectedPeripheral.serialNO;
+        [self.navigationController pushViewController:vc animated:YES];
+
+    }
+}
+
+@end

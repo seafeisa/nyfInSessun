@@ -1,0 +1,404 @@
+//
+//  Diary.m
+//  grow
+//
+//  Created by admin on 15-5-11.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "Diary.h"
+
+//extern NSString *g_sandboxDir;
+
+@implementation DiaryPage
+{
+    NSMutableArray      *m_photoList;   // UIImage array
+    //NSMutableDictionary *m_imageList;   // NSString -> UIImage
+    BOOL                m_photoChanged;
+}
+
+@synthesize date = _date;
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self initialize];
+    }
+    
+    return self;
+}
+
+- (void)initialize
+{
+//    NSLog(@"65");
+    _date = midnightOfDate([NSDate date]);
+    _text = @"";
+    
+    _imageList  = [[NSMutableArray alloc] init];
+    m_photoList = [[NSMutableArray alloc] init];
+    
+    //m_imageList = [[NSMutableDictionary alloc] init];
+    m_photoChanged = NO;
+}
+
+- (NSMutableArray *)imageList
+{
+    if (nil == _imageList)
+    {
+        _imageList  = [[NSMutableArray alloc] init];
+        //m_photoList = [[NSMutableArray alloc] init];
+    }
+    return _imageList;
+}
+
+- (NSMutableArray *)photoList
+{
+    if (nil == m_photoList)
+    {
+        m_photoList = [[NSMutableArray alloc] init];
+    }
+    return m_photoList;
+}
+
+- (NSDate *)date
+{
+    if (nil == _date)
+    {
+        _date = midnightOfDate([NSDate date]);
+    }
+    return midnightOfDate(_date);
+}
+
+- (void)setDate:(NSDate *)aDate
+{
+    _date = midnightOfDate(aDate);
+}
+
+- (NSString *)makePhotosNameForUser:(NSString *)username
+{
+    NSString *timestring = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
+    timestring = [timestring stringByReplacingOccurrencesOfString:@"." withString:@""];
+    return [NSString stringWithFormat:@"IMG_PHOTOS_%@_%@", username, timestring];
+}
+
+//- (NSArray *)sortedPhotoKeys
+//{
+//    NSArray *array = [[m_imageList allKeys] sortedArrayUsingSelector:@selector(compare:)];
+//    
+//    return array;
+//}
+
+- (void)copyPhotosFromOther:(DiaryPage *)other
+{
+    m_photoList = [NSMutableArray arrayWithArray:other.photoList];
+}
+
+- (void)addPhoto:(UIImage *)photo forUser:(NSString *)name
+{
+    NSUInteger cnt = [m_photoList count];
+    NSString *key = [self makePhotosNameForUser:name];
+    [self.imageList insertObject:key atIndex:cnt];
+    [m_photoList insertObject:photo atIndex:cnt];
+    //[self.imageList addObject:key];
+    //[m_photoList addObject:photo];
+    
+    m_photoChanged = YES;
+    
+    //[m_imageList setObject:photo forKey:key];
+}
+
+- (void)setPhoto:(UIImage *)photo atIndex:(NSUInteger)index
+{
+    if (index >= m_photoList.count)
+    {
+        return;
+    }
+    
+    [m_photoList replaceObjectAtIndex:index withObject:photo];
+    
+    m_photoChanged = YES;
+    
+    //[m_imageList setObject:photo forKey:imageName];
+}
+
+- (void)delPhotoAtIndex:(NSUInteger)index
+{
+    if (index >= MIN(m_photoList.count, self.imageList.count))
+    {
+        return;
+    }
+    
+    [self.imageList removeObjectAtIndex:index];
+    [m_photoList removeObjectAtIndex:index];
+}
+
+- (UIImage *)photoAtIndex:(NSUInteger)index
+{
+    if (index >= m_photoList.count)
+    {
+        return nil;
+        //return [UIImage imageNamed:IMG_DEFAULT_BACKGROUNG];
+    }
+    
+    return [m_photoList objectAtIndex:index];
+}
+
+- (BOOL)isPhotoChanged
+{
+    return m_photoChanged;
+}
+
+- (void)savePhotos
+{
+    if (![self isPhotoChanged])
+    {
+        return;
+    }
+    
+    m_photoChanged = NO;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+    ^{
+        NSUInteger cnt = MIN(m_photoList.count, self.imageList.count);
+        //dbgLog(@"cnt:%zu photo:%zu name:%zu",cnt,m_photoList.count, self.imageList.count);
+        for (int i = 0; i < cnt; i++)
+        {
+            NSString *photoname = [self.imageList objectAtIndex:i];
+            UIImage  *image     = [m_photoList objectAtIndex:i];
+            
+            [[AppData sharedInstance] savePhotoImage:image imageName:photoname];
+            
+            // 保存到沙盒
+            NSString *imgPath = [[AppData sandboxDir] stringByAppendingPathComponent:photoname];
+            NSData *data = UIImagePNGRepresentation(image);
+            [data writeToFile:imgPath atomically:NO];
+            //dbgLog(@"save %d %@, result:%d",i,photoname,flag);
+        }
+    }
+    );
+}
+
+- (void)loadPhotos
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+    ^{
+        NSArray *array = [NSArray arrayWithArray:self.imageList];
+        //dbgLog(@"photo array:%@",array);
+        for (NSString *photoname in array)
+        {
+            UIImageOrientation orient = [[AppData sharedInstance] photoOrientForImage:photoname];
+            
+            // 载入图片文件
+            NSString *imgPath = [[AppData sandboxDir] stringByAppendingPathComponent:photoname];
+            UIImage *image    = [UIImage imageWithContentsOfFile:imgPath];
+            if (nil == image)
+            {
+                //image = [UIImage imageNamed:IMG_DEFAULT_BACKGROUNG];
+                [self.imageList removeObject:photoname];
+                //dbgLog(@"del %@", photoname);
+                continue;
+            }
+            else
+            {
+                image = [UIImage imageWithCGImage:image.CGImage scale:1 orientation:orient];
+            }
+            
+            [m_photoList addObject:image];
+        }
+    }
+    );
+}
+
+@end
+
+
+#define FMT_DIARY_COVER(username, month) [NSString stringWithFormat:@"IMG_COVER_%@_%@.png", username, month]
+
+@implementation DiaryBook
+{
+    UIImage  *m_coverImage;
+    //NSString *m_userName;
+}
+
+@synthesize month = _month;
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self initialize];
+    }
+    
+    return self;
+}
+
+- (void)initialize
+{
+    _month     = monthOfDate([NSDate date]);
+    _imageName = IMG_DEFAULT_BACKGROUNG;
+    
+    _diaryList = [[NSMutableDictionary alloc] init];
+    
+    m_coverImage = nil;
+}
+
+- (NSMutableDictionary *)diaryList
+{
+    if (nil == _diaryList)
+    {
+        _diaryList = [[NSMutableDictionary alloc] init];
+    }
+    return _diaryList;
+}
+
+- (NSDate *)month
+{
+    if (nil == _month)
+    {
+        _month = monthOfDate([NSDate date]);
+    }
+    return monthOfDate(_month);
+    
+//    NSCalendar *calendar = [NSCalendar currentCalendar];
+//    NSDateComponents *comp = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth) fromDate:_month];
+//    
+//    return [calendar dateFromComponents:comp];
+}
+
+- (void)setMonth:(NSDate *)date
+{
+    _month = monthOfDate(date);
+    
+//    NSCalendar *calendar = [NSCalendar currentCalendar];
+//    NSDateComponents *comp = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth) fromDate:date];
+//    
+//    _month = [calendar dateFromComponents:comp];
+}
+
+- (NSString *)title
+{
+//    NSCalendar *calendar = [NSCalendar currentCalendar];
+//    NSDateComponents *comp = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth) fromDate:_month];
+//    
+//    NSString *title = [NSString stringWithFormat:@"%zu",comp.year];
+//    title = [title stringByAppendingString:LOCALSTR_YEAR];
+//    title = [title stringByAppendingFormat:@"%zu",comp.month];
+//    title = [title stringByAppendingString:LOCALSTR_MONTH];
+    
+    return stringFromMonth(_month);
+}
+
+- (BOOL)isDefaultCover
+{
+    return [self.imageName isEqualToString:IMG_DEFAULT_BACKGROUNG];
+}
+
+- (UIImage *)cover
+{
+    UIImage *cover;
+    
+    // 自定义封面
+    if ([self isDefaultCover])
+    {
+        cover = [UIImage imageNamed:IMG_DEFAULT_BACKGROUNG];
+    }
+    else
+    {
+        cover = m_coverImage;
+    }
+
+    return cover;
+}
+
+- (void)setCoverImage:(UIImage *)image forUser:(NSString *)name
+{
+    self.imageName = FMT_DIARY_COVER(name, self.title);
+    m_coverImage   = image;
+    //m_userName     = name;
+}
+
+- (void)saveCoverImage
+{
+    if ([self isDefaultCover])
+    {
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+    ^{
+        [[AppData sharedInstance] saveCoverImage:m_coverImage imageName:self.imageName];
+        
+        // 保存到沙盒
+        NSString *imgPath = [[AppData sandboxDir] stringByAppendingPathComponent:self.imageName];
+        NSData *data = UIImagePNGRepresentation(m_coverImage);
+        [data writeToFile:imgPath atomically:NO];
+        NSLog(@"===%@===",imgPath);
+    }
+    );
+}
+
+- (void)loadCoverImage
+{
+    if ([self isDefaultCover])
+    {
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+    ^{
+        UIImageOrientation orient = [[AppData sharedInstance] coverOrientForImage:self.imageName];
+        
+        // 载入图片文件
+        NSString *imgPath = [[AppData sandboxDir] stringByAppendingPathComponent:self.imageName];
+        UIImage *image    = [UIImage imageWithContentsOfFile:imgPath];
+        m_coverImage      = [UIImage imageWithCGImage:image.CGImage scale:1 orientation:orient];
+    }
+    );
+}
+
+- (NSArray *)sortedKeys
+{
+    // Descending
+    NSArray *array = [[self.diaryList allKeys] sortedArrayUsingComparator:
+                      ^NSComparisonResult(id obj1, id obj2)
+                      {
+                          NSDate *date1 = obj1;
+                          NSDate *date2 = obj2;
+                          return (NSOrderedSame - [date1 compare:date2]);
+                      }];
+    
+    return array;
+}
+
+- (DiaryPage *)getSheetByKey:(NSDate *)key
+{
+    return [self.diaryList objectForKey:midnightOfDate(key)];
+}
+
+- (DiaryPage *)getSheetByIndex:(NSInteger)index
+{
+    id key = [[self sortedKeys] objectAtIndex:index];
+    return [self.diaryList objectForKey:key];
+}
+
+- (void)addDiarySheet:(DiaryPage *)obj
+{
+    [self.diaryList setObject:obj forKey:obj.date];
+}
+
+- (void)setDiarySheet:(DiaryPage *)oldPage withNew:(DiaryPage *)newPage
+{
+    [self.diaryList removeObjectForKey:oldPage.date];
+    
+    [self.diaryList setObject:newPage forKey:newPage.date];
+}
+
+- (void)delDiarySheet:(DiaryPage *)obj
+{
+    [self.diaryList removeObjectForKey:obj.date];
+}
+
+@end

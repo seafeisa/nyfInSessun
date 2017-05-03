@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>!</key>
+	<string>啦!</string>
+	<key>unit</key>
+	<string>단위</string>
+	<key>25.000</key>
+	<string>25.000</string>
+	<key>Camera Roll</key>
+	<string>카메라</string>
+	<key>Copyright © 2015 Senssun. All Rights Reserved.</key>
+	<string>Copyright © 2015 Senssun. All Rights Reserved.</string>
+	<key>Delete</key>
+	<string>삭제</string>
+	<key>Growthcurve</key>
+	<string>성장 커브</string>
+	<key>Photo Library</key>
+	<string>앨범</string>
+	<key>Recently Deleted</key>
+	<string>최근 삭제</string>
+	<key>Senssun baby</key>
+	<string>SENSSUN Baby</string>
+	<key>SenssunBaby</key>
+	<string>Camry</string>
+	<key>Tomeasure</key>
+	<string>측정</string>
+	<key>Yue</key>
+	<string>월</string>
+	<key>Yues</key>
+	<string>개월</string>
+	<key>about</key>
+	<string>정보</string>
+	<key>add</key>
+	<string> 추가</string>
+	<key>addData</key>
+	<string>데이터 추가</string>
+	<key>addUser</key>
+	<string>유저 추가</string>
+	<key>age</key>
+	<string>나이</string>
+	<key>albums</key>
+	<string>앨범</string>
+	<key>allData</key>
+	<string>모든 데이터</string>
+	<key>allslect</key>
+	<string>모두 선택</string>
+	<key>babyGender</key>
+	<string>아기 성별</string>
+	<key>babyInformation</key>
+	<string>아기 정보</string>
+	<key>babyIs</key>
+	<string>%@</string>
+	<key>babybirth</key>
+	<string>생일</string>
+	<key>babyboy</key>
+	<string>남아</string>
+	<key>babygirl</key>
+	<string>여아</string>
+	<key>back</key>
+	<string>이전</string>
+	<key>camera</key>
+	<string>카메라</string>
+	<key>cancel</key>
+	<string>취소</string>
+	<key>cancelslect</key>
+	<string>모든 선택 취소</string>
+	<key>changecover</key>
+	<string>표지 교체</string>
+	<key>checknewvers</key>
+	<string>새로운 버전 검사</string>
+	<key>cm</key>
+	<string>cm</string>
+	<key>collections</key>
+	<string>선택</string>
+	<key>completeprofile-noeffect</key>
+	<string>정확한 개인 정보를 입력하세요. 정확하지 않은 정보는 평가 결과</string>
+	<key>confirm</key>
+	<string>확인</string>
+	<key>creatOneNote</key>
+	<string>내용 쓰기</string>
+	<key>dairy</key>
+	<string>다이어리</string>
+	<key>day</key>
+	<string>일</string>
+	<key>days</key>
+	<string>일</string>
+	<key>delete</key>
+	<string>삭제</string>
+	<key>deleteall</key>
+	<string>모든 내용을 삭제할까요?</string>
+	<key>deleteallinmonth</key>
+	<string>이번달 내용을 삭제할까요?</string>
+	<key>deletecurrenjournals</key>
+	<string>선택한 내용을 삭제할까요?</string>
+	<key>deletecurrennotes</key>
+	<string>선택한 내용을 삭제할까요?</string>
+	<key>deletecurrenusr</key>
+	<string>선택한 유저를 삭제할까요?</string>
+	<key>detail</key>
+	<string>세부내용</string>
+	<key>done</key>
+	<string>완료</string>
+	<key>editNote</key>
+	<string>내용 편집</string>
+	<key>editProtrait</key>
+	<string>프로필 편집</string>
+	<key>editor</key>
+	<string>편집</string>
+	<key>eightuser</key>
+	<string>8번 유저</string>
+	<key>enterallprofile</key>
+	<string>정보를 입력하세요</string>
+	<key>fast</key>
+	<string>성장이 빠름니다!</string>
+	<key>fiveuser</key>
+	<string>5번 유저</string>
+	<key>fouruser</key>
+	<string>4번 유저</string>
+	<key>gender</key>
+	<string>성별</string>
+	<key>good</key>
+	<string>잘 자라고 있어요!</string>
+	<key>green</key>
+	<string>녹색</string>
+	<key>growthCurve</key>
+	<string>성장 곡선</string>
+	<key>growthNote</key>
+	<string>성장 내용</string>
+	<key>haveslect</key>
+	<string>선택됨</string>
+	<key>head-age</key>
+	<string>나이별 머리둘레</string>
+	<key>headsize</key>
+	<string>머리둘레</string>
+	<key>headsizeIs</key>
+	<string>머리둘레</string>
+	<key>height-age</key>
+	<string>나이별 신장</string>
+	<key>height-weight</key>
+	<string>키별 체중</string>
+	<key>heightIs</key>
+	<string>키</string>
+	<key>heiht</key>
+	<string>키</string>
+	<key>history</key>
+	<string>이전 내용</string>
+	<key>home</key>
+	<string>홈</string>
+	<key>ifchangecoverfornote</key>
+	<string>선택한 노트 표지를 바꿀까요?</string>
+	<key>information lack</key>
+	<string>정보 미입력</string>
+	<key>kg</key>
+	<string>kg</string>
+	<key>latestversion</key>
+	<string>현재 버전은 최신 버전입니다</string>
+	<key>managedevice</key>
+	<string>기기 관리</string>
+	<key>measure</key>
+	<string>측정</string>
+	<key>measureTime</key>
+	<string>측정 시간</string>
+	<key>moments</key>
+	<string>시간</string>
+	<key>name</key>
+	<string>이름/닉네임</string>
+	<key>nameOfbaby</key>
+	<string>아기 이름</string>
+	<key>noNoteWritten</key>
+	<string>내용이 없네요. 내용을 기재하세요.</string>
+	<key>noaccess toset</key>
+	<string>본 앱은 앨범 접속 권한이 없습니다. &quot;개인 정보 설정&quot;에서 접속</string>
+	<key>noaccess tosetting</key>
+	<string>본 앱은 앨범 접속 권한이 없습니다. &quot;개인 정보 설정&quot;에서 접속</string>
+	<key>noprivacyauthorized</key>
+	<string>개인 정보 설정 권한이 없습니다.</string>
+	<key>notes</key>
+	<string>내용</string>
+	<key>oneGender</key>
+	<string>성별</string>
+	<key>onename</key>
+	<string>이름</string>
+	<key>oneuser</key>
+	<string>1번 유저</string>
+	<key>percentage</key>
+	<string>(퍼센트)</string>
+	<key>photo</key>
+	<string>앨범</string>
+	<key>photos</key>
+	<string>사진</string>
+	<key>portrait</key>
+	<string>초상화</string>
+	<key>purple</key>
+	<string>보라색</string>
+	<key>quit</key>
+	<string>나가기</string>
+	<key>save</key>
+	<string>저장</string>
+	<key>saverecord</key>
+	<string>기록 저장됨</string>
+	<key>select in album</key>
+	<string>앨범에서 선택</string>
+	<key>selectMonth</key>
+	<string>월 선택</string>
+	<key>set-camera-privacy</key>
+	<string> &quot;설정- 개인 정보- 카메라&quot; 옵션에서 카메라 접속 허용을 하세</string>
+	<key>setcoverpage</key>
+	<string>표지 설정</string>
+	<key>setting</key>
+	<string>설정</string>
+	<key>sevenuser</key>
+	<string>7번 유저</string>
+	<key>share</key>
+	<string>공유</string>
+	<key>share lost</key>
+	<string>공유 실패,</string>
+	<key>sixuser</key>
+	<string>6번 유저</string>
+	<key>slectmonth</key>
+	<string>월 선택</string>
+	<key>slow</key>
+	<string>성장이 느림니다!</string>
+	<key>syn</key>
+	<string>데이터 동기화 중</string>
+	<key>syndone</key>
+	<string>데이터 동기화 완성</string>
+	<key>synfail</key>
+	<string>데이터 동기화 실패</string>
+	<key>takephto</key>
+	<string>사진 찍기</string>
+	<key>theme</key>
+	<string>테마</string>
+	<key>threeuser</key>
+	<string>3번 유저</string>
+	<key>time</key>
+	<string>시간</string>
+	<key>title</key>
+	<string>제목</string>
+	<key>twouser</key>
+	<string>2번 유저</string>
+	<key>user</key>
+	<string>유저</string>
+	<key>user num</key>
+	<string>유저 번호가 기기와 연동됨</string>
+	<key>userInfo</key>
+	<string>유저 정보</string>
+	<key>users</key>
+	<string>유저</string>
+	<key>version</key>
+	<string>버전</string>
+	<key>weightIs</key>
+	<string>체중</string>
+	<key>weiht</key>
+	<string>체중</string>
+	<key>weiht invalid meas again</key>
+	<string>체중 데이터 무효, 다시 측정하기</string>
+	<key>weit-age</key>
+	<string>나이별 체중</string>
+	<key>writeNote</key>
+	<string>내용 기록</string>
+	<key>year</key>
+	<string>년</string>
+	<key>yearandmonth</key>
+	<string>2015년3월</string>
+	<key>yearold</key>
+	<string>세 </string>
+	<key>years</key>
+	<string>년</string>
+	<key>yellow</key>
+	<string>노란색</string>
+	<key>yues</key>
+	<string>개월</string>
+</dict>
+</plist>

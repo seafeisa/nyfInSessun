@@ -1,0 +1,106 @@
+//
+//  UITextViewNote.m
+//  grow
+//
+//  Created by admin on 15-5-15.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "UITextViewNote.h"
+
+#define TEXT_LINE_SPACING       4.0f
+#define TEXT_LINE_HEIGHT        40.0f
+#define TEXT_FIRST_LINE_INDENT  75.0f
+
+@implementation UITextViewNote
+
+- (void)didMoveToSuperview
+{
+    NSLog(@"57");
+    [self setParagraphStyle];
+    
+    UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake(20, 5, 30, 30)];
+    icon.image = [UIImage imageNamed:IMG_GROWTH_DIARY];
+    [self addSubview:icon];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    [super drawRect:rect];
+    
+    //Get the current drawing context
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    //Set the line color and width
+    //CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.2f].CGColor);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.5);
+    CGContextSetLineWidth(context, 0.2f);
+    
+    //Start a new Path
+    CGContextBeginPath(context);
+	
+    //Set the line offset from the baseline. (I'm sure there's a concrete way to calculate this.)
+    CGFloat baselineOffset = 0.0f;//6.8f;7.0f;
+    CGFloat lineHeight     = TEXT_LINE_HEIGHT;//self.font.lineHeight + TEXT_LINE_SPACING;
+	
+    //Find the number of lines in textView + add a bit more height to draw lines in the empty part of the view
+    NSUInteger numberOfLines = (self.contentSize.height + self.bounds.size.height) / lineHeight;
+	
+    //iterate over numberOfLines and draw each line
+    for (int i = 1; i < numberOfLines; i++)
+    {
+        //0.5f offset lines up line with pixel boundary
+        CGContextMoveToPoint(context, self.bounds.origin.x, lineHeight * i + baselineOffset);
+        CGContextAddLineToPoint(context, self.bounds.size.width, lineHeight * i + baselineOffset);
+    }
+	
+    //Close Path and Stroke (draw) it
+    CGContextClosePath(context);
+    CGContextStrokePath(context);
+}
+
+- (NSDictionary *)attributesWithIndent:(CGFloat)indent
+{
+    // 段落风格
+    NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+    paragraph.lineSpacing              = TEXT_LINE_HEIGHT - self.font.lineHeight;
+    paragraph.firstLineHeadIndent      = indent;
+    
+    // 文本属性
+    NSDictionary *attributes = @{NSFontAttributeName : self.font,
+                                 NSForegroundColorAttributeName : self.textColor,
+                                 NSParagraphStyleAttributeName : paragraph,
+                                 };
+    
+    return attributes;
+}
+
+- (void)setText:(NSString *)text
+{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+    
+    // 获取第一段的范围
+    NSRange crRange = [text rangeOfString:@"\n"];
+    NSUInteger firstParagraphLength = (NSNotFound == crRange.location) ? text.length : NSMaxRange(crRange);
+    
+    // 第一段首行缩进
+    NSDictionary *dic1 = [self attributesWithIndent:TEXT_FIRST_LINE_INDENT];
+    [attributedString setAttributes:dic1 range:NSMakeRange(0, firstParagraphLength)];
+    
+    // 其它文本顶格对齐
+    NSDictionary *dic2 = [self attributesWithIndent:0];
+    [attributedString setAttributes:dic2 range:NSMakeRange(firstParagraphLength, text.length - firstParagraphLength)];
+    
+    self.attributedText = attributedString;
+}
+
+- (void)setParagraphStyle
+{
+    // 按段落设置缩进，第一段首行缩进，其它段落顶格对齐
+    NSRange crRange = [self.text rangeOfString:@"\n"];
+    CGFloat indent  = (NSNotFound == crRange.location) ? TEXT_FIRST_LINE_INDENT : 0;
+    
+    self.typingAttributes = [self attributesWithIndent:indent];
+}
+
+@end

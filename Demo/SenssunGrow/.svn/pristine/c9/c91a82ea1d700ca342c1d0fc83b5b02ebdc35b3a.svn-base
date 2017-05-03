@@ -1,0 +1,338 @@
+//
+//  UserList.m
+//  ChildGrowth
+//
+//  Created by admin on 14-9-23.
+//  Copyright (c) 2014年 camry. All rights reserved.
+//
+
+#import "DBMgr.h"
+#import "UserList.h"
+
+
+
+#define PLIST_CONFIG_FILE       @"config"
+#define PLIST_KEY_CURRENTUSER   @"currentUser"
+//#define CURRENT_USER_KEY        PLIST_KEY_CURRENTUSER
+
+@implementation UserList
+{
+    DBMgr          *m_db;
+    NSMutableArray *m_kidsArray;
+    UserProfile    *m_currentKid;
+}
+
+
+// the singleton instance. 对象实例
++ (UserList *)sharedInstance
+{
+    static UserList *s_childrenList = nil;
+    
+    if (nil == s_childrenList)
+    {
+        s_childrenList = [[UserList alloc] init];
+    }
+    
+    return s_childrenList;
+}
+
+- (id)init
+{
+//    NSLog(@"62");
+    self = [super init];
+    if (self)
+    {
+        //  引用数据库对象
+        m_db = [DBMgr sharedInstance];
+        
+        // 初始化用户列表
+        m_kidsArray = [[NSMutableArray alloc] init];
+        [self restoreFromDb];
+        
+        // 当前用户
+        [self restoreCurrentKid];
+    }
+    
+    return self;
+}
+
+#pragma mark - Kids
+
+- (NSMutableArray *)kidsArray
+{
+    if (nil == m_kidsArray)
+    {
+        m_kidsArray = [[NSMutableArray alloc] init];
+    }
+    
+    return m_kidsArray;
+}
+
+- (UserProfile *)currentKid
+{
+    if ((nil == m_currentKid) && (0 != m_kidsArray.count))
+    {
+        m_currentKid = [m_kidsArray firstObject];
+    }
+    
+    return m_currentKid;
+}
+
+- (UserProfile *)kidForRow:(NSUInteger)row
+{
+    if (row >= [m_kidsArray count])
+    {
+        return nil;
+    }
+    
+    return [m_kidsArray objectAtIndex:row];
+}
+
+- (UserProfile *)kidForName:(NSString *)name
+{
+    NSUInteger index = [self getKidIndexByName:name];
+    if (NSNotFound == index)
+    {
+        dbgLog(@"kid %@ not found", name);
+        return nil;
+    }
+    
+    return [m_kidsArray objectAtIndex:index];
+}
+
+- (void)setCurrentKid:(NSString*)name
+{
+    NSUInteger index = [self getKidIndexByName:name];
+    if (NSNotFound == index)
+    {
+        dbgLog(@"kid %@ not found", name);
+        return;
+    }
+    
+    //m_currentKid = [m_kidsArray objectAtIndex:index];
+    m_currentKid = [self kidForRow:index];
+    
+    // 记录到配置文件
+    //writePlist(PLIST_CONFIG_FILE, @{PLIST_KEY_CURRENTUSER: name});
+    
+    // 记录默认配置
+    [AppData saveCurrentUser:name];
+    //[[NSUserDefaults standardUserDefaults] setObject:name forKey:CURRENT_USER_KEY];
+}
+
+- (void)setCurrentKidForRow:(NSUInteger)row
+{
+    m_currentKid = [self kidForRow:row];
+    
+    NSString *name = m_currentKid.name;
+    if (nil == name)
+    {
+        name = @"";
+    }
+    
+    // 记录到配置文件
+    //writePlist(PLIST_CONFIG_FILE, @{PLIST_KEY_CURRENTUSER: name});
+    
+    // 记录默认配置
+    [AppData saveCurrentUser:name];
+    //[[NSUserDefaults standardUserDefaults] setObject:name forKey:CURRENT_USER_KEY];
+    //dbgLog(@"save current kid:%@ in:%@",name,[[NSUserDefaults standardUserDefaults] stringForKey:CURRENT_USER_KEY]);
+}
+
+- (BOOL)addKid:(UserProfile *)kid
+{
+    if ((nil == m_kidsArray) || (nil == m_db) || (nil == kid))
+    {
+        return NO;
+    }
+    
+    //[m_kidsArray insertObject:kid atIndex:([m_kidsArray count])];
+    [m_kidsArray addObject:kid];
+    
+    BOOL isOK = [m_db addUser:kid];
+    if (!isOK)
+    {
+        dbgLog(@"failed to save[%@] to db", kid.name);
+    }
+    [m_db dump];
+    
+    return YES;
+}
+
+- (BOOL)rmvKid:(UserProfile *)kid
+{
+    if ((nil == m_kidsArray) || (nil == m_db) || (nil == kid))
+    {
+        return NO;
+    }
+    
+    [m_kidsArray removeObject:kid];
+    
+    BOOL isOK = [m_db deleteUser:kid.name];
+    if (!isOK)
+    {
+        dbgLog(@"failed to rmv[%@] from db", kid.name);
+    }
+    [m_db dump];
+    
+    return YES;
+}
+
+- (BOOL)rmvKidForRow:(NSUInteger)row
+{
+    if ((nil == m_kidsArray) || (nil == m_db))
+    {
+        return NO;
+    }
+    
+    UserProfile *kid = [self kidForRow:row];
+    
+    [m_kidsArray removeObjectAtIndex:row];
+    
+    BOOL isOK = [m_db deleteUser:kid.name];
+    if (!isOK)
+    {
+        dbgLog(@"failed to rmv[%@] from db", kid.name);
+    }
+    [m_db dump];
+    
+    return YES;
+}
+
+- (BOOL)mdfKid:(NSString *)name withObject:(UserProfile *)kid
+{
+    if ((nil == m_kidsArray) || (nil == m_db) || (nil == name) || (nil == kid))
+    {
+        return NO;
+    }
+
+    NSUInteger srcObjIndex = [self getKidIndexByName:name];
+    if (NSNotFound == srcObjIndex)
+    {
+        dbgLog(@"kid %@ not found", name);
+        return NO;
+    }
+    
+    [m_kidsArray replaceObjectAtIndex:(srcObjIndex) withObject:kid];
+    //[m_kidsArray setObject:kid atIndexedSubscript:srcObjIndex];
+    
+    BOOL isOK = [m_db mergeUser:name with:kid];
+    if (!isOK)
+    {
+        dbgLog(@"failed to update[%@] to db", name);
+    }
+    [m_db dump];
+    
+    return YES;
+}
+
+- (NSUInteger)getKidIndexByName:(NSString *)name
+{
+    NSUInteger index = NSNotFound;
+    
+    for (UserProfile *obj in m_kidsArray)
+    {
+        if ([obj.name isEqualToString:name])
+        {
+            index = [m_kidsArray indexOfObject:obj];
+            break;
+        }
+    }
+    
+    return index;
+}
+
+- (NSUInteger)rowForKid:(UserProfile *)kid
+{
+    return [self getKidIndexByName:kid.name];
+}
+
+- (NSUInteger)rowForCurrentKid
+{
+    return [self getKidIndexByName:m_currentKid.name];
+}
+
+-(BOOL)restoreFromDb
+{
+    if (nil == m_db)
+    {
+        return NO;
+    }
+    
+    // restore user & record
+    m_kidsArray = [NSMutableArray arrayWithArray:[m_db restoreUsers]];
+    
+    for (UserProfile *kid in m_kidsArray)
+    {
+        // restore portrait
+        [kid loadPortraitImage];
+        
+        // restore diary
+        NSDictionary *diaryList = [AppData diaryBooksForUser:kid.name];
+        kid.diaryBooks = [NSMutableDictionary dictionaryWithDictionary:diaryList];
+    }
+    
+    return YES;
+}
+
+-(BOOL)restoreCurrentKid
+{
+//    NSDictionary *config = readPlist(PLIST_CONFIG_FILE);
+//    NSString *name = [config objectForKey:PLIST_KEY_CURRENTUSER];
+//    m_currentKid = [self kidForName:name];
+    
+    //NSString *kidName = [[NSUserDefaults standardUserDefaults] stringForKey:CURRENT_USER_KEY];
+    NSString *kidName = [AppData currentUser];
+    m_currentKid = [self kidForName:kidName];
+    //dbgLog(@"restore kid:%@ current:%@", kidName,m_currentKid.name);
+    
+    return YES;
+}
+
+- (void)dump
+{
+    if (nil == m_kidsArray)
+    {
+        dbgLog(@"null children list");
+        return;
+    }
+    
+    dbgLog(@"dump children list:");
+    for (UserProfile* object in m_kidsArray)
+    {
+        dbgLog(@"user %@, gender:%d, birth: %@", object.name, object.gender, object.birthday);
+    }
+}
+
+#pragma mark - Records
+
+- (void)saveRecordWithWeight:(CGFloat)weight height:(CGFloat)height headcircle:(CGFloat)headcircle
+{
+    if (nil == m_currentKid)
+    {
+        return;
+    }
+    
+    [m_currentKid addRecordWithWeight:weight height:height headcircle:headcircle];
+}
+
+#pragma mark - Utilities
+
+BOOL isFirstLogin()
+{
+    return (0 == [[UserList sharedInstance].kidsArray count]);
+}
+
+BOOL isLogout()
+{
+    return (nil == [UserList sharedInstance].currentKid);
+}
+
+void pretend2Login()    // for debug
+{
+    UserProfile *newUser = [[UserProfile alloc] initWithName:@"bb"];
+    [[UserList sharedInstance].kidsArray addObject:newUser];
+    [[UserList sharedInstance] setCurrentKid:@"bb"];
+}
+
+@end

@@ -1,0 +1,13 @@
+//
+//  AboutUsViewController.h
+//  CalculateWeigh
+//
+//  Created by admin on 16/7/4.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface AboutUsViewController : UIViewController
+
+@end

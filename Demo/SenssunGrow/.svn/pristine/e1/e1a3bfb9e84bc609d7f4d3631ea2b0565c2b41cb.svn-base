@@ -1,0 +1,312 @@
+//
+//  EditDiaryShelfViewController.m
+//  grow
+//
+//  Created by admin on 15-5-7.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "UserList.h"
+#import "EditDiaryShelfViewController.h"
+
+enum
+{
+    ALERT_REMOVE_ALL = 0x3001,
+    ALERT_DEL_SELECTED,
+    ALERT_CHANGE_COVER
+};
+
+@implementation EditDiaryBookViewCell
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+    self.layer.cornerRadius  = 5;
+    self.layer.masksToBounds = YES;
+    self.layer.borderWidth   = 1;
+    self.layer.borderColor   = [UIColor lightGrayColor].CGColor;
+}
+
+@end
+
+#pragma mark -
+@interface EditDiaryShelfViewController ()
+
+@property (strong, nonatomic) IBOutlet UICollectionView *m_iboDiaryBooks;
+@property (strong, nonatomic) IBOutlet UIImageView *m_iboSelectState;
+
+@end
+
+@implementation EditDiaryShelfViewController
+{
+    NSMutableDictionary *m_selectedItems;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    [self initialize];
+}
+
+- (void)initialize
+{
+    if (nil == m_selectedItems)
+    {
+        m_selectedItems = [[NSMutableDictionary alloc] init];
+    }
+    [m_selectedItems removeAllObjects];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.m_iboDiaryBooks reloadData];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    
+}
+
+- (IBAction)backToPreView:(id)sender
+{
+    [self dismissViewControllerAnimated:NO completion:^{}];
+}
+
+
+#pragma mark - UICollectionViewDataSource
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return [[UserList sharedInstance].currentKid.diaryBooks count];
+}
+
+//每个UICollectionView展示的内容
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString * CellIdentifier = @"editDiaryBookCell";
+    EditDiaryBookViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+//    NSArray *sortKeys = [[UserList sharedInstance].currentKid sortDiaryKeys];
+//    NSDate      *date = [sortKeys objectAtIndex:indexPath.row];
+//    DiaryBook   *book = [[UserList sharedInstance].currentKid.diaryBooks objectForKey:date];
+    DiaryBook *book = [[UserList sharedInstance].currentKid getDiaryByIndex:indexPath.row];
+    
+    cell.title.text  = book.title;
+    cell.cover.image = book.cover;
+    
+    if (nil == [m_selectedItems objectForKey:book.month])
+    {
+        cell.checkBox.image = [UIImage imageNamed:IMG_CHECKKBOX_DESELECT];
+    }
+    else
+    {
+        cell.checkBox.image = [UIImage imageNamed:IMG_CHECKKBOX_SELECT];
+    }
+    
+    return cell;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+//定义每个UICollectionView 的大小
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return CGSizeMake(96, 100);
+//}
+
+//定义每个UICollectionView 的 margin
+//-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+//{
+//    return UIEdgeInsetsMake(5, 5, 5, 5);
+//}
+
+#pragma mark - UICollectionViewDelegate
+//UICollectionView被选中时调用的方法
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    EditDiaryBookViewCell *cell = (EditDiaryBookViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    //cell.backgroundColor = [UIColor lightGrayColor];
+    
+    DiaryBook *obj = [[UserList sharedInstance].currentKid getDiaryByIndex:indexPath.row];
+    if (nil == [m_selectedItems objectForKey:obj.month])
+    {
+        cell.checkBox.image = [UIImage imageNamed:IMG_CHECKKBOX_SELECT];
+
+        [m_selectedItems setObject:obj forKey:obj.month];
+    }
+    else
+    {
+        cell.checkBox.image = [UIImage imageNamed:IMG_CHECKKBOX_DESELECT];
+
+        [m_selectedItems removeObjectForKey:obj.month];
+    }
+}
+
+//返回这个UICollectionView是否可以被选择
+//-(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return YES;
+//}
+
+#pragma mark - Action
+
+- (IBAction)onSelectAll:(id)sender
+{
+    [m_selectedItems removeAllObjects];
+
+    NSString *image = [NSString string];
+    NSString *title = [sender titleForState:UIControlStateNormal];
+    if ([title isEqualToString:LOCALSTR_SELECT_ALL])
+    {
+        [m_selectedItems addEntriesFromDictionary:[UserList sharedInstance].currentKid.diaryBooks];
+        title = LOCALSTR_DESELECT_ALL;
+        image = IMG_EDIT_DESELECT_ALL;
+    }
+    else
+    {
+        title = LOCALSTR_SELECT_ALL;
+        image = IMG_EDIT_SELECT_ALL;
+    }
+
+    [sender setTitle:title forState:UIControlStateNormal];
+    [self.m_iboSelectState setImage:[UIImage imageNamed:image]];
+
+    [self.m_iboDiaryBooks reloadData];
+}
+
+- (IBAction)onRemoveAll:(id)sender
+{
+    // 提示删除
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOCALSTR_ALERT_DEL
+                                                    message:LOCALSTR_DEL_ALL_DIARYS_TIPS
+                                                   delegate:self
+                                          cancelButtonTitle:LOCALSTR_CANCEL
+                                          otherButtonTitles:LOCALSTR_DELETE, nil];
+    // 标识待删除对象
+    alert.tag = ALERT_REMOVE_ALL;
+    [alert show];
+}
+
+- (IBAction)onDeleteBooks:(id)sender
+{
+    // 提示删除
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOCALSTR_ALERT_DEL
+                                                    message:LOCALSTR_DEL_DIARYS_TIPS
+                                                   delegate:self
+                                          cancelButtonTitle:LOCALSTR_CANCEL
+                                          otherButtonTitles:LOCALSTR_DELETE, nil];
+    // 标识待删除对象
+    alert.tag = ALERT_DEL_SELECTED;
+    [alert show];
+}
+
+- (IBAction)onChangeCovers:(id)sender
+{
+    // 弹出photopicker
+    PhotoPickerView *picker = [[PhotoPickerView alloc] init];
+    picker.delegate = self;
+    [picker showInView:self.view];
+}
+
+#pragma mark - Photo picker delegate
+- (void)photoPickerView:(PhotoPickerView *)picker didFinishPickingWithImage:(UIImage *)photo
+{
+    for (DiaryBook *obj in [m_selectedItems allValues])
+    {
+        [obj setCoverImage:photo forUser:[UserList sharedInstance].currentKid.name];
+        [obj saveCoverImage];
+    }
+    
+    [m_selectedItems removeAllObjects];
+    [self.m_iboDiaryBooks reloadData];
+}
+
+- (void)photoPickerDidCancel
+{
+    [m_selectedItems removeAllObjects];
+    [self.m_iboDiaryBooks reloadData];
+}
+
+#pragma mark - UIAlertView Delegate
+// 响应警告框事件
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    // 取消
+    if (buttonIndex == alertView.cancelButtonIndex)
+    {
+        return;
+    }
+    
+    switch (alertView.tag)
+    {
+        case ALERT_REMOVE_ALL:
+            
+            [[UserList sharedInstance].currentKid.diaryBooks removeAllObjects];
+
+            // 记录到配置文件
+            [AppData removeAllDiarysOfUser:[UserList sharedInstance].currentKid.name];
+            break;
+            
+        case ALERT_DEL_SELECTED:
+            
+            for (DiaryBook *obj in [m_selectedItems allValues])
+            {
+                [[UserList sharedInstance].currentKid delDiaryBook:obj];
+
+                // 记录到配置文件
+                [AppData removeDiaryBook:obj withUser:[UserList sharedInstance].currentKid.name];
+            }
+            break;
+            
+        case ALERT_CHANGE_COVER:
+            break;
+            
+        default:
+            break;
+    }
+    
+    [m_selectedItems removeAllObjects];
+    [self.m_iboDiaryBooks reloadData];
+}
+
+@end

@@ -1,0 +1,130 @@
+//
+//  FirstViewController.m
+//  CalculateWeigh
+//
+//  Created by admin on 16/6/22.
+//  Copyright © 2016年 CAMRY. All rights reserved.
+//
+
+#import "FirstViewController.h"
+#import "TieUpViewController.h"
+#import "Common.h"
+#import "Masonry.h"
+
+
+@interface FirstViewController ()
+
+@end
+
+@implementation FirstViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+//    self.title =@"计价称A";
+    
+//    self.navigationItem.leftBarButtonItem =[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:nil action:nil];
+//    self.navigationItem.backBarButtonItem =[[UIBarButtonItem alloc] initWithTitle:@"计价称A" style:UIBarButtonItemStylePlain target:nil action:nil];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:nil action:nil];
+    
+   
+    
+
+    /**
+     *下线处理
+     */
+    self.navigationController.navigationBar.clipsToBounds = YES;
+    /**
+     *导航与视图色差
+     */
+   // self.navigationController.navigationBar.translucent = NO;
+    
+    
+    
+    self.view.backgroundColor =BLUECOLOR;
+    UIImageView *imageViewOne =[[UIImageView alloc]init];
+    imageViewOne.image = [UIImage imageNamed:@"0"];
+    imageViewOne.backgroundColor = BLUECOLOR;
+    
+    
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
+//    self.extendedLayoutIncludesOpaqueBars = NO;
+//    self.modalPresentationCapturesStatusBarAppearance = NO;
+    
+    UIButton *buttonTwo = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    buttonTwo.layer.cornerRadius = 8.0;
+    buttonTwo.backgroundColor = [UIColor whiteColor];
+    [buttonTwo setTintColor:BLUECOLOR];
+    [buttonTwo setTitle:@"世界重量，我们一起衡量!" forState:UIControlStateNormal];
+    [buttonTwo addTarget:self action:@selector(clickWeight) forControlEvents:UIControlEventTouchUpInside];
+    
+    UILabel *labelThree = [[UILabel alloc]init];
+    labelThree.text =@"香山衡器集团";
+    labelThree.textAlignment = NSTextAlignmentCenter;
+    labelThree.backgroundColor = BLUECOLOR;
+    labelThree.textColor = [UIColor whiteColor];
+    
+    
+    [self.view addSubview:imageViewOne];
+    [self.view addSubview:buttonTwo];
+    [self.view addSubview:labelThree];
+    
+    [imageViewOne makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(WIDTH/4);
+        make.right.equalTo(self.view).offset(-WIDTH/4);
+        make.top.equalTo(self.view.top).offset(HEIGHT/6);
+        make.height.equalTo(WIDTH/2);
+        
+    }];
+    
+    [labelThree makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(WIDTH/8);
+        make.right.equalTo(self.view).offset(-WIDTH/8);
+        make.bottom.equalTo(self.view).offset(-WIDTH/10);
+        make.height.equalTo(HEIGHT/20);
+        
+    }];
+    
+    [buttonTwo makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(WIDTH/8);
+        make.right.equalTo(self.view).offset(-WIDTH/8);
+        make.bottom.equalTo(labelThree.top).offset(-WIDTH/10);
+        make.height.equalTo(HEIGHT/20);
+    }];
+    
+}
+
+-(void)clickWeight
+{
+    
+    TieUpViewController *tieUpVC = [[TieUpViewController alloc]init];
+    [self.navigationController pushViewController:tieUpVC animated:YES];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    self.navigationController.navigationBar.hidden = NO;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

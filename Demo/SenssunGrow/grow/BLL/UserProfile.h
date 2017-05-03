@@ -1,0 +1,112 @@
+//
+//  UserProfile.h
+//  ChildGrowth
+//
+//  Created by admin on 14-9-23.
+//  Copyright (c) 2014年 camry. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Record.h"
+#import "Diary.h"
+
+typedef enum
+{
+    ICON_SIZE_S,
+    ICON_SIZE_L,
+} ENIconSize;
+
+typedef enum
+{
+    
+    GENDER_MALE,
+    GENDER_FEMALE
+} ENGender;
+
+typedef enum
+{
+    THEME_ID_MIN = 0,
+    
+    THEME_ID_1   = THEME_ID_MIN,
+    THEME_ID_2,
+    THEME_ID_3,
+    
+    THEME_ID_DEFAULT = THEME_ID_1,
+    THEME_ID_MAX = THEME_ID_3
+} ENThemeID;
+
+typedef enum
+{
+    DEV_MSLOT_MIN = 1,
+    
+    DEV_MSLOT_1   = DEV_MSLOT_MIN,
+    DEV_MSLOT_2,
+    DEV_MSLOT_3,
+    DEV_MSLOT_4,
+    DEV_MSLOT_5,
+    DEV_MSLOT_6,
+    DEV_MSLOT_7,
+    DEV_MSLOT_8,
+    
+    DEV_MSLOT_MAX = DEV_MSLOT_8
+} ENDevMSlot;
+
+@interface UserProfile : NSObject
+
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *portrait;       // 头像文件名
+@property (nonatomic, strong) NSDate   *birthday;
+@property                     ENGender  gender;
+@property                     ENThemeID themeIndex;     // 主题索引
+@property                     ENDevMSlot devMSlot;      // 关联设备用户号
+
+@property (nonatomic, strong) NSString *unit;
+@property (nonatomic, copy) NSString *currentUnit;
+
+@property (nonatomic, strong) NSMutableDictionary *recordList;  // 记录列表
+@property (nonatomic, strong) NSMutableDictionary *diaryBooks;  // 笔记本(per month)列表
+
+- (id)initWithName:(NSString *)name;
+
+- (NSDateComponents *)ageWithDate:(NSDate *)date;
+- (NSString *)ageOnDate:(NSDate *)date;
+
+- (BOOL)isDefaultPortrait;
+- (UIImage *)defaultPortrait:(ENIconSize)size;
+- (void)setPortraitImage:(UIImage *)image;
+- (UIImage *)portraitImage;
+- (void)savePortraitImage;
+- (void)loadPortraitImage;
+
+- (UIColor *)themeColor;
+
+// records
+- (NSArray *)sortRecordKeys;
+- (Record *)getRecordByKey:(NSDate *)key;
+- (Record *)getRecordByIndex:(NSInteger)index;
+
+- (void)addRecordWithWeight:(CGFloat)weight height:(CGFloat)height headcircle:(CGFloat)headcircle weightOZ:(CGFloat)weightOZ;
+- (void)addRecord:(Record *)record;
+- (void)setRecord:(Record *)oldRecord withNew:(Record *)newRecord;
+- (void)delRecord:(Record *)record;
+
+- (void)saveUserUnit:(NSString *)unit;
+
+// diaries
+- (NSArray *)sortDiaryKeys;
+- (DiaryBook *)getDiaryByKey:(NSDate *)key;
+- (DiaryBook *)getDiaryByIndex:(NSInteger)index;
+
+- (void)addDiaryBook:(DiaryBook *)obj;
+- (void)setDiaryBook:(DiaryBook *)oldBook withNew:(DiaryBook *)newBook;
+- (void)delDiaryBook:(DiaryBook *)obj;
+
++ (NSString *)titleOfGender:(ENGender)gender;
++ (NSString *)titleOfTheme:(ENThemeID)theme;
++ (NSString *)titleOfDevMSlot:(ENDevMSlot)slot;
++ (UIImage *)iconOfGender:(ENGender)gender;
++ (UIImage *)iconOfTheme:(ENThemeID)theme;
++ (UIImage *)iconOfDevMSlot:(ENDevMSlot)slot;
++ (UIColor *)colorOfTheme:(ENThemeID)theme;
+
+@end

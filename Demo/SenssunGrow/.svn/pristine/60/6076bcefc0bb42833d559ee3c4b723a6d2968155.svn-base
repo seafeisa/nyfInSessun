@@ -1,0 +1,190 @@
+//
+//  DiaryShelfViewController.m
+//  grow
+//
+//  Created by admin on 15-5-7.
+//  Copyright (c) 2015年 senssun. All rights reserved.
+//
+
+#import "UserList.h"
+#import "DiaryPageViewController.h"
+#import "DiaryListViewController.h"
+#import "DiaryCoverViewController.h"
+#import "DiaryShelfViewController.h"
+
+@implementation DiaryBookViewCell
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        // Initialization code
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+    self.layer.cornerRadius  = 5;
+    self.layer.masksToBounds = YES;
+    self.layer.borderWidth   = 1;
+    self.layer.borderColor   = [UIColor lightGrayColor].CGColor;
+}
+
+@end
+
+#pragma mark -
+@interface DiaryShelfViewController ()
+
+@property (strong, nonatomic) IBOutlet UICollectionView *m_iboDiaryBooks;
+//@property (strong, nonatomic) IBOutlet UIImageView *m_iboBGImage;
+@property (strong, nonatomic) IBOutlet UIImageView *m_iboNoItemImage;
+@property (strong, nonatomic) IBOutlet UILabel *m_iboNoItemTips;
+
+@end
+
+@implementation DiaryShelfViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.m_iboDiaryBooks reloadData];
+    
+    if (0 == [[UserList sharedInstance].currentKid.diaryBooks count])
+    {
+        self.m_iboNoItemImage.hidden = NO;
+        self.m_iboNoItemTips.hidden  = NO;
+    }
+    else
+    {
+        self.m_iboNoItemImage.hidden = YES;
+        self.m_iboNoItemTips.hidden  = YES;
+    }
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    
+    DiaryCoverViewController *destVC = [segue destinationViewController];
+    if ([segue.identifier isEqualToString:SEGUE_ADD_COVER])
+    {
+        destVC.accessMode = ACCESS_MODE_CREATE;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_EDIT_COVER])
+    {
+        NSIndexPath *indexPath = [self.m_iboDiaryBooks indexPathForCell:sender];
+        destVC.selectedItem = indexPath.row;
+        
+        destVC.accessMode = ACCESS_MODE_UPDATE;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_OPEN_BOOK])
+    {
+        NSIndexPath *indexPath = [self.m_iboDiaryBooks indexPathForCell:sender];
+
+        DiaryListViewController *destVC = [segue destinationViewController];
+        destVC.superBook = indexPath.row;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_ADD_DIARY_DIRECTLY])
+    {
+        DiaryPageViewController *destVC = [segue destinationViewController];
+        destVC.accessMode = ACCESS_MODE_CREATE;
+        destVC.superBook  = NSNotFound;
+    }
+}
+
+- (IBAction)backToPreView:(id)sender
+{
+    [self dismissViewControllerAnimated:NO completion:^{}];
+}
+
+
+#pragma mark - UICollectionViewDataSource
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return [[UserList sharedInstance].currentKid.diaryBooks count];
+}
+
+//每个UICollectionView展示的内容
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString * CellIdentifier = @"diaryBookCell";
+    DiaryBookViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+//    cell.layer.borderWidth = 1;
+//    cell.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    NSArray *sortKeys = [[UserList sharedInstance].currentKid sortDiaryKeys];
+    NSDate      *date = [sortKeys objectAtIndex:indexPath.row];
+    DiaryBook   *book = [[UserList sharedInstance].currentKid.diaryBooks objectForKey:date];
+    
+    cell.title.text  = book.title;
+    cell.cover.image = book.cover;
+    
+    return cell;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+//定义每个UICollectionView 的大小
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return CGSizeMake(96, 100);
+//}
+
+//定义每个UICollectionView 的 margin
+//-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+//{
+//    return UIEdgeInsetsMake(5, 5, 5, 5);
+//}
+
+#pragma mark - UICollectionViewDelegate
+//UICollectionView被选中时调用的方法
+//-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+//    cell.backgroundColor = [UIColor lightGrayColor];
+//}
+
+//返回这个UICollectionView是否可以被选择
+//-(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return YES;
+//}
+
+@end
